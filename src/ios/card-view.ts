@@ -1,4 +1,4 @@
-import * as common from "./card-view.common";
+import * as common from "../card-view.common";
 import * as utils from "utils/utils";
 import * as app from "application";
 import * as frame from "ui/frame";

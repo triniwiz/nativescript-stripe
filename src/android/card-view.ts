@@ -1,6 +1,6 @@
-import * as common from "./card-view.common";
+import * as common from "../card-view.common";
 import * as utils from "utils/utils";
-import { Card } from "./card.android";
+import { Card } from "./card";
 declare const com;
 global.moduleMerge(common, exports);
 export class CreditCardView extends common.CreditCardView {

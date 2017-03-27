@@ -1,4 +1,3 @@
-export declare class Stripe {
-    constructor();
-    createToken(card: any, cb: Function): void;
-}
+export * from './src/ios/card-view';
+export * from './src/ios/card';
+export * from './src/ios/stripe';

@@ -1,5 +1,5 @@
-import * as common from "./card-view.common";
-import { Card } from "./card.android";
+import * as common from "../card-view.common";
+import { Card } from "./card";
 export declare class CreditCardView extends common.CreditCardView {
     private _android;
     private _ctx;

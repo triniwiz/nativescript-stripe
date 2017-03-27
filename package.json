@@ -1,6 +1,6 @@
 {
   "name": "nativescript-stripe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "stripe",
   "nativescript": {
@@ -46,5 +46,8 @@
     "typescript": "^2.0.7",
     "prompt": "^1.0.0",
     "rimraf": "^2.5.0"
+  },
+  "dependencies": {
+    "nativescript-angular": "^1.4.1"
   }
 }

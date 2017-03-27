@@ -1,4 +1,4 @@
-import * as common from "./card-view.common";
+import * as common from "../card-view.common";
 import { Card } from "./card";
 export declare class CreditCardView extends common.CreditCardView {
     private _ios;

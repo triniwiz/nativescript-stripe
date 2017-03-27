@@ -1,4 +1,4 @@
-import { CardBrand } from "./card-view.common";
+import { CardBrand } from "../card-view.common";
 export class Card {
     private _card: STPCardParams;
     constructor(cardNumber: string, cardExpMonth: number, cardExpYear: number, cardCVC: string) {

@@ -1,4 +1,4 @@
-import { CardBrand } from "./card-view.common";
+import { CardBrand } from "../card-view.common";
 export declare class Card {
     private _card;
     constructor(cardNumber: string, cardExpMonth: number, cardExpYear: number, cardCVC: string);
@@ -22,13 +22,7 @@ export declare class Card {
     currency: string;
     readonly last4: string;
     readonly brand: CardBrand;
-    /**
-     * Not available in IOS
-     */
     readonly fingerprint: string;
-    /**
-     * Not available in IOS
-     */
     readonly funding: string;
     readonly country: string;
 }

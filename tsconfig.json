@@ -1,16 +1,27 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
         "target": "es5",
-        "experimentalDecorators": true,
+        "module": "commonjs",
+        "declaration": true,
+        "removeComments": true,
+        "noLib": true,
+        "skipLibCheck": true,
         "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "pretty": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
         "noEmitHelpers": true,
         "noEmitOnError": false,
-        "declaration": true,
-        "pretty": false
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "noImplicitUseStrict": false,
+        "noFallthroughCasesInSwitch": true
     },
     "exclude": [
         "demo",
         "node_modules"
-    ]
+    ],
+    "compileOnSave": false
 }
