@@ -1,10 +1,10 @@
 [![npm](https://img.shields.io/npm/v/nativescript-stripe.svg)](https://www.npmjs.com/package/nativescript-stripe)
 [![npm](https://img.shields.io/npm/dt/nativescript-stripe.svg?label=npm%20downloads)](https://www.npmjs.com/package/nativescript-stripe)
 
-#Installation
+# Installation
 `tns plugin add nativescript-stripe`
 
-#Configure
+# Configure
 
 * [Android](#android)
 * [iOS](#ios)
@@ -37,7 +37,7 @@ app.on(app.launchEvent, (args) => {
 });
 ```
 
-###Angular
+### Angular
 Place the following in your main.ts
 
 ```ts
@@ -52,16 +52,16 @@ app.on(app.launchEvent, (args) => {
 ```
 
 
-##Usage
+## Usage
 
 IMPORTANT: Make sure you include `xmlns:stripe="nativescript-stripe"` on the Page tag
 
-###Using from view
+### Using from view
 ```xml
 <stripe:CreditCardView id="card"/>
 ```
 
-####Add extra details to card
+#### Add extra details to card
 
 ```js
 const ccView = page.getViewById("card");
@@ -75,14 +75,14 @@ const ccView:CreditCardView = page.getViewById("card");
 const cc:Card = ccView.card;
 cc.name = "Osei Fortune";
 ```
-###Using from code
+### Using from code
 ```ts
 import { Card } from 'nativescript-stripe';
 const cc = new Card("1111111111111111",2,18,"123");
 cc.name = "Osei Fortune";
 ```
 
-###Get Token
+### Get Token
 
 ```ts
 import {Stripe} from 'nativescript-stripe';
@@ -111,6 +111,6 @@ stripe.createToken(cc.card,(error,token)=>{
 ```
 
 
-#TODO
+# TODO
 * Android Pay
 * Apple Pay
