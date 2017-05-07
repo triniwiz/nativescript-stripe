@@ -1,6 +1,7 @@
 *.js
 *.js.map
 *.log
+*.d.ts
 !scripts/*.js
 demo/app/*.js
 !demo/karma.conf.js
@@ -12,3 +13,4 @@ demo/node_modules
 node_modules
 .vscode
 .idea
+hooks
