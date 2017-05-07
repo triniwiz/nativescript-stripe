@@ -4,7 +4,6 @@ export declare class CreditCardView extends common.CreditCardView {
     private _android;
     private _ctx;
     readonly android: any;
-    readonly _nativeView: any;
-    _createUI(): void;
+    createNativeView(): any;
     readonly card: Card;
 }

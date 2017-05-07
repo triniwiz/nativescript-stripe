@@ -4,6 +4,5 @@ export declare class CreditCardView extends common.CreditCardView {
     private _ios;
     constructor();
     readonly ios: STPPaymentCardTextField;
-    readonly _nativeView: STPPaymentCardTextField;
     readonly card: Card;
 }

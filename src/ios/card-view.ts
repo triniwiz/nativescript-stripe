@@ -1,7 +1,6 @@
 import * as common from "../card-view.common";
-import * as utils from "utils/utils";
 import * as app from "application";
-import * as frame from "ui/frame";
+import * as frame from "tns-core-modules/ui/frame";
 import { Card } from "./card";
 global.moduleMerge(common, exports);
 export class CreditCardView extends common.CreditCardView {
@@ -13,9 +12,7 @@ export class CreditCardView extends common.CreditCardView {
     get ios() {
         return this._ios;
     }
-    get _nativeView() {
-        return this._ios;
-    }
+  
     get card(): Card {
         try {
             let valid = this._ios.cardParams.validateCardReturningError();

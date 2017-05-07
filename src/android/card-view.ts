@@ -1,5 +1,5 @@
 import * as common from "../card-view.common";
-import * as utils from "utils/utils";
+import * as utils from "tns-core-modules/utils/utils";
 import { Card } from "./card";
 declare const com;
 global.moduleMerge(common, exports);
@@ -9,12 +9,11 @@ export class CreditCardView extends common.CreditCardView {
     get android() {
         return this._android;
     }
-    get _nativeView() {
-        return this._android;
-    }
-    _createUI() {
+
+    public createNativeView() {
         this._ctx = utils.ad.getApplicationContext();
         this._android = new com.stripe.android.view.CardInputWidget(this._ctx);
+        return this._android;
     }
     get card(): Card {
         const card = this._android.getCard();
