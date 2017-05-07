@@ -1,7 +1,7 @@
 import { CardBrand } from "../card-view.common";
 export class Card {
     private _card: STPCardParams;
-    constructor(cardNumber: string, cardExpMonth: number, cardExpYear: number, cardCVC: string) {
+    constructor(cardNumber: string, cardExpMonth: any, cardExpYear: any, cardCVC: string) {
         this._card = STPCardParams.alloc().init();
         this._card.number = cardNumber;
         this._card.expMonth = cardExpMonth;
@@ -96,10 +96,10 @@ export class Card {
     get cvc(): string {
         return this._card.cvc;
     }
-    get expMonth(): number {
+    get expMonth(): any {
         return this._card.expMonth;
     }
-    get expYear(): number {
+    get expYear(): any {
         return this._card.expYear;
     }
     get name(): string {
