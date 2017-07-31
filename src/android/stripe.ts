@@ -15,7 +15,7 @@ export class Stripe {
                 owner: that.get(),
                 onSuccess: function (token) {
                     if (typeof cb === "function") {
-                        cb(null, token.getId());
+                        cb(null, token);
                     }
                 },
                 onError: function (error) {
