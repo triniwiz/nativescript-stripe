@@ -20,9 +20,9 @@ export class Stripe {
                 },
                 onError: function (error) {
                     // Show localized error message
-                    console.log(error.getLocalizedString(this.owner._ctx))
+                    console.log(error.getLocalizedMessage())
                     if (typeof cb === "function") {
-                        cb(new Error(error.getLocalizedString(this.owner._ctx)))
+                        cb(new Error(error.getLocalizedMessage()))
                     }
                 }
             })
