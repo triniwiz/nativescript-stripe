@@ -109,6 +109,9 @@ stripe.createToken(cc.card,(error,token)=>{
   }
 });
 ```
+**Warning** At the moment the `token` sent back by createToken doesn't have the same API depending on the platform.
+
+For exemple, iOS will send back an object having `tokenId` or `card` properties while the Android version will have accessors like `getId()` or `getCard()`.
 
 
 # TODO
