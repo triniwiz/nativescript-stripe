@@ -47,7 +47,7 @@ export class Card {
     }
     validateCard(): boolean {
         try {
-            return this._card.validateCardReturningError();
+            return STPCardValidator.validationStateForCard(this._card) === STPCardValidationState.Valid;
         } catch (ex) {
             return false;
         }
