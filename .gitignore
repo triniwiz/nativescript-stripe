@@ -11,6 +11,10 @@ demo/lib
 demo/platforms
 demo/node_modules
 node_modules
+demo/metadata-i386/
+demo/metadata-x86_64/
 .vscode
 .idea
 hooks
+.DS_Store
+demo/.DS_Store

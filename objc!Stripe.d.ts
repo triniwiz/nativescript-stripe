@@ -1,1311 +1,2166 @@
 
-declare class PTKCard extends STPCard {
-
-	static alloc(): PTKCard; // inherited from NSObject
-
-	static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): PTKCard; // inherited from STPAPIResponseDecodable
-
-	static new(): PTKCard; // inherited from NSObject
-}
-
-declare class PTKView extends STPPaymentCardTextField {
-
-	static alloc(): PTKView; // inherited from NSObject
-
-	static appearance(): PTKView; // inherited from UIAppearance
-
-	static appearanceForTraitCollection(trait: UITraitCollection): PTKView; // inherited from UIAppearance
-
-	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): PTKView; // inherited from UIAppearance
-
-	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject>): PTKView; // inherited from UIAppearance
-
-	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): PTKView; // inherited from UIAppearance
-
-	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject>): PTKView; // inherited from UIAppearance
-
-	static new(): PTKView; // inherited from NSObject
-
-	card: PTKCard;
-
-	delegate: PTKViewDelegate;
-}
-
-interface PTKViewDelegate extends STPPaymentCardTextFieldDelegate {
-
-	paymentViewWithCardIsValid?(paymentView: PTKView, card: PTKCard, valid: boolean): void;
-}
-declare var PTKViewDelegate: {
-
-	prototype: PTKViewDelegate;
-};
+declare type UITextSmartDashesType = any; // inherited from UITextInputTraits
+declare type  UITextSmartInsertDeleteType = any; // inherited from UITextInputTraits
+declare type UITextSmartQuotesType = any;
 
 declare class STPAPIClient extends NSObject {
 
-	static alloc(): STPAPIClient; // inherited from NSObject
+		static alloc(): STPAPIClient; // inherited from NSObject
 
-	static new(): STPAPIClient; // inherited from NSObject
+		static new(): STPAPIClient; // inherited from NSObject
 
-	static sharedClient(): STPAPIClient;
+		static sharedClient(): STPAPIClient;
 
-	configuration: STPPaymentConfiguration;
+		configuration: STPPaymentConfiguration;
 
-	publishableKey: string;
+		publishableKey: string;
 
-	constructor(o: { configuration: STPPaymentConfiguration; });
+		stripeAccount: string;
 
-	constructor(o: { publishableKey: string; });
+		constructor(o: { configuration: STPPaymentConfiguration; });
 
-	createTokenWithBankAccountCompletion(bankAccount: STPBankAccountParams, completion: (p1: STPToken, p2: NSError) => void): void;
+		constructor(o: { publishableKey: string; });
 
-	createTokenWithCardCompletion(card: STPCardParams, completion: (p1: STPToken, p2: NSError) => void): void;
+		createSourceWithParamsCompletion(params: STPSourceParams, completion: (p1: STPSource, p2: NSError) => void): void;
 
-	createTokenWithPaymentCompletion(payment: PKPayment, completion: (p1: STPToken, p2: NSError) => void): void;
+		createSourceWithPaymentCompletion(payment: PKPayment, completion: (p1: STPSource, p2: NSError) => void): void;
 
-	initWithConfiguration(configuration: STPPaymentConfiguration): this;
+		createTokenWithBankAccountCompletion(bankAccount: STPBankAccountParams, completion: (p1: STPToken, p2: NSError) => void): void;
 
-	initWithPublishableKey(publishableKey: string): this;
-}
+		createTokenWithCardCompletion(card: STPCardParams, completion: (p1: STPToken, p2: NSError) => void): void;
 
-interface STPAPIResponseDecodable extends NSObjectProtocol {
+		createTokenWithPaymentCompletion(payment: PKPayment, completion: (p1: STPToken, p2: NSError) => void): void;
 
-	allResponseFields: NSDictionary<any, any>;
-}
-declare var STPAPIResponseDecodable: {
+		createTokenWithPersonalIDNumberCompletion(pii: string, completion: (p1: STPToken, p2: NSError) => void): void;
 
-	prototype: STPAPIResponseDecodable;
+		initWithConfiguration(configuration: STPPaymentConfiguration): this;
 
-	decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPAPIResponseDecodable;
+		initWithPublishableKey(publishableKey: string): this;
 
-	requiredFields(): NSArray<any>;
-};
+		retrieveSourceWithIdClientSecretCompletion(identifier: string, secret: string, completion: (p1: STPSource, p2: NSError) => void): void;
 
-declare class STPAddCardViewController extends UIViewController {
+		startPollingSourceWithIdClientSecretTimeoutCompletion(identifier: string, secret: string, timeout: number, completion: (p1: STPSource, p2: NSError) => void): void;
 
-	static alloc(): STPAddCardViewController; // inherited from NSObject
+		stopPollingSourceWithId(identifier: string): void;
 
-	static new(): STPAddCardViewController; // inherited from NSObject
+		uploadImagePurposeCompletion(image: UIImage, purpose: STPFilePurpose, completion: (p1: STPFile, p2: NSError) => void): void;
+	}
 
-	delegate: STPAddCardViewControllerDelegate;
+	interface STPAPIResponseDecodable extends NSObjectProtocol {
 
-	managedAccountCurrency: string;
+		allResponseFields: NSDictionary<any, any>;
+	}
+	declare var STPAPIResponseDecodable: {
 
-	prefilledInformation: STPUserInformation;
+		prototype: STPAPIResponseDecodable;
 
-	constructor(o: { configuration: STPPaymentConfiguration; theme: STPTheme; });
+		decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPAPIResponseDecodable;
 
-	initWithConfigurationTheme(configuration: STPPaymentConfiguration, theme: STPTheme): this;
-}
+		requiredFields(): NSArray<any>;
+	};
 
-interface STPAddCardViewControllerDelegate extends NSObjectProtocol {
+	declare class STPAddCardViewController extends STPCoreTableViewController {
 
-	addCardViewControllerDidCancel(addCardViewController: STPAddCardViewController): void;
+		static alloc(): STPAddCardViewController; // inherited from NSObject
 
-	addCardViewControllerDidCreateTokenCompletion(addCardViewController: STPAddCardViewController, token: STPToken, completion: (p1: NSError) => void): void;
-}
-declare var STPAddCardViewControllerDelegate: {
+		static new(): STPAddCardViewController; // inherited from NSObject
 
-	prototype: STPAddCardViewControllerDelegate;
-};
+		delegate: STPAddCardViewControllerDelegate;
 
-declare class STPAddress extends NSObject {
+		managedAccountCurrency: string;
 
-	static alloc(): STPAddress; // inherited from NSObject
+		prefilledInformation: STPUserInformation;
 
-	static applePayAddressFieldsFromBillingAddressFields(billingAddressFields: STPBillingAddressFields): PKAddressField;
+		constructor(o: { configuration: STPPaymentConfiguration; theme: STPTheme; });
 
-	static new(): STPAddress; // inherited from NSObject
+		initWithConfigurationTheme(configuration: STPPaymentConfiguration, theme: STPTheme): this;
+	}
 
-	city: string;
+	interface STPAddCardViewControllerDelegate extends NSObjectProtocol {
 
-	country: string;
+		addCardViewControllerDidCancel(addCardViewController: STPAddCardViewController): void;
 
-	email: string;
+		addCardViewControllerDidCreateTokenCompletion(addCardViewController: STPAddCardViewController, token: STPToken, completion: (p1: NSError) => void): void;
+	}
+	declare var STPAddCardViewControllerDelegate: {
 
-	line1: string;
+		prototype: STPAddCardViewControllerDelegate;
+	};
 
-	line2: string;
+	declare class STPAddress extends NSObject implements STPAPIResponseDecodable {
 
-	name: string;
+		static alloc(): STPAddress; // inherited from NSObject
 
-	phone: string;
+		static applePayAddressFieldsFromBillingAddressFields(billingAddressFields: STPBillingAddressFields): PKAddressField;
 
-	postalCode: string;
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPAddress;
 
-	state: string;
+		static new(): STPAddress; // inherited from NSObject
 
-	constructor(o: { ABRecord: any; });
+		static requiredFields(): NSArray<any>;
 
-	ABRecordValue(): any;
+		static shippingInfoForChargeWithAddressShippingMethod(address: STPAddress, method: PKShippingMethod): NSDictionary<any, any>;
 
-	PKContactValue(): PKContact;
+		city: string;
 
-	containsRequiredFields(requiredFields: STPBillingAddressFields): boolean;
+		country: string;
 
-	containsRequiredShippingAddressFields(requiredFields: PKAddressField): boolean;
+		email: string;
 
-	initWithABRecord(record: any): this;
-}
+		line1: string;
 
-declare class STPApplePayPaymentMethod extends NSObject implements STPPaymentMethod {
+		line2: string;
 
-	static alloc(): STPApplePayPaymentMethod; // inherited from NSObject
+		name: string;
 
-	static new(): STPApplePayPaymentMethod; // inherited from NSObject
+		phone: string;
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+		postalCode: string;
 
-	readonly description: string; // inherited from NSObjectProtocol
+		state: string;
 
-	readonly hash: number; // inherited from NSObjectProtocol
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
 
-	readonly image: UIImage; // inherited from STPPaymentMethod
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+		readonly description: string; // inherited from NSObjectProtocol
 
-	readonly label: string; // inherited from STPPaymentMethod
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	readonly templateImage: UIImage; // inherited from STPPaymentMethod
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	readonly  // inherited from NSObjectProtocol
+		readonly  // inherited from NSObjectProtocol
 
-	class(): typeof NSObject;
+		constructor(o: { ABRecord: any; });
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+		constructor(o: { CNContact: CNContact; });
 
-	isEqual(object: any): boolean;
+		constructor(o: { PKContact: PKContact; });
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+		ABRecordValue(): any;
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+		PKContactValue(): PKContact;
 
-	performSelector(aSelector: string): any;
+		class(): typeof NSObject;
 
-	performSelectorWithObject(aSelector: string, object: any): any;
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+		containsRequiredFields(requiredFields: STPBillingAddressFields): boolean;
 
-	respondsToSelector(aSelector: string): boolean;
+		containsRequiredShippingAddressFields(requiredFields: PKAddressField): boolean;
 
-	retainCount(): number;
+		initWithABRecord(record: any): this;
 
-	self(): this;
-}
+		initWithCNContact(contact: CNContact): this;
 
-interface STPBackendAPIAdapter extends NSObjectProtocol {
+		initWithPKContact(contact: PKContact): this;
 
-	attachSourceToCustomerCompletion(source: STPSource, completion: (p1: NSError) => void): void;
+		isEqual(object: any): boolean;
 
-	retrieveCustomer(completion: (p1: STPCustomer, p2: NSError) => void): void;
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	selectDefaultCustomerSourceCompletion(source: STPSource, completion: (p1: NSError) => void): void;
-}
-declare var STPBackendAPIAdapter: {
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	prototype: STPBackendAPIAdapter;
-};
+		performSelector(aSelector: string): any;
 
-declare class STPBankAccount extends STPBankAccountParams implements STPAPIResponseDecodable {
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	static alloc(): STPBankAccount; // inherited from NSObject
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPBankAccount;
+		respondsToSelector(aSelector: string): boolean;
 
-	static new(): STPBankAccount; // inherited from NSObject
+		retainCount(): number;
 
-	static requiredFields(): NSArray<any>;
+		self(): this;
+	}
 
-	readonly bankAccountId: string;
+	declare class STPApplePayPaymentMethod extends NSObject implements STPPaymentMethod {
 
-	readonly bankName: string;
+		static alloc(): STPApplePayPaymentMethod; // inherited from NSObject
 
-	readonly disabled: boolean;
+		static new(): STPApplePayPaymentMethod; // inherited from NSObject
 
-	readonly fingerprint: string;
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	readonly last4: string;
+		readonly description: string; // inherited from NSObjectProtocol
 
-	readonly status: STPBankAccountStatus;
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	readonly validated: boolean;
+		readonly image: UIImage; // inherited from STPPaymentMethod
 
-	readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+		readonly label: string; // inherited from STPPaymentMethod
 
-	readonly description: string; // inherited from NSObjectProtocol
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	readonly hash: number; // inherited from NSObjectProtocol
+		readonly templateImage: UIImage; // inherited from STPPaymentMethod
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+		readonly  // inherited from NSObjectProtocol
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+		class(): typeof NSObject;
 
-	readonly  // inherited from NSObjectProtocol
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	class(): typeof NSObject;
+		isEqual(object: any): boolean;
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	isEqual(object: any): boolean;
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+		performSelector(aSelector: string): any;
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	performSelector(aSelector: string): any;
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	performSelectorWithObject(aSelector: string, object: any): any;
+		respondsToSelector(aSelector: string): boolean;
 
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+		retainCount(): number;
 
-	respondsToSelector(aSelector: string): boolean;
+		self(): this;
+	}
 
-	retainCount(): number;
+	interface STPBackendAPIAdapter extends NSObjectProtocol {
 
-	self(): this;
+		attachSourceToCustomerCompletion(source: STPSourceProtocol, completion: (p1: NSError) => void): void;
 
-	setAccountNumber(accountNumber: string): void;
-}
+		retrieveCustomer(completion: (p1: STPCustomer, p2: NSError) => void): void;
 
-declare const enum STPBankAccountHolderType {
+		selectDefaultCustomerSourceCompletion(source: STPSourceProtocol, completion: (p1: NSError) => void): void;
+	}
+	declare var STPBackendAPIAdapter: {
 
-	Individual = 0,
+		prototype: STPBackendAPIAdapter;
+	};
 
-	Company = 1
-}
+	declare class STPBankAccount extends STPBankAccountParams implements STPAPIResponseDecodable {
 
-declare class STPBankAccountParams extends NSObject implements STPFormEncodable {
+		static alloc(): STPBankAccount; // inherited from NSObject
 
-	static alloc(): STPBankAccountParams; // inherited from NSObject
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPBankAccount;
 
-	static new(): STPBankAccountParams; // inherited from NSObject
+		static new(): STPBankAccount; // inherited from NSObject
 
-	static propertyNamesToFormFieldNamesMapping(): NSDictionary<any, any>;
+		static requiredFields(): NSArray<any>;
 
-	static rootObjectName(): string;
+		readonly bankAccountId: string;
 
-	accountHolderName: string;
+		readonly bankName: string;
 
-	accountHolderType: STPBankAccountHolderType;
+		readonly fingerprint: string;
 
-	accountNumber: string;
+		readonly last4: string;
 
-	country: string;
+		readonly status: STPBankAccountStatus;
 
-	currency: string;
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
 
-	readonly last4: string;
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	routingNumber: string;
+		readonly description: string; // inherited from NSObjectProtocol
 
-	additionalAPIParameters: NSDictionary<any, any>; // inherited from STPFormEncodable
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	readonly description: string; // inherited from NSObjectProtocol
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	readonly hash: number; // inherited from NSObjectProtocol
+		readonly  // inherited from NSObjectProtocol
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+		class(): typeof NSObject;
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	readonly  // inherited from NSObjectProtocol
+		isEqual(object: any): boolean;
 
-	class(): typeof NSObject;
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	isEqual(object: any): boolean;
+		performSelector(aSelector: string): any;
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	performSelector(aSelector: string): any;
+		respondsToSelector(aSelector: string): boolean;
 
-	performSelectorWithObject(aSelector: string, object: any): any;
+		retainCount(): number;
 
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+		self(): this;
+	}
 
-	respondsToSelector(aSelector: string): boolean;
+	declare const enum STPBankAccountHolderType {
 
-	retainCount(): number;
+		Individual = 0,
 
-	self(): this;
-}
+		Company = 1
+	}
 
-declare const enum STPBankAccountStatus {
+	declare class STPBankAccountParams extends NSObject implements STPFormEncodable {
 
-	New = 0,
+		static alloc(): STPBankAccountParams; // inherited from NSObject
 
-	Validated = 1,
+		static new(): STPBankAccountParams; // inherited from NSObject
 
-	Verified = 2,
+		static propertyNamesToFormFieldNamesMapping(): NSDictionary<any, any>;
 
-	Errored = 3
-}
+		static rootObjectName(): string;
 
-declare const enum STPBillingAddressFields {
+		accountHolderName: string;
 
-	None = 0,
+		accountHolderType: STPBankAccountHolderType;
 
-	Zip = 1,
+		accountNumber: string;
 
-	Full = 2
-}
+		country: string;
 
-declare class STPCard extends STPCardParams implements STPAPIResponseDecodable, STPPaymentMethod, STPSource {
+		currency: string;
 
-	static alloc(): STPCard; // inherited from NSObject
+		readonly last4: string;
 
-	static brandFromString(string: string): STPCardBrand;
+		routingNumber: string;
 
-	static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPCard;
+		additionalAPIParameters: NSDictionary<any, any>; // inherited from STPFormEncodable
 
-	static fundingFromString(string: string): STPCardFundingType;
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	static new(): STPCard; // inherited from NSObject
+		readonly description: string; // inherited from NSObjectProtocol
 
-	static requiredFields(): NSArray<any>;
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	static stringFromBrand(brand: STPCardBrand): string;
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	readonly brand: STPCardBrand;
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	readonly cardId: string;
+		readonly  // inherited from NSObjectProtocol
 
-	readonly country: string;
+		class(): typeof NSObject;
 
-	readonly dynamicLast4: string;
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	readonly fingerprint: string;
+		isEqual(object: any): boolean;
 
-	readonly funding: STPCardFundingType;
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	readonly isApplePayCard: boolean;
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	readonly last4: string;
+		performSelector(aSelector: string): any;
 
-	readonly type: string;
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+		respondsToSelector(aSelector: string): boolean;
 
-	readonly description: string; // inherited from NSObjectProtocol
+		retainCount(): number;
 
-	readonly hash: number; // inherited from NSObjectProtocol
+		self(): this;
+	}
 
-	readonly image: UIImage; // inherited from STPPaymentMethod
+	declare const enum STPBankAccountStatus {
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+		New = 0,
 
-	readonly label: string; // inherited from STPPaymentMethod
+		Validated = 1,
 
-	readonly stripeID: string; // inherited from STPSource
+		Verified = 2,
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+		Errored = 3
+	}
 
-	readonly templateImage: UIImage; // inherited from STPPaymentMethod
+	declare const enum STPBillingAddressFields {
 
-	readonly  // inherited from NSObjectProtocol
+		None = 0,
 
-	constructor(o: { ID: string; brand: STPCardBrand; last4: string; expMonth: number; expYear: number; funding: STPCardFundingType; });
+		Zip = 1,
 
-	class(): typeof NSObject;
+		Full = 2
+	}
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	declare class STPCard extends STPCardParams implements STPAPIResponseDecodable, STPPaymentMethod, STPSourceProtocol {
 
-	initWithIDBrandLast4ExpMonthExpYearFunding(cardID: string, brand: STPCardBrand, last4: string, expMonth: number, expYear: number, funding: STPCardFundingType): this;
+		static alloc(): STPCard; // inherited from NSObject
 
-	isEqual(object: any): boolean;
+		static brandFromString(string: string): STPCardBrand;
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPCard;
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+		static fundingFromString(string: string): STPCardFundingType;
 
-	performSelector(aSelector: string): any;
+		static new(): STPCard; // inherited from NSObject
 
-	performSelectorWithObject(aSelector: string, object: any): any;
+		static requiredFields(): NSArray<any>;
 
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+		static stringFromBrand(brand: STPCardBrand): string;
 
-	respondsToSelector(aSelector: string): boolean;
+		readonly brand: STPCardBrand;
 
-	retainCount(): number;
+		readonly cardId: string;
 
-	self(): this;
+		readonly country: string;
 
-	setAddressCity(addressCity: string): void;
+		readonly dynamicLast4: string;
 
-	setAddressCountry(addressCountry: string): void;
+		readonly funding: STPCardFundingType;
 
-	setAddressLine1(addressLine1: string): void;
+		readonly isApplePayCard: boolean;
 
-	setAddressLine2(addressLine2: string): void;
+		readonly last4: string;
 
-	setAddressState(addressState: string): void;
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
 
-	setAddressZip(addressZip: string): void;
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	setExpMonth(expMonth: number): void;
+		readonly description: string; // inherited from NSObjectProtocol
 
-	setExpYear(expYear: number): void;
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	setName(name: string): void;
-}
+		readonly image: UIImage; // inherited from STPPaymentMethod
 
-declare const enum STPCardBrand {
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	Visa = 0,
+		readonly label: string; // inherited from STPPaymentMethod
 
-	Amex = 1,
+		readonly stripeID: string; // inherited from STPSourceProtocol
 
-	MasterCard = 2,
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	Discover = 3,
+		readonly templateImage: UIImage; // inherited from STPPaymentMethod
 
-	JCB = 4,
+		readonly  // inherited from NSObjectProtocol
 
-	DinersClub = 5,
+		constructor(o: { ID: string; brand: STPCardBrand; last4: string; expMonth: number; expYear: number; funding: STPCardFundingType; });
 
-	Unknown = 6
-}
+		class(): typeof NSObject;
 
-declare var STPCardDeclined: string;
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-declare var STPCardErrorCodeKey: string;
+		initWithIDBrandLast4ExpMonthExpYearFunding(cardID: string, brand: STPCardBrand, last4: string, expMonth: number, expYear: number, funding: STPCardFundingType): this;
 
-declare const enum STPCardFundingType {
+		isEqual(object: any): boolean;
 
-	Debit = 0,
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	Credit = 1,
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	Prepaid = 2,
+		performSelector(aSelector: string): any;
 
-	Other = 3
-}
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-declare class STPCardParams extends NSObject implements STPFormEncodable {
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	static alloc(): STPCardParams; // inherited from NSObject
+		respondsToSelector(aSelector: string): boolean;
 
-	static new(): STPCardParams; // inherited from NSObject
+		retainCount(): number;
 
-	static propertyNamesToFormFieldNamesMapping(): NSDictionary<any, any>;
+		self(): this;
+	}
 
-	static rootObjectName(): string;
+	declare const enum STPCardBrand {
 
-	address: STPAddress;
+		Visa = 0,
 
-	addressCity: string;
+		Amex = 1,
 
-	addressCountry: string;
+		MasterCard = 2,
 
-	addressLine1: string;
+		Discover = 3,
 
-	addressLine2: string;
+		JCB = 4,
 
-	addressState: string;
+		DinersClub = 5,
 
-	addressZip: string;
+		Unknown = 6
+	}
 
-	currency: string;
+	declare var STPCardDeclined: string;
 
-	cvc: string;
+	declare var STPCardErrorCodeKey: string;
 
-	expMonth: number;
+	declare const enum STPCardFundingType {
 
-	expYear: number;
+		Debit = 0,
 
-	readonly last4: string;
+		Credit = 1,
 
-	name: string;
+		Prepaid = 2,
 
-	number: string;
+		Other = 3
+	}
 
-	additionalAPIParameters: NSDictionary<any, any>; // inherited from STPFormEncodable
+	declare class STPCardParams extends NSObject implements STPFormEncodable {
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+		static alloc(): STPCardParams; // inherited from NSObject
 
-	readonly description: string; // inherited from NSObjectProtocol
+		static new(): STPCardParams; // inherited from NSObject
 
-	readonly hash: number; // inherited from NSObjectProtocol
+		static propertyNamesToFormFieldNamesMapping(): NSDictionary<any, any>;
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+		static rootObjectName(): string;
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+		address: STPAddress;
 
-	readonly  // inherited from NSObjectProtocol
+		addressCity: string;
 
-	class(): typeof NSObject;
+		addressCountry: string;
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+		addressLine1: string;
 
-	isEqual(object: any): boolean;
+		addressLine2: string;
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+		addressState: string;
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+		addressZip: string;
 
-	performSelector(aSelector: string): any;
+		currency: string;
 
-	performSelectorWithObject(aSelector: string, object: any): any;
+		cvc: string;
 
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+		expMonth: number;
 
-	respondsToSelector(aSelector: string): boolean;
+		expYear: number;
 
-	retainCount(): number;
+		readonly last4: string;
 
-	self(): this;
+		name: string;
 
-	validateCardReturningError(): boolean;
+		number: string;
 
-	validateCvcError(ioValue: interop.Pointer | interop.Reference<any>): boolean;
+		additionalAPIParameters: NSDictionary<any, any>; // inherited from STPFormEncodable
 
-	validateExpMonthError(ioValue: interop.Pointer | interop.Reference<any>): boolean;
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	validateExpYearError(ioValue: interop.Pointer | interop.Reference<any>): boolean;
+		readonly description: string; // inherited from NSObjectProtocol
 
-	validateNumberError(ioValue: interop.Pointer | interop.Reference<any>): boolean;
-}
+		readonly hash: number; // inherited from NSObjectProtocol
 
-declare const enum STPCardValidationState {
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	Valid = 0,
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	Invalid = 1,
+		readonly  // inherited from NSObjectProtocol
 
-	Incomplete = 2
-}
+		class(): typeof NSObject;
 
-declare class STPCardValidator extends NSObject {
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	static alloc(): STPCardValidator; // inherited from NSObject
+		isEqual(object: any): boolean;
 
-	static brandForNumber(cardNumber: string): STPCardBrand;
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	static fragmentLengthForCardBrand(brand: STPCardBrand): number;
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	static lengthForCardBrand(brand: STPCardBrand): number;
+		performSelector(aSelector: string): any;
 
-	static lengthsForCardBrand(brand: STPCardBrand): NSSet<number>;
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	static maxCVCLengthForCardBrand(brand: STPCardBrand): number;
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	static maxLengthForCardBrand(brand: STPCardBrand): number;
+		respondsToSelector(aSelector: string): boolean;
 
-	static new(): STPCardValidator; // inherited from NSObject
+		retainCount(): number;
 
-	static sanitizedNumericStringForString(string: string): string;
+		self(): this;
+	}
 
-	static stringIsNumeric(string: string): boolean;
+	declare const enum STPCardValidationState {
 
-	static validationStateForCVCCardBrand(cvc: string, brand: STPCardBrand): STPCardValidationState;
+		Valid = 0,
 
-	static validationStateForCard(card: STPCardParams): STPCardValidationState;
+		Invalid = 1,
 
-	static validationStateForCardInCurrentYearCurrentMonth(card: STPCardParams, currentYear: number, currentMonth: number): STPCardValidationState;
+		Incomplete = 2
+	}
 
-	static validationStateForExpirationMonth(expirationMonth: string): STPCardValidationState;
+	declare class STPCardValidator extends NSObject {
 
-	static validationStateForExpirationYearInMonth(expirationYear: string, expirationMonth: string): STPCardValidationState;
+		static alloc(): STPCardValidator; // inherited from NSObject
 
-	static validationStateForExpirationYearInMonthInCurrentYearCurrentMonth(expirationYear: string, expirationMonth: string, currentYear: number, currentMonth: number): STPCardValidationState;
+		static brandForNumber(cardNumber: string): STPCardBrand;
 
-	static validationStateForNumberValidatingCardBrand(cardNumber: string, validatingCardBrand: boolean): STPCardValidationState;
-}
+		static fragmentLengthForCardBrand(brand: STPCardBrand): number;
 
-declare class STPCustomer extends NSObject {
+		static lengthsForCardBrand(brand: STPCardBrand): NSSet<number>;
 
-	static alloc(): STPCustomer; // inherited from NSObject
+		static maxCVCLengthForCardBrand(brand: STPCardBrand): number;
 
-	static customerWithStripeIDDefaultSourceSources(stripeID: string, defaultSource: STPSource, sources: NSArray<STPSource>): STPCustomer;
+		static maxLengthForCardBrand(brand: STPCardBrand): number;
 
-	static new(): STPCustomer; // inherited from NSObject
+		static new(): STPCardValidator; // inherited from NSObject
 
-	readonly defaultSource: STPSource;
+		static sanitizedNumericStringForString(string: string): string;
 
-	readonly sources: NSArray<STPSource>;
+		static stringIsNumeric(string: string): boolean;
 
-	readonly stripeID: string;
-}
+		static validationStateForCVCCardBrand(cvc: string, brand: STPCardBrand): STPCardValidationState;
 
-declare class STPCustomerDeserializer extends NSObject {
+		static validationStateForCard(card: STPCardParams): STPCardValidationState;
 
-	static alloc(): STPCustomerDeserializer; // inherited from NSObject
+		static validationStateForCardInCurrentYearCurrentMonth(card: STPCardParams, currentYear: number, currentMonth: number): STPCardValidationState;
 
-	static new(): STPCustomerDeserializer; // inherited from NSObject
+		static validationStateForExpirationMonth(expirationMonth: string): STPCardValidationState;
 
-	readonly customer: STPCustomer;
+		static validationStateForExpirationYearInMonth(expirationYear: string, expirationMonth: string): STPCardValidationState;
 
-	readonly error: NSError;
+		static validationStateForExpirationYearInMonthInCurrentYearCurrentMonth(expirationYear: string, expirationMonth: string, currentYear: number, currentMonth: number): STPCardValidationState;
 
-	constructor(o: { data: NSData; urlResponse: NSURLResponse; error: NSError; });
+		static validationStateForNumberValidatingCardBrand(cardNumber: string, validatingCardBrand: boolean): STPCardValidationState;
+	}
 
-	constructor(o: { JSONResponse: any; });
+	declare class STPCoreScrollViewController extends STPCoreViewController {
 
-	initWithDataUrlResponseError(data: NSData, urlResponse: NSURLResponse, error: NSError): this;
+		static alloc(): STPCoreScrollViewController; // inherited from NSObject
 
-	initWithJSONResponse(json: any): this;
-}
+		static new(): STPCoreScrollViewController; // inherited from NSObject
+	}
 
-declare const enum STPErrorCode {
+	declare class STPCoreTableViewController extends STPCoreScrollViewController {
 
-	ConnectionError = 40,
+		static alloc(): STPCoreTableViewController; // inherited from NSObject
 
-	InvalidRequestError = 50,
+		static new(): STPCoreTableViewController; // inherited from NSObject
+	}
 
-	APIError = 60,
+	declare class STPCoreViewController extends UIViewController {
 
-	CardError = 70,
+		static alloc(): STPCoreViewController; // inherited from NSObject
 
-	CancellationError = 80,
+		static new(): STPCoreViewController; // inherited from NSObject
 
-	CheckoutUnknownError = 5000,
+		constructor(o: { theme: STPTheme; });
 
-	CheckoutTooManyAttemptsError = 5001
-}
+		initWithTheme(theme: STPTheme): this;
+	}
 
-declare var STPErrorMessageKey: string;
+	declare class STPCustomer extends NSObject implements STPAPIResponseDecodable {
 
-declare var STPErrorParameterKey: string;
+		static alloc(): STPCustomer; // inherited from NSObject
 
-declare var STPExpiredCard: string;
+		static customerWithStripeIDDefaultSourceSources(stripeID: string, defaultSource: STPSourceProtocol, sources: NSArray<STPSourceProtocol>): STPCustomer;
 
-interface STPFormEncodable extends NSObjectProtocol {
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPCustomer;
 
-	additionalAPIParameters: NSDictionary<any, any>;
-}
-declare var STPFormEncodable: {
+		static new(): STPCustomer; // inherited from NSObject
 
-	prototype: STPFormEncodable;
+		static requiredFields(): NSArray<any>;
 
-	propertyNamesToFormFieldNamesMapping(): NSDictionary<any, any>;
+		readonly defaultSource: STPSourceProtocol;
 
-	rootObjectName(): string;
-};
+		readonly shippingAddress: STPAddress;
 
-declare class STPImageLibrary extends NSObject {
+		readonly sources: NSArray<STPSourceProtocol>;
 
-	static alloc(): STPImageLibrary; // inherited from NSObject
+		readonly stripeID: string;
 
-	static amexCardImage(): UIImage;
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
 
-	static applePayCardImage(): UIImage;
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	static brandImageForCardBrand(brand: STPCardBrand): UIImage;
+		readonly description: string; // inherited from NSObjectProtocol
 
-	static cvcImageForCardBrand(brand: STPCardBrand): UIImage;
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	static dinersClubCardImage(): UIImage;
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	static discoverCardImage(): UIImage;
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	static jcbCardImage(): UIImage;
+		readonly  // inherited from NSObjectProtocol
 
-	static masterCardCardImage(): UIImage;
+		class(): typeof NSObject;
 
-	static new(): STPImageLibrary; // inherited from NSObject
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	static templatedBrandImageForCardBrand(brand: STPCardBrand): UIImage;
+		isEqual(object: any): boolean;
 
-	static unknownCardCardImage(): UIImage;
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	static visaCardImage(): UIImage;
-}
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-declare var STPIncorrectCVC: string;
+		performSelector(aSelector: string): any;
 
-declare var STPIncorrectNumber: string;
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-declare var STPInvalidCVC: string;
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-declare var STPInvalidExpMonth: string;
+		respondsToSelector(aSelector: string): boolean;
 
-declare var STPInvalidExpYear: string;
+		retainCount(): number;
 
-declare var STPInvalidNumber: string;
+		self(): this;
+	}
 
-declare class STPPaymentActivityIndicatorView extends UIView {
+	declare class STPCustomerContext extends NSObject implements STPBackendAPIAdapter {
 
-	static alloc(): STPPaymentActivityIndicatorView; // inherited from NSObject
+		static alloc(): STPCustomerContext; // inherited from NSObject
 
-	static appearance(): STPPaymentActivityIndicatorView; // inherited from UIAppearance
+		static new(): STPCustomerContext; // inherited from NSObject
 
-	static appearanceForTraitCollection(trait: UITraitCollection): STPPaymentActivityIndicatorView; // inherited from UIAppearance
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STPPaymentActivityIndicatorView; // inherited from UIAppearance
+		readonly description: string; // inherited from NSObjectProtocol
 
-	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject>): STPPaymentActivityIndicatorView; // inherited from UIAppearance
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STPPaymentActivityIndicatorView; // inherited from UIAppearance
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject>): STPPaymentActivityIndicatorView; // inherited from UIAppearance
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	static new(): STPPaymentActivityIndicatorView; // inherited from NSObject
+		readonly  // inherited from NSObjectProtocol
 
-	animating: boolean;
+		constructor(o: { keyProvider: STPEphemeralKeyProvider; });
 
-	hidesWhenStopped: boolean;
+		attachSourceToCustomerCompletion(source: STPSourceProtocol, completion: (p1: NSError) => void): void;
 
-	setAnimatingAnimated(animating: boolean, animated: boolean): void;
-}
+		class(): typeof NSObject;
 
-declare class STPPaymentCardTextField extends UIControl implements UIKeyInput {
+		clearCachedCustomer(): void;
 
-	static alloc(): STPPaymentCardTextField; // inherited from NSObject
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	static appearance(): STPPaymentCardTextField; // inherited from UIAppearance
+		initWithKeyProvider(keyProvider: STPEphemeralKeyProvider): this;
 
-	static appearanceForTraitCollection(trait: UITraitCollection): STPPaymentCardTextField; // inherited from UIAppearance
+		isEqual(object: any): boolean;
 
-	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STPPaymentCardTextField; // inherited from UIAppearance
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject>): STPPaymentCardTextField; // inherited from UIAppearance
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STPPaymentCardTextField; // inherited from UIAppearance
+		performSelector(aSelector: string): any;
 
-	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject>): STPPaymentCardTextField; // inherited from UIAppearance
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	static brandImageForCardBrand(cardBrand: STPCardBrand): UIImage;
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	static cvcImageForCardBrand(cardBrand: STPCardBrand): UIImage;
+		respondsToSelector(aSelector: string): boolean;
 
-	static new(): STPPaymentCardTextField; // inherited from NSObject
+		retainCount(): number;
 
-	borderColor: UIColor;
+		retrieveCustomer(completion: (p1: STPCustomer, p2: NSError) => void): void;
 
-	borderWidth: number;
+		selectDefaultCustomerSourceCompletion(source: STPSourceProtocol, completion: (p1: NSError) => void): void;
 
-	readonly brandImage: UIImage;
+		self(): this;
+	}
 
-	card: STPCardParams;
+	declare class STPCustomerDeserializer extends NSObject {
 
-	readonly cardNumber: string;
+		static alloc(): STPCustomerDeserializer; // inherited from NSObject
 
-	cardParams: STPCardParams;
+		static new(): STPCustomerDeserializer; // inherited from NSObject
 
-	cornerRadius: number;
+		readonly customer: STPCustomer;
 
-	cursorColor: UIColor;
+		readonly error: NSError;
 
-	readonly cvc: string;
+		constructor(o: { data: NSData; urlResponse: NSURLResponse; error: NSError; });
 
-	cvcPlaceholder: string;
+		constructor(o: { JSONResponse: any; });
 
-	delegate: STPPaymentCardTextFieldDelegate;
+		initWithDataUrlResponseError(data: NSData, urlResponse: NSURLResponse, error: NSError): this;
 
-	readonly expirationMonth: number;
+		initWithJSONResponse(json: any): this;
+	}
 
-	expirationPlaceholder: string;
+	interface STPEphemeralKeyProvider extends NSObjectProtocol {
 
-	readonly expirationYear: number;
+		createCustomerKeyWithAPIVersionCompletion(apiVersion: string, completion: (p1: NSDictionary<any, any>, p2: NSError) => void): void;
+	}
+	declare var STPEphemeralKeyProvider: {
 
-	font: UIFont;
+		prototype: STPEphemeralKeyProvider;
+	};
 
-	readonly formattedExpirationMonth: string;
+	declare const enum STPErrorCode {
 
-	readonly formattedExpirationYear: string;
+		ConnectionError = 40,
 
-	inputAccessoryView: UIView;
+		InvalidRequestError = 50,
 
-	readonly isValid: boolean;
+		APIError = 60,
 
-	numberPlaceholder: string;
+		CardError = 70,
 
-	placeholderColor: UIColor;
+		CancellationError = 80,
 
-	textColor: UIColor;
+		EphemeralKeyDecodingError = 1000
+	}
 
-	textErrorColor: UIColor;
+	declare var STPErrorMessageKey: string;
 
-	readonly valid: boolean;
+	declare var STPErrorParameterKey: string;
 
-	autocapitalizationType: UITextAutocapitalizationType; // inherited from UITextInputTraits
+	declare var STPExpiredCard: string;
 
-	autocorrectionType: UITextAutocorrectionType; // inherited from UITextInputTraits
+	declare class STPFile extends NSObject implements STPAPIResponseDecodable {
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+		static alloc(): STPFile; // inherited from NSObject
 
-	readonly description: string; // inherited from NSObjectProtocol
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPFile;
 
-	enablesReturnKeyAutomatically: boolean; // inherited from UITextInputTraits
+		static new(): STPFile; // inherited from NSObject
 
-	readonly hasText: boolean; // inherited from UIKeyInput
+		static requiredFields(): NSArray<any>;
 
-	readonly hash: number; // inherited from NSObjectProtocol
+		static stringFromPurpose(purpose: STPFilePurpose): string;
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+		readonly created: Date;
 
-	keyboardAppearance: UIKeyboardAppearance; // inherited from UITextInputTraits
+		readonly fileId: string;
 
-	keyboardType: UIKeyboardType; // inherited from UITextInputTraits
+		readonly purpose: STPFilePurpose;
 
-	returnKeyType: UIReturnKeyType; // inherited from UITextInputTraits
+		readonly size: number;
 
-	secureTextEntry: boolean; // inherited from UITextInputTraits
+		readonly type: string;
 
-	spellCheckingType: UITextSpellCheckingType; // inherited from UITextInputTraits
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	textContentType: string; // inherited from UITextInputTraits
+		readonly description: string; // inherited from NSObjectProtocol
 
-	readonly  // inherited from NSObjectProtocol
+		readonly hash: number; // inherited from NSObjectProtocol
 
-	brandImageRectForBounds(bounds: CGRect): CGRect;
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	class(): typeof NSObject;
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	clear(): void;
+		readonly  // inherited from NSObjectProtocol
 
-	commonInit(): void;
+		class(): typeof NSObject;
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	cvcFieldRectForBounds(bounds: CGRect): CGRect;
+		isEqual(object: any): boolean;
 
-	deleteBackward(): void;
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	expirationFieldRectForBounds(bounds: CGRect): CGRect;
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	fieldsRectForBounds(bounds: CGRect): CGRect;
+		performSelector(aSelector: string): any;
 
-	insertText(text: string): void;
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	isEqual(object: any): boolean;
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+		respondsToSelector(aSelector: string): boolean;
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+		retainCount(): number;
 
-	numberFieldRectForBounds(bounds: CGRect): CGRect;
+		self(): this;
+	}
 
-	performSelector(aSelector: string): any;
+	declare const enum STPFilePurpose {
 
-	performSelectorWithObject(aSelector: string, object: any): any;
+		IdentityDocument = 0,
 
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+		DisputeEvidence = 1,
 
-	respondsToSelector(aSelector: string): boolean;
+		Unknown = 2
+	}
 
-	retainCount(): number;
+	interface STPFormEncodable extends NSObjectProtocol {
 
-	self(): this;
-}
+		additionalAPIParameters: NSDictionary<any, any>;
+	}
+	declare var STPFormEncodable: {
 
-interface STPPaymentCardTextFieldDelegate extends NSObjectProtocol {
+		prototype: STPFormEncodable;
 
-	paymentCardTextFieldDidBeginEditingCVC?(textField: STPPaymentCardTextField): void;
+		propertyNamesToFormFieldNamesMapping(): NSDictionary<any, any>;
 
-	paymentCardTextFieldDidBeginEditingExpiration?(textField: STPPaymentCardTextField): void;
+		rootObjectName(): string;
+	};
 
-	paymentCardTextFieldDidBeginEditingNumber?(textField: STPPaymentCardTextField): void;
+	declare class STPImageLibrary extends NSObject {
 
-	paymentCardTextFieldDidChange?(textField: STPPaymentCardTextField): void;
+		static alloc(): STPImageLibrary; // inherited from NSObject
 
-	paymentCardTextFieldDidEndEditingCVC?(textField: STPPaymentCardTextField): void;
+		static amexCardImage(): UIImage;
 
-	paymentCardTextFieldDidEndEditingExpiration?(textField: STPPaymentCardTextField): void;
+		static applePayCardImage(): UIImage;
 
-	paymentCardTextFieldDidEndEditingNumber?(textField: STPPaymentCardTextField): void;
-}
-declare var STPPaymentCardTextFieldDelegate: {
+		static brandImageForCardBrand(brand: STPCardBrand): UIImage;
 
-	prototype: STPPaymentCardTextFieldDelegate;
-};
+		static cvcImageForCardBrand(brand: STPCardBrand): UIImage;
 
-declare class STPPaymentConfiguration extends NSObject implements NSCopying {
+		static dinersClubCardImage(): UIImage;
 
-	static alloc(): STPPaymentConfiguration; // inherited from NSObject
+		static discoverCardImage(): UIImage;
 
-	static new(): STPPaymentConfiguration; // inherited from NSObject
+		static errorImageForCardBrand(brand: STPCardBrand): UIImage;
 
-	static sharedConfiguration(): STPPaymentConfiguration;
+		static jcbCardImage(): UIImage;
 
-	additionalPaymentMethods: STPPaymentMethodType;
+		static masterCardCardImage(): UIImage;
 
-	appleMerchantIdentifier: string;
+		static new(): STPImageLibrary; // inherited from NSObject
 
-	companyName: string;
+		static templatedBrandImageForCardBrand(brand: STPCardBrand): UIImage;
 
-	publishableKey: string;
+		static unknownCardCardImage(): UIImage;
 
-	requiredBillingAddressFields: STPBillingAddressFields;
+		static visaCardImage(): UIImage;
+	}
 
-	requiredShippingAddressFields: PKAddressField;
+	declare var STPIncorrectCVC: string;
 
-	shippingType: STPShippingType;
+	declare var STPIncorrectNumber: string;
 
-	smsAutofillDisabled: boolean;
+	declare var STPInvalidCVC: string;
 
-	copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
-}
+	declare var STPInvalidExpMonth: string;
 
-declare class STPPaymentContext extends NSObject {
+	declare var STPInvalidExpYear: string;
 
-	static alloc(): STPPaymentContext; // inherited from NSObject
+	declare var STPInvalidNumber: string;
 
-	static new(): STPPaymentContext; // inherited from NSObject
+	declare class STPPaymentActivityIndicatorView extends UIView {
 
-	readonly apiAdapter: STPBackendAPIAdapter;
+		static alloc(): STPPaymentActivityIndicatorView; // inherited from NSObject
 
-	readonly configuration: STPPaymentConfiguration;
+		static appearance(): STPPaymentActivityIndicatorView; // inherited from UIAppearance
 
-	delegate: STPPaymentContextDelegate;
+		static appearanceForTraitCollection(trait: UITraitCollection): STPPaymentActivityIndicatorView; // inherited from UIAppearance
 
-	hostViewController: UIViewController;
+		static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STPPaymentActivityIndicatorView; // inherited from UIAppearance
 
-	readonly loading: boolean;
+		static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject>): STPPaymentActivityIndicatorView; // inherited from UIAppearance
 
-	modalPresentationStyle: UIModalPresentationStyle;
+		static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STPPaymentActivityIndicatorView; // inherited from UIAppearance
 
-	paymentAmount: number;
+		static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject>): STPPaymentActivityIndicatorView; // inherited from UIAppearance
 
-	paymentCurrency: string;
+		static new(): STPPaymentActivityIndicatorView; // inherited from NSObject
 
-	readonly paymentMethods: NSArray<STPPaymentMethod>;
+		animating: boolean;
 
-	paymentSummaryItems: NSArray<PKPaymentSummaryItem>;
+		hidesWhenStopped: boolean;
 
-	prefilledInformation: STPUserInformation;
+		setAnimatingAnimated(animating: boolean, animated: boolean): void;
+	}
 
-	readonly selectedPaymentMethod: STPPaymentMethod;
+	declare class STPPaymentCardTextField extends UIControl implements UIKeyInput {
 
-	readonly selectedShippingMethod: PKShippingMethod;
+		static alloc(): STPPaymentCardTextField; // inherited from NSObject
 
-	readonly shippingAddress: STPAddress;
+		static appearance(): STPPaymentCardTextField; // inherited from UIAppearance
 
-	readonly shippingMethods: NSArray<PKShippingMethod>;
+		static appearanceForTraitCollection(trait: UITraitCollection): STPPaymentCardTextField; // inherited from UIAppearance
 
-	readonly theme: STPTheme;
+		static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STPPaymentCardTextField; // inherited from UIAppearance
 
-	constructor(o: { APIAdapter: STPBackendAPIAdapter; });
+		static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject>): STPPaymentCardTextField; // inherited from UIAppearance
 
-	constructor(o: { APIAdapter: STPBackendAPIAdapter; configuration: STPPaymentConfiguration; theme: STPTheme; });
+		static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STPPaymentCardTextField; // inherited from UIAppearance
 
-	initWithAPIAdapter(apiAdapter: STPBackendAPIAdapter): this;
+		static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject>): STPPaymentCardTextField; // inherited from UIAppearance
 
-	initWithAPIAdapterConfigurationTheme(apiAdapter: STPBackendAPIAdapter, configuration: STPPaymentConfiguration, theme: STPTheme): this;
+		static brandImageForCardBrand(cardBrand: STPCardBrand): UIImage;
 
-	presentPaymentMethodsViewController(): void;
+		static cvcImageForCardBrand(cardBrand: STPCardBrand): UIImage;
 
-	presentShippingViewController(): void;
+		static errorImageForCardBrand(cardBrand: STPCardBrand): UIImage;
 
-	pushPaymentMethodsViewController(): void;
+		static new(): STPPaymentCardTextField; // inherited from NSObject
 
-	pushShippingViewController(): void;
+		borderColor: UIColor;
 
-	requestPayment(): void;
+		borderWidth: number;
 
-	retryLoading(): void;
-}
+		readonly brandImage: UIImage;
 
-interface STPPaymentContextDelegate extends NSObjectProtocol {
+		readonly cardNumber: string;
 
-	paymentContextDidChange(paymentContext: STPPaymentContext): void;
+		cardParams: STPCardParams;
 
-	paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void;
+		cornerRadius: number;
 
-	paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void;
+		countryCode: string;
 
-	paymentContextDidFinishWithStatusError(paymentContext: STPPaymentContext, status: STPPaymentStatus, error: NSError): void;
+		cursorColor: UIColor;
 
-	paymentContextDidUpdateShippingAddressCompletion?(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void;
-}
-declare var STPPaymentContextDelegate: {
+		readonly cvc: string;
 
-	prototype: STPPaymentContextDelegate;
-};
+		cvcPlaceholder: string;
 
-interface STPPaymentMethod extends NSObjectProtocol {
+		delegate: STPPaymentCardTextFieldDelegate;
 
-	image: UIImage;
+		readonly expirationMonth: number;
 
-	label: string;
+		expirationPlaceholder: string;
 
-	templateImage: UIImage;
-}
-declare var STPPaymentMethod: {
+		readonly expirationYear: number;
 
-	prototype: STPPaymentMethod;
-};
+		font: UIFont;
 
-declare const enum STPPaymentMethodType {
+		readonly formattedExpirationMonth: string;
 
-	None = 0,
+		readonly formattedExpirationYear: string;
 
-	ApplePay = 1,
+		inputAccessoryView: UIView;
 
-	All = 1
-}
+		inputView: UIView;
 
-declare class STPPaymentMethodsViewController extends UIViewController {
+		readonly isValid: boolean;
 
-	static alloc(): STPPaymentMethodsViewController; // inherited from NSObject
+		numberPlaceholder: string;
 
-	static new(): STPPaymentMethodsViewController; // inherited from NSObject
+		placeholderColor: UIColor;
 
-	readonly delegate: STPPaymentMethodsViewControllerDelegate;
+		readonly postalCode: string;
 
-	prefilledInformation: STPUserInformation;
+		postalCodeEntryEnabled: boolean;
 
-	constructor(o: { configuration: STPPaymentConfiguration; theme: STPTheme; apiAdapter: STPBackendAPIAdapter; delegate: STPPaymentMethodsViewControllerDelegate; });
+		postalCodePlaceholder: string;
 
-	constructor(o: { paymentContext: STPPaymentContext; });
+		textColor: UIColor;
 
-	dismissWithCompletion(completion: () => void): void;
+		textErrorColor: UIColor;
 
-	initWithConfigurationThemeApiAdapterDelegate(configuration: STPPaymentConfiguration, theme: STPTheme, apiAdapter: STPBackendAPIAdapter, delegate: STPPaymentMethodsViewControllerDelegate): this;
+		autocapitalizationType: UITextAutocapitalizationType; // inherited from UITextInputTraits
 
-	initWithPaymentContext(paymentContext: STPPaymentContext): this;
-}
+		autocorrectionType: UITextAutocorrectionType; // inherited from UITextInputTraits
 
-interface STPPaymentMethodsViewControllerDelegate extends NSObjectProtocol {
+		readonly debugDescription: string; // inherited from NSObjectProtocol
 
-	paymentMethodsViewControllerDidFailToLoadWithError(paymentMethodsViewController: STPPaymentMethodsViewController, error: NSError): void;
+		readonly description: string; // inherited from NSObjectProtocol
 
-	paymentMethodsViewControllerDidFinish(paymentMethodsViewController: STPPaymentMethodsViewController): void;
+		enablesReturnKeyAutomatically: boolean; // inherited from UITextInputTraits
 
-	paymentMethodsViewControllerDidSelectPaymentMethod(paymentMethodsViewController: STPPaymentMethodsViewController, paymentMethod: STPPaymentMethod): void;
-}
-declare var STPPaymentMethodsViewControllerDelegate: {
+		readonly hasText: boolean; // inherited from UIKeyInput
 
-	prototype: STPPaymentMethodsViewControllerDelegate;
-};
+		readonly hash: number; // inherited from NSObjectProtocol
 
-declare class STPPaymentResult extends NSObject {
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
 
-	static alloc(): STPPaymentResult; // inherited from NSObject
+		keyboardAppearance: UIKeyboardAppearance; // inherited from UITextInputTraits
 
-	static new(): STPPaymentResult; // inherited from NSObject
+		keyboardType: UIKeyboardType; // inherited from UITextInputTraits
 
-	readonly source: STPSource;
+		returnKeyType: UIReturnKeyType; // inherited from UITextInputTraits
 
-	constructor(o: { source: STPSource; });
+		secureTextEntry: boolean; // inherited from UITextInputTraits
 
-	initWithSource(source: STPSource): this;
-}
+		smartDashesType: UITextSmartDashesType; // inherited from UITextInputTraits
 
-declare const enum STPPaymentStatus {
+		smartInsertDeleteType: UITextSmartInsertDeleteType; // inherited from UITextInputTraits
 
-	Success = 0,
+		smartQuotesType: UITextSmartQuotesType; // inherited from UITextInputTraits
 
-	Error = 1,
+		spellCheckingType: UITextSpellCheckingType; // inherited from UITextInputTraits
 
-	UserCancellation = 2
-}
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-declare var STPProcessingError: string;
+		textContentType: string; // inherited from UITextInputTraits
 
-declare class STPShippingAddressViewController extends UIViewController {
+		readonly  // inherited from NSObjectProtocol
 
-	static alloc(): STPShippingAddressViewController; // inherited from NSObject
+		brandImageRectForBounds(bounds: CGRect): CGRect;
 
-	static new(): STPShippingAddressViewController; // inherited from NSObject
+		class(): typeof NSObject;
 
-	delegate: STPShippingAddressViewControllerDelegate;
+		clear(): void;
 
-	constructor(o: { configuration: STPPaymentConfiguration; theme: STPTheme; currency: string; shippingAddress: STPAddress; selectedShippingMethod: PKShippingMethod; prefilledInformation: STPUserInformation; });
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
 
-	constructor(o: { paymentContext: STPPaymentContext; });
+		deleteBackward(): void;
 
-	dismissWithCompletion(completion: () => void): void;
+		fieldsRectForBounds(bounds: CGRect): CGRect;
 
-	initWithConfigurationThemeCurrencyShippingAddressSelectedShippingMethodPrefilledInformation(configuration: STPPaymentConfiguration, theme: STPTheme, currency: string, shippingAddress: STPAddress, selectedShippingMethod: PKShippingMethod, prefilledInformation: STPUserInformation): this;
+		insertText(text: string): void;
 
-	initWithPaymentContext(paymentContext: STPPaymentContext): this;
-}
+		isEqual(object: any): boolean;
 
-interface STPShippingAddressViewControllerDelegate extends NSObjectProtocol {
+		isKindOfClass(aClass: typeof NSObject): boolean;
 
-	shippingAddressViewControllerDidCancel(addressViewController: STPShippingAddressViewController): void;
+		isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	shippingAddressViewControllerDidEnterAddressCompletion(addressViewController: STPShippingAddressViewController, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void;
+		performSelector(aSelector: string): any;
 
-	shippingAddressViewControllerDidFinishWithAddressShippingMethod(addressViewController: STPShippingAddressViewController, address: STPAddress, method: PKShippingMethod): void;
-}
-declare var STPShippingAddressViewControllerDelegate: {
+		performSelectorWithObject(aSelector: string, object: any): any;
 
-	prototype: STPShippingAddressViewControllerDelegate;
-};
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-declare const enum STPShippingStatus {
+		respondsToSelector(aSelector: string): boolean;
 
-	Valid = 0,
+		retainCount(): number;
 
-	Invalid = 1
-}
+		self(): this;
+	}
 
-declare const enum STPShippingType {
+	interface STPPaymentCardTextFieldDelegate extends NSObjectProtocol {
 
-	Shipping = 0,
+		paymentCardTextFieldDidBeginEditing?(textField: STPPaymentCardTextField): void;
 
-	Delivery = 1
-}
+		paymentCardTextFieldDidBeginEditingCVC?(textField: STPPaymentCardTextField): void;
 
-interface STPSource extends NSObjectProtocol {
+		paymentCardTextFieldDidBeginEditingExpiration?(textField: STPPaymentCardTextField): void;
 
-	stripeID: string;
-}
-declare var STPSource: {
+		paymentCardTextFieldDidBeginEditingNumber?(textField: STPPaymentCardTextField): void;
 
-	prototype: STPSource;
-};
+		paymentCardTextFieldDidBeginEditingPostalCode?(textField: STPPaymentCardTextField): void;
 
-declare class STPTheme extends NSObject implements NSCopying {
+		paymentCardTextFieldDidChange?(textField: STPPaymentCardTextField): void;
 
-	static alloc(): STPTheme; // inherited from NSObject
+		paymentCardTextFieldDidEndEditing?(textField: STPPaymentCardTextField): void;
 
-	static defaultTheme(): STPTheme;
+		paymentCardTextFieldDidEndEditingCVC?(textField: STPPaymentCardTextField): void;
 
-	static new(): STPTheme; // inherited from NSObject
+		paymentCardTextFieldDidEndEditingExpiration?(textField: STPPaymentCardTextField): void;
 
-	accentColor: UIColor;
+		paymentCardTextFieldDidEndEditingNumber?(textField: STPPaymentCardTextField): void;
 
-	barStyle: UIBarStyle;
+		paymentCardTextFieldDidEndEditingPostalCode?(textField: STPPaymentCardTextField): void;
+	}
+	declare var STPPaymentCardTextFieldDelegate: {
 
-	emphasisFont: UIFont;
+		prototype: STPPaymentCardTextFieldDelegate;
+	};
 
-	errorColor: UIColor;
+	declare class STPPaymentConfiguration extends NSObject implements NSCopying {
 
-	font: UIFont;
+		static alloc(): STPPaymentConfiguration; // inherited from NSObject
 
-	readonly largeFont: UIFont;
+		static new(): STPPaymentConfiguration; // inherited from NSObject
 
-	primaryBackgroundColor: UIColor;
+		static sharedConfiguration(): STPPaymentConfiguration;
 
-	primaryForegroundColor: UIColor;
+		additionalPaymentMethods: STPPaymentMethodType;
 
-	readonly quaternaryBackgroundColor: UIColor;
+		appleMerchantIdentifier: string;
 
-	secondaryBackgroundColor: UIColor;
+		canDeletePaymentMethods: boolean;
 
-	secondaryForegroundColor: UIColor;
+		companyName: string;
 
-	readonly smallFont: UIFont;
+		publishableKey: string;
 
-	readonly tertiaryBackgroundColor: UIColor;
+		requiredBillingAddressFields: STPBillingAddressFields;
 
-	readonly tertiaryForegroundColor: UIColor;
+		requiredShippingAddressFields: PKAddressField;
 
-	translucentNavigationBar: boolean;
+		shippingType: STPShippingType;
 
-	copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
-}
+		verifyPrefilledShippingAddress: boolean;
 
-declare class STPToken extends NSObject implements STPAPIResponseDecodable, STPSource {
+		copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+	}
 
-	static alloc(): STPToken; // inherited from NSObject
+	declare class STPPaymentContext extends NSObject {
 
-	static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPToken;
+		static alloc(): STPPaymentContext; // inherited from NSObject
 
-	static new(): STPToken; // inherited from NSObject
+		static new(): STPPaymentContext; // inherited from NSObject
 
-	static requiredFields(): NSArray<any>;
+		readonly apiAdapter: STPBackendAPIAdapter;
 
-	readonly bankAccount: STPBankAccount;
+		readonly configuration: STPPaymentConfiguration;
 
-	readonly card: STPCard;
+		delegate: STPPaymentContextDelegate;
 
-	readonly created: Date;
+		hostViewController: UIViewController;
 
-	readonly livemode: boolean;
+		readonly loading: boolean;
 
-	readonly tokenId: string;
+		modalPresentationStyle: UIModalPresentationStyle;
 
-	readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+		paymentAmount: number;
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+		paymentCountry: string;
 
-	readonly description: string; // inherited from NSObjectProtocol
+		paymentCurrency: string;
 
-	readonly hash: number; // inherited from NSObjectProtocol
+		readonly paymentMethods: NSArray<STPPaymentMethod>;
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+		paymentSummaryItems: NSArray<PKPaymentSummaryItem>;
 
-	readonly stripeID: string; // inherited from STPSource
+		prefilledInformation: STPUserInformation;
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+		readonly selectedPaymentMethod: STPPaymentMethod;
 
-	readonly  // inherited from NSObjectProtocol
+		readonly selectedShippingMethod: PKShippingMethod;
 
-	class(): typeof NSObject;
+		readonly shippingAddress: STPAddress;
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+		readonly shippingMethods: NSArray<PKShippingMethod>;
 
-	isEqual(object: any): boolean;
+		readonly theme: STPTheme;
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+		constructor(o: { APIAdapter: STPBackendAPIAdapter; });
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+		constructor(o: { APIAdapter: STPBackendAPIAdapter; configuration: STPPaymentConfiguration; theme: STPTheme; });
 
-	performSelector(aSelector: string): any;
+		constructor(o: { customerContext: STPCustomerContext; });
 
-	performSelectorWithObject(aSelector: string, object: any): any;
+		constructor(o: { customerContext: STPCustomerContext; configuration: STPPaymentConfiguration; theme: STPTheme; });
 
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+		initWithAPIAdapter(apiAdapter: STPBackendAPIAdapter): this;
 
-	respondsToSelector(aSelector: string): boolean;
+		initWithAPIAdapterConfigurationTheme(apiAdapter: STPBackendAPIAdapter, configuration: STPPaymentConfiguration, theme: STPTheme): this;
 
-	retainCount(): number;
+		initWithCustomerContext(customerContext: STPCustomerContext): this;
 
-	self(): this;
-}
+		initWithCustomerContextConfigurationTheme(customerContext: STPCustomerContext, configuration: STPPaymentConfiguration, theme: STPTheme): this;
 
-declare class STPUserInformation extends NSObject {
+		presentPaymentMethodsViewController(): void;
 
-	static alloc(): STPUserInformation; // inherited from NSObject
+		presentShippingViewController(): void;
 
-	static new(): STPUserInformation; // inherited from NSObject
+		pushPaymentMethodsViewController(): void;
 
-	email: string;
+		pushShippingViewController(): void;
 
-	phone: string;
-}
+		requestPayment(): void;
 
-declare class Stripe extends NSObject {
+		retryLoading(): void;
+	}
 
-	static alloc(): Stripe; // inherited from NSObject
+	interface STPPaymentContextDelegate extends NSObjectProtocol {
 
-	static canSubmitPaymentRequest(paymentRequest: PKPaymentRequest): boolean;
+		paymentContextDidChange(paymentContext: STPPaymentContext): void;
 
-	static createTokenWithBankAccountCompletion(bankAccount: STPBankAccount, handler: (p1: STPToken, p2: NSError) => void): void;
+		paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void;
 
-	static createTokenWithBankAccountPublishableKeyCompletion(bankAccount: STPBankAccount, publishableKey: string, handler: (p1: STPToken, p2: NSError) => void): void;
+		paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void;
 
-	static createTokenWithCardCompletion(card: STPCard, handler: (p1: STPToken, p2: NSError) => void): void;
+		paymentContextDidFinishWithStatusError(paymentContext: STPPaymentContext, status: STPPaymentStatus, error: NSError): void;
 
-	static createTokenWithCardPublishableKeyCompletion(card: STPCard, publishableKey: string, handler: (p1: STPToken, p2: NSError) => void): void;
+		paymentContextDidUpdateShippingAddressCompletion?(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void;
+	}
+	declare var STPPaymentContextDelegate: {
 
-	static createTokenWithPaymentCompletion(payment: PKPayment, handler: (p1: STPToken, p2: NSError) => void): void;
+		prototype: STPPaymentContextDelegate;
+	};
 
-	static defaultPublishableKey(): string;
+	interface STPPaymentMethod extends NSObjectProtocol {
 
-	static deviceSupportsApplePay(): boolean;
+		image: UIImage;
 
-	static disableAnalytics(): void;
+		label: string;
 
-	static new(): Stripe; // inherited from NSObject
+		templateImage: UIImage;
+	}
+	declare var STPPaymentMethod: {
 
-	static paymentRequestWithMerchantIdentifier(merchantIdentifier: string): PKPaymentRequest;
+		prototype: STPPaymentMethod;
+	};
 
-	static setDefaultPublishableKey(publishableKey: string): void;
-}
+	declare const enum STPPaymentMethodType {
 
-declare var StripeDomain: string;
+		None = 0,
 
-declare var StripeVersionNumber: number;
+		ApplePay = 1,
 
-declare var StripeVersionString: interop.Reference<number>;
+		All = 1
+	}
 
-declare function linkSTPAPIClientApplePayCategory(): void;
+	declare class STPPaymentMethodsViewController extends STPCoreViewController {
 
-declare function linkUINavigationBarThemeCategory(): void;
+		static alloc(): STPPaymentMethodsViewController; // inherited from NSObject
+
+		static new(): STPPaymentMethodsViewController; // inherited from NSObject
+
+		readonly delegate: STPPaymentMethodsViewControllerDelegate;
+
+		prefilledInformation: STPUserInformation;
+
+		constructor(o: { configuration: STPPaymentConfiguration; theme: STPTheme; apiAdapter: STPBackendAPIAdapter; delegate: STPPaymentMethodsViewControllerDelegate; });
+
+		constructor(o: { configuration: STPPaymentConfiguration; theme: STPTheme; customerContext: STPCustomerContext; delegate: STPPaymentMethodsViewControllerDelegate; });
+
+		constructor(o: { paymentContext: STPPaymentContext; });
+
+		dismissWithCompletion(completion: () => void): void;
+
+		initWithConfigurationThemeApiAdapterDelegate(configuration: STPPaymentConfiguration, theme: STPTheme, apiAdapter: STPBackendAPIAdapter, delegate: STPPaymentMethodsViewControllerDelegate): this;
+
+		initWithConfigurationThemeCustomerContextDelegate(configuration: STPPaymentConfiguration, theme: STPTheme, customerContext: STPCustomerContext, delegate: STPPaymentMethodsViewControllerDelegate): this;
+
+		initWithPaymentContext(paymentContext: STPPaymentContext): this;
+	}
+
+	interface STPPaymentMethodsViewControllerDelegate extends NSObjectProtocol {
+
+		paymentMethodsViewControllerDidCancel(paymentMethodsViewController: STPPaymentMethodsViewController): void;
+
+		paymentMethodsViewControllerDidFailToLoadWithError(paymentMethodsViewController: STPPaymentMethodsViewController, error: NSError): void;
+
+		paymentMethodsViewControllerDidFinish(paymentMethodsViewController: STPPaymentMethodsViewController): void;
+
+		paymentMethodsViewControllerDidSelectPaymentMethod?(paymentMethodsViewController: STPPaymentMethodsViewController, paymentMethod: STPPaymentMethod): void;
+	}
+	declare var STPPaymentMethodsViewControllerDelegate: {
+
+		prototype: STPPaymentMethodsViewControllerDelegate;
+	};
+
+	declare class STPPaymentResult extends NSObject {
+
+		static alloc(): STPPaymentResult; // inherited from NSObject
+
+		static new(): STPPaymentResult; // inherited from NSObject
+
+		readonly source: STPSourceProtocol;
+
+		constructor(o: { source: STPSourceProtocol; });
+
+		initWithSource(source: STPSourceProtocol): this;
+	}
+
+	declare const enum STPPaymentStatus {
+
+		Success = 0,
+
+		Error = 1,
+
+		UserCancellation = 2
+	}
+
+	declare var STPProcessingError: string;
+
+	declare class STPRedirectContext extends NSObject {
+
+		static alloc(): STPRedirectContext; // inherited from NSObject
+
+		static new(): STPRedirectContext; // inherited from NSObject
+
+		readonly state: STPRedirectContextState;
+
+		constructor(o: { source: STPSource; completion: (p1: string, p2: string, p3: NSError) => void; });
+
+		cancel(): void;
+
+		initWithSourceCompletion(source: STPSource, completion: (p1: string, p2: string, p3: NSError) => void): this;
+
+		startRedirectFlowFromViewController(presentingViewController: UIViewController): void;
+
+		startSafariAppRedirectFlow(): void;
+
+		startSafariViewControllerRedirectFlowFromViewController(presentingViewController: UIViewController): void;
+	}
+
+	declare const enum STPRedirectContextState {
+
+		NotStarted = 0,
+
+		InProgress = 1,
+
+		Cancelled = 2,
+
+		Completed = 3
+	}
+
+	declare class STPShippingAddressViewController extends STPCoreTableViewController {
+
+		static alloc(): STPShippingAddressViewController; // inherited from NSObject
+
+		static new(): STPShippingAddressViewController; // inherited from NSObject
+
+		delegate: STPShippingAddressViewControllerDelegate;
+
+		constructor(o: { configuration: STPPaymentConfiguration; theme: STPTheme; currency: string; shippingAddress: STPAddress; selectedShippingMethod: PKShippingMethod; prefilledInformation: STPUserInformation; });
+
+		constructor(o: { paymentContext: STPPaymentContext; });
+
+		dismissWithCompletion(completion: () => void): void;
+
+		initWithConfigurationThemeCurrencyShippingAddressSelectedShippingMethodPrefilledInformation(configuration: STPPaymentConfiguration, theme: STPTheme, currency: string, shippingAddress: STPAddress, selectedShippingMethod: PKShippingMethod, prefilledInformation: STPUserInformation): this;
+
+		initWithPaymentContext(paymentContext: STPPaymentContext): this;
+	}
+
+	interface STPShippingAddressViewControllerDelegate extends NSObjectProtocol {
+
+		shippingAddressViewControllerDidCancel(addressViewController: STPShippingAddressViewController): void;
+
+		shippingAddressViewControllerDidEnterAddressCompletion(addressViewController: STPShippingAddressViewController, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void;
+
+		shippingAddressViewControllerDidFinishWithAddressShippingMethod(addressViewController: STPShippingAddressViewController, address: STPAddress, method: PKShippingMethod): void;
+	}
+	declare var STPShippingAddressViewControllerDelegate: {
+
+		prototype: STPShippingAddressViewControllerDelegate;
+	};
+
+	declare const enum STPShippingStatus {
+
+		Valid = 0,
+
+		Invalid = 1
+	}
+
+	declare const enum STPShippingType {
+
+		Shipping = 0,
+
+		Delivery = 1
+	}
+
+	declare class STPSource extends NSObject implements STPAPIResponseDecodable, STPSourceProtocol {
+
+		static alloc(): STPSource; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPSource;
+
+		static new(): STPSource; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly amount: number;
+
+		readonly cardDetails: STPSourceCardDetails;
+
+		readonly clientSecret: string;
+
+		readonly created: Date;
+
+		readonly currency: string;
+
+		readonly details: NSDictionary<any, any>;
+
+		readonly flow: STPSourceFlow;
+
+		readonly livemode: boolean;
+
+		readonly metadata: NSDictionary<any, any>;
+
+		readonly owner: STPSourceOwner;
+
+		readonly receiver: STPSourceReceiver;
+
+		readonly redirect: STPSourceRedirect;
+
+		readonly sepaDebitDetails: STPSourceSEPADebitDetails;
+
+		readonly status: STPSourceStatus;
+
+		readonly type: STPSourceType;
+
+		readonly usage: STPSourceUsage;
+
+		readonly verification: STPSourceVerification;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly stripeID: string; // inherited from STPSourceProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare const enum STPSourceCard3DSecureStatus {
+
+		Required = 0,
+
+		Optional = 1,
+
+		NotSupported = 2,
+
+		Unknown = 3
+	}
+
+	declare class STPSourceCardDetails extends NSObject implements STPAPIResponseDecodable {
+
+		static alloc(): STPSourceCardDetails; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPSourceCardDetails;
+
+		static new(): STPSourceCardDetails; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly brand: STPCardBrand;
+
+		readonly country: string;
+
+		readonly expMonth: number;
+
+		readonly expYear: number;
+
+		readonly funding: STPCardFundingType;
+
+		readonly last4: string;
+
+		readonly threeDSecure: STPSourceCard3DSecureStatus;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare const enum STPSourceFlow {
+
+		None = 0,
+
+		Redirect = 1,
+
+		CodeVerification = 2,
+
+		Receiver = 3,
+
+		Unknown = 4
+	}
+
+	declare class STPSourceOwner extends NSObject implements STPAPIResponseDecodable {
+
+		static alloc(): STPSourceOwner; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPSourceOwner;
+
+		static new(): STPSourceOwner; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly address: STPAddress;
+
+		readonly email: string;
+
+		readonly name: string;
+
+		readonly phone: string;
+
+		readonly verifiedAddress: STPAddress;
+
+		readonly verifiedEmail: string;
+
+		readonly verifiedName: string;
+
+		readonly verifiedPhone: string;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare class STPSourceParams extends NSObject implements NSCopying, STPFormEncodable {
+
+		static alipayParamsWithAmountCurrencyReturnURL(amount: number, currency: string, returnURL: string): STPSourceParams;
+
+		static alloc(): STPSourceParams; // inherited from NSObject
+
+		static bancontactParamsWithAmountNameReturnURLStatementDescriptor(amount: number, name: string, returnURL: string, statementDescriptor: string): STPSourceParams;
+
+		static bitcoinParamsWithAmountCurrencyEmail(amount: number, currency: string, email: string): STPSourceParams;
+
+		static cardParamsWithCard(card: STPCardParams): STPSourceParams;
+
+		static giropayParamsWithAmountNameReturnURLStatementDescriptor(amount: number, name: string, returnURL: string, statementDescriptor: string): STPSourceParams;
+
+		static idealParamsWithAmountNameReturnURLStatementDescriptorBank(amount: number, name: string, returnURL: string, statementDescriptor: string, bank: string): STPSourceParams;
+
+		static new(): STPSourceParams; // inherited from NSObject
+
+		static propertyNamesToFormFieldNamesMapping(): NSDictionary<any, any>;
+
+		static rootObjectName(): string;
+
+		static sepaDebitParamsWithNameIbanAddressLine1CityPostalCodeCountry(name: string, iban: string, addressLine1: string, city: string, postalCode: string, country: string): STPSourceParams;
+
+		static sofortParamsWithAmountReturnURLCountryStatementDescriptor(amount: number, returnURL: string, country: string, statementDescriptor: string): STPSourceParams;
+
+		static threeDSecureParamsWithAmountCurrencyReturnURLCard(amount: number, currency: string, returnURL: string, card: string): STPSourceParams;
+
+		amount: number;
+
+		currency: string;
+
+		flow: STPSourceFlow;
+
+		metadata: NSDictionary<any, any>;
+
+		owner: NSDictionary<any, any>;
+
+		rawTypeString: string;
+
+		redirect: NSDictionary<any, any>;
+
+		token: string;
+
+		type: STPSourceType;
+
+		usage: STPSourceUsage;
+
+		additionalAPIParameters: NSDictionary<any, any>; // inherited from STPFormEncodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	interface STPSourceProtocol extends NSObjectProtocol {
+
+		stripeID: string;
+	}
+	declare var STPSourceProtocol: {
+
+		prototype: STPSourceProtocol;
+	};
+
+	declare class STPSourceReceiver extends NSObject implements STPAPIResponseDecodable {
+
+		static alloc(): STPSourceReceiver; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPSourceReceiver;
+
+		static new(): STPSourceReceiver; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly address: string;
+
+		readonly amountCharged: number;
+
+		readonly amountReceived: number;
+
+		readonly amountReturned: number;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare class STPSourceRedirect extends NSObject implements STPAPIResponseDecodable {
+
+		static alloc(): STPSourceRedirect; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPSourceRedirect;
+
+		static new(): STPSourceRedirect; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly returnURL: NSURL;
+
+		readonly status: STPSourceRedirectStatus;
+
+		readonly url: NSURL;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare const enum STPSourceRedirectStatus {
+
+		Pending = 0,
+
+		Succeeded = 1,
+
+		Failed = 2,
+
+		Unknown = 3
+	}
+
+	declare class STPSourceSEPADebitDetails extends NSObject implements STPAPIResponseDecodable {
+
+		static alloc(): STPSourceSEPADebitDetails; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPSourceSEPADebitDetails;
+
+		static new(): STPSourceSEPADebitDetails; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly bankCode: string;
+
+		readonly country: string;
+
+		readonly fingerprint: string;
+
+		readonly last4: string;
+
+		readonly mandateReference: string;
+
+		readonly mandateURL: NSURL;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare const enum STPSourceStatus {
+
+		Pending = 0,
+
+		Chargeable = 1,
+
+		Consumed = 2,
+
+		Canceled = 3,
+
+		Failed = 4,
+
+		Unknown = 5
+	}
+
+	declare const enum STPSourceType {
+
+		Bancontact = 0,
+
+		Bitcoin = 1,
+
+		Card = 2,
+
+		Giropay = 3,
+
+		IDEAL = 4,
+
+		SEPADebit = 5,
+
+		Sofort = 6,
+
+		ThreeDSecure = 7,
+
+		Alipay = 8,
+
+		Unknown = 9
+	}
+
+	declare const enum STPSourceUsage {
+
+		Reusable = 0,
+
+		SingleUse = 1,
+
+		Unknown = 2
+	}
+
+	declare class STPSourceVerification extends NSObject implements STPAPIResponseDecodable {
+
+		static alloc(): STPSourceVerification; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPSourceVerification;
+
+		static new(): STPSourceVerification; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly attemptsRemaining: number;
+
+		readonly status: STPSourceVerificationStatus;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare const enum STPSourceVerificationStatus {
+
+		Pending = 0,
+
+		Succeeded = 1,
+
+		Failed = 2,
+
+		Unknown = 3
+	}
+
+	declare var STPStripeErrorCodeKey: string;
+
+	declare var STPStripeErrorTypeKey: string;
+
+	declare class STPTheme extends NSObject implements NSCopying {
+
+		static alloc(): STPTheme; // inherited from NSObject
+
+		static defaultTheme(): STPTheme;
+
+		static new(): STPTheme; // inherited from NSObject
+
+		accentColor: UIColor;
+
+		barStyle: UIBarStyle;
+
+		emphasisFont: UIFont;
+
+		errorColor: UIColor;
+
+		font: UIFont;
+
+		readonly largeFont: UIFont;
+
+		primaryBackgroundColor: UIColor;
+
+		primaryForegroundColor: UIColor;
+
+		readonly quaternaryBackgroundColor: UIColor;
+
+		secondaryBackgroundColor: UIColor;
+
+		secondaryForegroundColor: UIColor;
+
+		readonly smallFont: UIFont;
+
+		readonly tertiaryBackgroundColor: UIColor;
+
+		readonly tertiaryForegroundColor: UIColor;
+
+		translucentNavigationBar: boolean;
+
+		copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+	}
+
+	declare class STPToken extends NSObject implements STPAPIResponseDecodable, STPSourceProtocol {
+
+		static alloc(): STPToken; // inherited from NSObject
+
+		static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPToken;
+
+		static new(): STPToken; // inherited from NSObject
+
+		static requiredFields(): NSArray<any>;
+
+		readonly bankAccount: STPBankAccount;
+
+		readonly card: STPCard;
+
+		readonly created: Date;
+
+		readonly livemode: boolean;
+
+		readonly tokenId: string;
+
+		readonly allResponseFields: NSDictionary<any, any>; // inherited from STPAPIResponseDecodable
+
+		readonly debugDescription: string; // inherited from NSObjectProtocol
+
+		readonly description: string; // inherited from NSObjectProtocol
+
+		readonly hash: number; // inherited from NSObjectProtocol
+
+		readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+		readonly stripeID: string; // inherited from STPSourceProtocol
+
+		readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+		readonly  // inherited from NSObjectProtocol
+
+		class(): typeof NSObject;
+
+		conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+		isEqual(object: any): boolean;
+
+		isKindOfClass(aClass: typeof NSObject): boolean;
+
+		isMemberOfClass(aClass: typeof NSObject): boolean;
+
+		performSelector(aSelector: string): any;
+
+		performSelectorWithObject(aSelector: string, object: any): any;
+
+		performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+		respondsToSelector(aSelector: string): boolean;
+
+		retainCount(): number;
+
+		self(): this;
+	}
+
+	declare class STPUserInformation extends NSObject implements NSCopying {
+
+		static alloc(): STPUserInformation; // inherited from NSObject
+
+		static new(): STPUserInformation; // inherited from NSObject
+
+		billingAddress: STPAddress;
+
+		shippingAddress: STPAddress;
+
+		copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
+	}
+
+	declare class Stripe extends NSObject {
+
+		static alloc(): Stripe; // inherited from NSObject
+
+		static canSubmitPaymentRequest(paymentRequest: PKPaymentRequest): boolean;
+
+		static defaultPublishableKey(): string;
+
+		static deviceSupportsApplePay(): boolean;
+
+		static handleStripeURLCallbackWithURL(url: NSURL): boolean;
+
+		static new(): Stripe; // inherited from NSObject
+
+		static paymentRequestWithMerchantIdentifier(merchantIdentifier: string): PKPaymentRequest;
+
+		static paymentRequestWithMerchantIdentifierCountryCurrency(merchantIdentifier: string, countryCode: string, currencyCode: string): PKPaymentRequest;
+
+		static setDefaultPublishableKey(publishableKey: string): void;
+	}
+
+	declare var StripeDomain: string;
+
+	declare var StripeVersionNumber: number;
+
+	declare var StripeVersionString: interop.Reference<number>;
+
+	declare function linkNSErrorCategory(): void;
+
+	declare function linkSTPAPIClientApplePayCategory(): void;
+
+	declare function linkUINavigationBarThemeCategory(): void;

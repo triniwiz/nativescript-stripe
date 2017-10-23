@@ -1,12 +1,11 @@
-<Page backgroundColor="red" xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page" xmlns:stripe="nativescript-stripe">
-  
-    <Page.actionBar>
-        <ActionBar title="My App" icon="" class="action-bar">
-        </ActionBar>
-    </Page.actionBar>
-<StackLayout>
-<stripe:CreditCardView/>
-<stripe:CreditCardView/>
-<stripe:CreditCardView/>
-</StackLayout>
+<Page
+    xmlns="http://schemas.nativescript.org/tns.xsd"
+    xmlns:stripe="nativescript-stripe"
+    navigatingTo="navigatingTo"
+    class="page">
+    <StackLayout>
+        <stripe:CreditCardView/>
+        <stripe:CreditCardView/>
+        <stripe:CreditCardView/>
+    </StackLayout>
 </Page>

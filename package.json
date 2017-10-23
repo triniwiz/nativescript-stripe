@@ -1,17 +1,17 @@
 {
   "name": "nativescript-stripe",
-  "version": "3.0.0",
+  "version": "3.2.0",
   "description": "",
   "main": "stripe",
   "nativescript": {
     "platforms": {
-      "android": "3.0.0",
-      "ios": "3.0.0"
+      "android": "3.2.0",
+      "ios": "3.2.0"
     }
   },
   "scripts": {
     "build": "tsc",
-    "demo.ios": "npm run preparedemo && cd demo && tns emulate ios",
+    "demo.ios": "npm run preparedemo && cd demo && tns debug ios",
     "demo.ios.device": "npm run preparedemo && cd demo && tns run ios",
     "demo.android": "npm run preparedemo && cd demo && tns run android",
     "test.ios": "cd demo && tns test ios --emulator",
@@ -41,22 +41,22 @@
   "homepage": "https://github.com/triniwiz/nativescript-stripe",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "tns-core-modules": "^3.0.0",
-    "tns-platform-declarations": "^3.0.0",
-    "typescript": "^2.2.2",
-    "@angular/compiler":"~4.0.0",
-    "@angular/core":"~4.0.0",
-    "@angular/common":"~4.0.0",
-    "@angular/platform-browser":"~4.0.0",
-    "@angular/forms":"~4.0.0",
-    "@angular/http":"~4.0.0",
-    "@angular/router":"~4.0.0",
-    "rxjs":"~5.0.0",
-    "zone.js":"^0.8.4",
-    "nativescript-angular": "^3.0.0"
+    "tns-core-modules": "^3.2.0",
+    "tns-platform-declarations": "^3.2.0",
+    "typescript": "^2.3.4",
+    "@angular/compiler": "~4.4.1",
+    "@angular/core": "~4.4.1",
+    "@angular/common": "~4.4.1",
+    "@angular/platform-browser": "~4.4.1",
+    "@angular/forms": "~4.4.1",
+    "@angular/http": "~4.4.1",
+    "@angular/router": "~4.4.1",
+    "rxjs": "~5.0.0",
+    "zone.js": "^0.8.4",
+    "nativescript-angular": "^4.4.1"
   },
   "dependencies": {},
   "peerDependencies": {
-    "tns-core-modules": "^3.0.0"
+    "tns-core-modules": "^3.2.0"
   }
 }
