@@ -1,6 +1,6 @@
 {
   "name": "nativescript-stripe",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "",
   "main": "stripe",
   "nativescript": {
@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -skipLibCheck",
     "demo.ios": "npm run preparedemo && cd demo && tns debug ios",
     "demo.ios.device": "npm run preparedemo && cd demo && tns run ios",
     "demo.android": "npm run preparedemo && cd demo && tns run android",
