@@ -41,6 +41,11 @@ app.on(app.launchEvent, (args) => {
 Place the following in your main.ts
 
 ```ts
+import { registerElement } from "nativescript-angular/element-registry";
+registerElement("CreditCardView", () => require("nativescript-stripe").CreditCardView);
+```
+
+```ts
 import * as app from 'application';
 import * as platform from "platform";
 declare const STPPaymentConfiguration;
