@@ -5,6 +5,7 @@
 !scripts/*.js
 !demo/karma.conf.js
 !demo/app/tests/*.js
+!src/objc!Stripe.d.ts
 **/lib
 **/node_modules
 demo/platforms
