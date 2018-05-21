@@ -1,4 +1,4 @@
-import * as utils from "utils/utils";
+import * as utils from "tns-core-modules/utils/utils";
 declare const com;
 export class Stripe {
     private _stripe: any /* com.stripe.android.Stripe */;
