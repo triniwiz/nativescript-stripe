@@ -1,7 +1,6 @@
 **/*.js
 **/*.js.map
 **/*.log
-**/*.d.ts
 !scripts/*.js
 !demo/karma.conf.js
 !demo/app/tests/*.js

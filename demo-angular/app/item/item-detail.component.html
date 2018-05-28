@@ -1,4 +1,15 @@
 <ActionBar title="Details" class="action-bar"></ActionBar>
 <StackLayout>
-    <CreditCardView></CreditCardView>
+    <Label text="Item: ${item.name}"></Label>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <GridLayout rows="auto,auto,auto" cols="auto,*">
+        <Label row="0" col="0" text="Payment" (tap)="showPaymentMethods()"></Label>
+        <Label row="0" col="1" text="ccard"></Label>
+        <Label row="1" col="0" text="Shipping" (tap)="showShipping()"></Label>
+        <Label row="1" col="1" text="standard"></Label>
+        <Label row="2" col="0" text="Total"></Label>
+        <Label row="2" col="1" text="$10.00"></Label>
+    </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <Button text="Buy" class="btn btn-primary btn-active" (tap)="buy()"></Button>
 </StackLayout>

@@ -1,9 +1,12 @@
 import * as utils from "tns-core-modules/utils/utils";
+import * as common from "../stripe.common";
+
 declare const com;
-export class Stripe {
+export class Stripe extends common.Stripe {
     private _stripe: any /* com.stripe.android.Stripe */;
     private _ctx;
     constructor(apiKey: string) {
+        super();
         this._ctx = utils.ad.getApplicationContext();
         this._stripe = new com.stripe.android.Stripe(this._ctx, apiKey);
     }
@@ -28,4 +31,7 @@ export class Stripe {
             })
         )
     }
+}
+
+export class StripeCustomerContext extends common.StripeCustomerContext {
 }

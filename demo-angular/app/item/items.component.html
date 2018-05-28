@@ -26,8 +26,10 @@ class names available for styling your app at https://docs.nativescript.org/ui/t
 <StackLayout class="page">
     <ListView [items]="items" class="list-group">
         <ng-template let-item="item">
-            <Label [nsRouterLink]="['/item', item.id]" [text]="item.name"
-                class="list-group-item"></Label>
+            <GridLayout rows="auto" columns="auto,*" [nsRouterLink]="['/item', item.id]" class="list-group-item">
+                <Label row="0" col="0" [text]="item.name"></Label>
+                <Label row="0" col="1" [text]="'$' + (item.price/100)" class="pull-right"></Label>
+            </GridLayout>
         </ng-template>
     </ListView>
 </StackLayout>
