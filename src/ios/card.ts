@@ -1,10 +1,8 @@
-import { CardBrand } from "../card-view.common";
-import * as common from "../card.common";
+import { CardBrand } from "../common";
 
-export class Card extends common.Card {
+export class Card {
     private _card: STPCardParams;
     constructor(cardNumber: string, cardExpMonth: any, cardExpYear: any, cardCVC: string) {
-        super();
         this._card = STPCardParams.alloc().init();
         this._card.number = cardNumber;
         this._card.expMonth = cardExpMonth;

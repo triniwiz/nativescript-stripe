@@ -1,9 +1,10 @@
-import * as common from "../card-view.common";
+import { View } from "tns-core-modules/ui/page/page";
 import * as utils from "tns-core-modules/utils/utils";
 import { Card } from "./card";
+
 declare const com;
-global.moduleMerge(common, exports);
-export class CreditCardView extends common.CreditCardView {
+// global.moduleMerge(common, exports);
+export class CreditCardView extends View {
     private _android;
     private _ctx;
     get android() {

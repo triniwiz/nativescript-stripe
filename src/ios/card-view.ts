@@ -1,7 +1,7 @@
-import * as common from "../card-view.common";
+import { View } from "tns-core-modules/ui/core/view";
 import { Card } from "./card";
 
-export class CreditCardView extends common.CreditCardView {
+export class CreditCardView extends View {
     nativeView: STPPaymentCardTextField;
 
     public createNativeView(): Object {

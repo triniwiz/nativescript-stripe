@@ -1,4 +1,6 @@
-export class StripeConfig {
+export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
+
+export class StripeConfigCommon {
     // The Publishable Key found at https://dashboard.stripe.com/account/apikeys
     // Use "Test Publishable Key" (it looks like pk_test_abcdef) during development.
     static publishableKey = "";
@@ -14,11 +16,11 @@ export class StripeConfig {
     static backendBaseURL = "";
 
     static backendURL(pathComponent: string): string {
-        if (!StripeConfig.backendBaseURL) throw new Error("backendBaseURL must be set");
-        if (!StripeConfig.backendBaseURL.endsWith("/")) {
-            return StripeConfig.backendBaseURL + "/" + pathComponent;
+        if (!StripeConfigCommon.backendBaseURL) throw new Error("backendBaseURL must be set");
+        if (!StripeConfigCommon.backendBaseURL.endsWith("/")) {
+            return StripeConfigCommon.backendBaseURL + "/" + pathComponent;
         } else {
-            return StripeConfig.backendBaseURL + pathComponent;
+            return StripeConfigCommon.backendBaseURL + pathComponent;
         }
     }
 
@@ -31,15 +33,4 @@ export class StripeConfig {
     static shippingType = undefined;
     static additionalPaymentMethods = undefined;
     // static createCardSources = true;
-}
-
-export class Stripe {
-    createToken(card: any/*Native Card Instance*/, cb: Function) {
-    }
-}
-
-export class StripeCustomerContext {
-}
-
-export class StripePaymentContext {
 }

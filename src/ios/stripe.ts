@@ -1,9 +1,9 @@
-import * as common from "../stripe.common";
+import { StripeConfigCommon } from "../common";
 
 const httpModule = require("http");
 const getter = require("utils/utils").ios.getter;
 
-export class Stripe extends common.Stripe {
+export class Stripe {
     createToken(card: any/*Native Card Instance*/, cb: Function) {
         const apiClient = getter(STPAPIClient, STPAPIClient.sharedClient);
         apiClient.createTokenWithCardCompletion(card, (token: STPToken, error: NSError) => {
@@ -21,7 +21,7 @@ export class Stripe extends common.Stripe {
     }
 }
 
-export class StripeConfig extends common.StripeConfig {
+export class StripeConfig extends StripeConfigCommon {
     static _native: STPPaymentConfiguration;
     static get native(): STPPaymentConfiguration {
         if (!StripeConfig._native) StripeConfig._native = StripeConfig.toNative();
@@ -44,11 +44,10 @@ export class StripeConfig extends common.StripeConfig {
     }
 }
 
-export class StripeCustomerContext extends common.StripeCustomerContext {
+export class StripeCustomerContext {
     native: STPCustomerContext;
 
     constructor() {
-        super();
         this.native = STPCustomerContext.alloc().initWithKeyProvider(StripeKeyProvider.new());
     }
 }
@@ -61,7 +60,7 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
     }
 
     createCustomerKeyWithAPIVersionCompletion(apiVersion: string, completion: (p1: NSDictionary<any, any>, p2: NSError) => void): void {
-        let url = common.StripeConfig.backendURL("ephemeral_keys");
+        let url = StripeConfig.backendURL("ephemeral_keys");
         httpModule.request({
             url: url,
             method: "POST",
@@ -77,11 +76,10 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
     }
 }
 
-export class StripePaymentContext extends common.StripePaymentContext {
+export class StripePaymentContext {
     native: STPPaymentContext;
 
     constructor(customerContext: StripeCustomerContext) {
-        super();
         this.native = STPPaymentContext.alloc()
             .initWithCustomerContextConfigurationTheme(
                 customerContext.native,
