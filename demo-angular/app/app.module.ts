@@ -1,12 +1,12 @@
-import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
+import { NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
 import { NativeScriptModule } from "nativescript-angular/nativescript.module";
-import { AppRoutingModule } from "./app.routing";
-import { AppComponent } from "./app.component";
 import { CreditCardViewModule } from "nativescript-stripe/angular";
-
+import { AppComponent } from "./app.component";
+import { AppRoutingModule } from "./app.routing";
+import { ItemDetailComponent } from "./item/item-detail.component";
 import { ItemService } from "./item/item.service";
 import { ItemsComponent } from "./item/items.component";
-import { ItemDetailComponent } from "./item/item-detail.component";
+import { StripeService } from "./item/stripe.service";
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
@@ -29,7 +29,8 @@ import { ItemDetailComponent } from "./item/item-detail.component";
         ItemDetailComponent
     ],
     providers: [
-        ItemService
+        ItemService,
+        StripeService
     ],
     schemas: [
         NO_ERRORS_SCHEMA

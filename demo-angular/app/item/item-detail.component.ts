@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { StripePaymentContext } from "nativescript-stripe";
 import { StripeService } from "~/item/stripe.service";
 import { Item } from "./item";
 import { ItemService } from "./item.service";
-
 
 @Component({
     selector: "ns-details",
@@ -12,14 +12,14 @@ import { ItemService } from "./item.service";
 })
 export class ItemDetailComponent implements OnInit {
     item: Item;
-    private paymentContext;
-    private paymentInProgress;
+    private paymentContext: StripePaymentContext;
+    private paymentInProgress: boolean;
 
     constructor(
-        private stripeService: StripeService,
         private itemService: ItemService,
-        private route: ActivatedRoute) {
-    }
+        private stripeService: StripeService,
+        private route: ActivatedRoute
+    ) { }
 
     ngOnInit(): void {
         const id = +this.route.snapshot.params["id"];
@@ -28,14 +28,17 @@ export class ItemDetailComponent implements OnInit {
     }
 
     showPaymentMethods() {
+        alert("paymentMethods");
         this.stripeService.showPaymentMethods(this.paymentContext);
     }
-
+    
     showShipping() {
+        alert("shipping");
         this.stripeService.showShipping(this.paymentContext);
     }
-
+    
     buy() {
+        alert("buy");
         this.paymentInProgress = true;
         this.stripeService.requestPayment(this.paymentContext);
     }
