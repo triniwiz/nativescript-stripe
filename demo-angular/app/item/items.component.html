@@ -2,6 +2,7 @@
 </ActionBar>
 
 <StackLayout class="page">
+    <CreditCardView #card></CreditCardView>
     <ListView [items]="items" class="list-group">
         <ng-template let-item="item">
             <GridLayout rows="auto" columns="auto,*" [nsRouterLink]="['/item', item.id]" class="list-group-item">

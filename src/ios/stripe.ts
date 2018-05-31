@@ -22,25 +22,31 @@ export class Stripe {
 }
 
 export class StripeConfig extends StripeConfigCommon {
-    static _native: STPPaymentConfiguration;
-    static get native(): STPPaymentConfiguration {
-        if (!StripeConfig._native) StripeConfig._native = StripeConfig.toNative();
-        return StripeConfig._native;
+    _native: STPPaymentConfiguration;
+    get native(): STPPaymentConfiguration {
+        // getter gives client a chance to set properties before using.
+        if (!this._native) this._native = this.toNative();
+        return this._native;
     }
 
-    private static toNative(): STPPaymentConfiguration {
-        if (!StripeConfig.publishableKey) throw new Error("publishableKey must be set");
+    private toNative(): STPPaymentConfiguration {
+        if (!this.publishableKey) throw new Error("publishableKey must be set");
         let config = STPPaymentConfiguration.sharedConfiguration();
-        if (StripeConfig.publishableKey) config.publishableKey = StripeConfig.publishableKey;
-        if (StripeConfig.appleMerchantID) config.appleMerchantIdentifier = StripeConfig.appleMerchantID;
-        if (StripeConfig.requiredBillingAddressFields) config.requiredBillingAddressFields = StripeConfig.requiredBillingAddressFields;
-        if (StripeConfig.requiredShippingAddressFields) config.requiredShippingAddressFields = StripeConfig.requiredShippingAddressFields;
-        if (StripeConfig.shippingType) config.shippingType = StripeConfig.shippingType;
-        if (StripeConfig.additionalPaymentMethods) config.additionalPaymentMethods = StripeConfig.additionalPaymentMethods;
-        // if (StripeConfig.createCardSources !== undefined) config.createCardSources = StripeConfig.createCardSources;
-        if (StripeConfig.companyName) config.companyName = StripeConfig.companyName;
-        if (StripeConfig.verifyPrefilledShippingAddress !== undefined) config.verifyPrefilledShippingAddress = StripeConfig.verifyPrefilledShippingAddress;
+        if (this.publishableKey) config.publishableKey = this.publishableKey;
+        if (this.appleMerchantID) config.appleMerchantIdentifier = this.appleMerchantID;
+        if (this.requiredBillingAddressFields) config.requiredBillingAddressFields = this.requiredBillingAddressFields;
+        if (this.requiredShippingAddressFields) config.requiredShippingAddressFields = this.requiredShippingAddressFields;
+        if (this.shippingType) config.shippingType = this.shippingType;
+        if (this.additionalPaymentMethods) config.additionalPaymentMethods = this.additionalPaymentMethods;
+        // if (this.createCardSources !== undefined) config.createCardSources = this.createCardSources;
+        if (this.companyName) config.companyName = this.companyName;
+        if (this.verifyPrefilledShippingAddress !== undefined) config.verifyPrefilledShippingAddress = this.verifyPrefilledShippingAddress;
         return config;
+    }
+
+    static shared(): StripeConfig {
+        if (!StripeConfigCommon.instance) StripeConfigCommon.instance = new StripeConfig();
+        return <StripeConfig>StripeConfigCommon.instance;
     }
 }
 
@@ -60,14 +66,11 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
     }
 
     createCustomerKeyWithAPIVersionCompletion(apiVersion: string, completion: (p1: NSDictionary<any, any>, p2: NSError) => void): void {
-        let url = StripeConfig.backendURL("ephemeral_keys");
+        let url = StripeConfig.shared().backendURL("ephemeral_keys");
         httpModule.request({
             url: url,
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            content: JSON.stringify({
-                "api_version": apiVersion
-            })
+            content: "api_version=" + apiVersion
         }).then(response => {
             completion(response.content.toJSON(), null);
         }, e => {
@@ -83,7 +86,7 @@ export class StripePaymentContext {
         this.native = STPPaymentContext.alloc()
             .initWithCustomerContextConfigurationTheme(
                 customerContext.native,
-                StripeConfig.native,
+                StripeConfig.shared().native,
                 STPTheme.defaultTheme());
         this.native.prefilledInformation = STPUserInformation.alloc().init();
     }

@@ -1,20 +1,21 @@
 import { View } from "tns-core-modules/ui/core/view";
 
 export declare class StripeConfigCommon {
-    static publishableKey: string;
-    static appleMerchantID: string;
-    static backendBaseURL: string;
-    static backendURL(pathComponent: string): string;
-    static companyName: string;
-    static requiredBillingAddressFields: any;
-    static requiredShippingAddressFields: any;
-    static verifyPrefilledShippingAddress: any;
-    static shippingType: any;
-    static additionalPaymentMethods: any;
+    publishableKey: string;
+    appleMerchantID: string;
+    backendBaseURL: string;
+    backendURL(pathComponent: string): string;
+    companyName: string;
+    requiredBillingAddressFields: any;
+    requiredShippingAddressFields: any;
+    verifyPrefilledShippingAddress: any;
+    shippingType: any;
+    additionalPaymentMethods: any;
 }
 export declare class StripeConfig extends StripeConfigCommon {
-    static native: any;
-    private static toNative();
+    native: any;
+    private toNative(): any;
+    static shared(): StripeConfig;
 }
 export declare class Stripe {
     createToken(card: any, cb: Function): void;
