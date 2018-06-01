@@ -1,3 +1,4 @@
+import { Page } from "tns-core-modules/ui/page";
 import { StripeConfigCommon } from "../common";
 
 const httpModule = require("http");
@@ -82,38 +83,41 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
 export class StripePaymentContext {
     native: STPPaymentContext;
 
-    constructor(customerContext: StripeCustomerContext) {
+    constructor(private page: Page,
+        customerContext: StripeCustomerContext,
+        amount: number,
+        currency: string) {
         this.native = STPPaymentContext.alloc()
             .initWithCustomerContextConfigurationTheme(
                 customerContext.native,
                 StripeConfig.shared().native,
                 STPTheme.defaultTheme());
         this.native.prefilledInformation = STPUserInformation.alloc().init();
-    }
-
-    get paymentAmount(): number {
-        return this.native.paymentAmount;
-    }
-    set paymentAmount(amount: number) {
         this.native.paymentAmount = amount;
+        this.native.paymentCurrency = currency;
     }
-
-    get paymentCurrency(): string {
-        return this.native.paymentCurrency;
-    }
-    set paymentCurrency(curr: string) {
-        this.native.paymentCurrency = curr;
+    
+    /**
+     * Makes sure the hostViewController is set.
+     * For reasons TBD, setting hostViewController in an ngOnInit() results
+     * in infinite recursion. So to make life easier for clients, do it here.
+     */
+    private ensureHostViewController(): void {
+        if (!this.native.hostViewController) this.native.hostViewController = this.page.ios;
     }
 
     requestPayment() {
+        this.ensureHostViewController();
         this.native.requestPayment();
     }
 
     presentPaymentMethods(): void {
+        this.ensureHostViewController();
         this.native.presentPaymentMethodsViewController();
     }
 
     presentShipping(): void {
+        this.ensureHostViewController();
         this.native.presentShippingViewController();
     }
 }

@@ -1,4 +1,5 @@
 import { View } from "tns-core-modules/ui/core/view";
+import { Page } from "tns-core-modules/ui/page";
 
 export declare class StripeConfigCommon {
     publishableKey: string;
@@ -26,9 +27,10 @@ export declare class StripeCustomerContext {
 }
 export declare class StripePaymentContext {
     native: any;
-    constructor(customerContext: StripeCustomerContext);
-    paymentAmount: number;
-    paymentCurrency: string;
+    constructor(page: Page,
+        customerContext: StripeCustomerContext,
+        amount: number,
+        currency: string);
     requestPayment(): void;
     presentPaymentMethods(): void;
     presentShipping(): void;
