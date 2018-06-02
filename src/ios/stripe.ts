@@ -23,7 +23,7 @@ export class Stripe {
 }
 
 export class StripeConfig extends StripeConfigCommon {
-    _native: STPPaymentConfiguration;
+    private _native: STPPaymentConfiguration;
     get native(): STPPaymentConfiguration {
         // getter gives client a chance to set properties before using.
         if (!this._native) this._native = this.toNative();

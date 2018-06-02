@@ -28,11 +28,10 @@ export class StripeConfigCommon {
 
     // See documentation for STPPaymentConfiguration for using these fields.
     // If left 'undefined' the default value will be used.
-    companyName = undefined;
-    requiredBillingAddressFields = undefined;
-    requiredShippingAddressFields = undefined;
-    verifyPrefilledShippingAddress = undefined;
-    shippingType = undefined;
-    additionalPaymentMethods = undefined;
-    // createCardSources = true;
+    companyName: string = undefined;
+    requiredBillingAddressFields: STPBillingAddressFields = undefined;
+    requiredShippingAddressFields: PKAddressField = undefined;
+    verifyPrefilledShippingAddress: boolean = undefined;
+    shippingType: STPShippingType = undefined;
+    additionalPaymentMethods: STPPaymentMethodType = undefined;
 }

@@ -70,3 +70,25 @@ export declare class CreditCardView extends View {
     readonly card: Card;
 }
 export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
+declare const enum STPShippingType {
+    Shipping = 0,
+    Delivery = 1
+}
+export declare const enum STPBillingAddressFields {
+    None = 0,
+    Zip = 1,
+    Full = 2
+}
+export declare const enum PKAddressField {
+	None = 0,
+	PostalAddress = 1,
+	Phone = 2,
+	Email = 4,
+	Name = 8,
+	All = 15
+}
+export declare const enum STPPaymentMethodType {
+    None = 0,
+    ApplePay = 1,
+    All = 1
+}
