@@ -28,6 +28,22 @@ export class ItemDetailComponent implements OnInit {
         this.paymentContext = this.stripeService.createPaymentContext(this.page, this.item.price);
     }
 
+    get paymentType(): string {
+        return this.paymentContext.selectedPaymentMethod ?
+            this.paymentContext.selectedPaymentMethod.label
+            : "Select Payment";
+    }
+
+    get shippingType(): string {
+        return this.paymentContext.selectedShippingMethod ?
+            this.paymentContext.selectedShippingMethod.identifier
+            : "Enter Shipping Info";
+    }
+
+    get total(): number {
+        return this.item.price;
+    }
+
     showPaymentMethods() {
         this.stripeService.showPaymentMethods(this.paymentContext);
     }

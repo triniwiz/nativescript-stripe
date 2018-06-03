@@ -33,9 +33,20 @@ export declare class StripePaymentContext {
         customerContext: StripeCustomerContext,
         amount: number,
         currency: string);
+    readonly selectedPaymentMethod: StripePaymentMethod;
+    readonly selectedShippingMethod: StripeShippingMethod;
     requestPayment(): void;
     presentPaymentMethods(): void;
     presentShipping(): void;
+}
+export declare interface StripePaymentMethod {
+	image: any; // TODO: UIImage marshals to ???
+	label: string;
+	templateImage: any;
+}
+export declare interface StripeShippingMethod {
+    detail: string;
+	identifier: string;
 }
 export declare class Card {
     private _card;

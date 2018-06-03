@@ -97,6 +97,21 @@ export class StripePaymentContext {
         this.native.paymentAmount = amount;
         this.native.paymentCurrency = currency;
     }
+
+    get selectedPaymentMethod(): StripePaymentMethod {
+        return {
+            label: this.native.selectedPaymentMethod.label,
+            image: this.native.selectedPaymentMethod.image,
+            templateImage: this.native.selectedPaymentMethod.templateImage
+        };
+    }
+
+    get selectedShippingMethod(): StripeShippingMethod {
+        return {
+            detail: this.native.selectedShippingMethod.detail,
+            identifier: this.native.selectedShippingMethod.identifier
+        }
+    }
     
     /**
      * Makes sure the hostViewController is set.
@@ -121,4 +136,15 @@ export class StripePaymentContext {
         this.ensureHostViewController();
         this.native.presentShippingViewController();
     }
+}
+
+export interface StripePaymentMethod {
+    image: any; // TODO: UIImage marshals to ???
+	label: string;
+	templateImage: any;
+}
+
+export interface StripeShippingMethod {
+    detail: string;
+	identifier: string;
 }

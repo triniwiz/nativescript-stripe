@@ -4,15 +4,17 @@
     <StackLayout class="hr-light m-10"></StackLayout>
     <GridLayout rows="auto" columns="auto,*" (tap)="showPaymentMethods()" class="list-group-item">
         <Label row="0" col="0" text="Payment Type"></Label>
-        <Label row="0" col="1" text="Credit Card" class="pull-right"></Label>
+        <Label row="0" col="1" [text]="paymentType" class="text-right text-muted"></Label>
     </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
     <GridLayout rows="auto" columns="auto,*" (tap)="showShipping()" class="list-group-item">
         <Label row="0" col="0" text="Shipping Method"></Label>
-        <Label row="0" col="1" text="Standard" class="pull-right"></Label>
+        <Label row="0" col="1" [text]="shippingType" class="text-right text-muted"></Label>
     </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
     <GridLayout rows="auto" columns="auto,*" class="list-group-item">
         <Label row="0" col="0" text="Total"></Label>
-        <Label row="0" col="1" [text]="'$' + (item.price / 100)" class="pull-right"></Label>
+        <Label row="0" col="1" [text]="'$' + (total / 100)" class="text-right"></Label>
     </GridLayout>
     <StackLayout class="hr-light m-10"></StackLayout>
     <Button text="Buy" class="btn btn-primary btn-active" (tap)="buy()"></Button>
