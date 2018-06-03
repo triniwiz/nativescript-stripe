@@ -39,9 +39,10 @@ export class StripeConfig extends StripeConfigCommon {
         if (this.requiredShippingAddressFields) config.requiredShippingAddressFields = this.requiredShippingAddressFields;
         if (this.shippingType) config.shippingType = this.shippingType;
         if (this.additionalPaymentMethods) config.additionalPaymentMethods = this.additionalPaymentMethods;
-        // if (this.createCardSources !== undefined) config.createCardSources = this.createCardSources;
+        if (this.createCardSources !== undefined) config.createCardSources = this.createCardSources;
         if (this.companyName) config.companyName = this.companyName;
         if (this.verifyPrefilledShippingAddress !== undefined) config.verifyPrefilledShippingAddress = this.verifyPrefilledShippingAddress;
+        if (this.stripeAccount) config.stripeAccount = this.stripeAccount;
         return config;
     }
 

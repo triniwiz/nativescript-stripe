@@ -3,5 +3,5 @@ android {
 }
 
 dependencies {
-    compile 'com.stripe:stripe-android:3.0.1'
+    compile 'com.stripe:stripe-android:6.1.2'
 }

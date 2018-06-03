@@ -1144,6 +1144,10 @@ declare class STPAPIClient extends NSObject {
 
 		verifyPrefilledShippingAddress: boolean;
 
+		createCardSources: boolean;
+
+		stripeAccount: string;
+
 		copyWithZone(zone: interop.Pointer | interop.Reference<any>): any;
 	}
 

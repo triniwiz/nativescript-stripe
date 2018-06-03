@@ -3,8 +3,8 @@ import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { CreditCardViewModule } from "nativescript-stripe/angular";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app.routing";
+import { CreditCardViewComponent } from "./item/creditcardview.component";
 import { ItemDetailComponent } from "./item/item-detail.component";
-import { ItemService } from "./item/item.service";
 import { ItemsComponent } from "./item/items.component";
 import { StripeService } from "./item/stripe.service";
 
@@ -26,10 +26,10 @@ import { StripeService } from "./item/stripe.service";
     declarations: [
         AppComponent,
         ItemsComponent,
-        ItemDetailComponent
+        ItemDetailComponent,
+        CreditCardViewComponent
     ],
     providers: [
-        ItemService,
         StripeService
     ],
     schemas: [

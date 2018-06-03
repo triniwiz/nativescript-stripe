@@ -7,11 +7,13 @@ export declare class StripeConfigCommon {
     backendBaseURL: string;
     backendURL(pathComponent: string): string;
     companyName: string;
-    requiredBillingAddressFields: any;
-    requiredShippingAddressFields: any;
-    verifyPrefilledShippingAddress: any;
-    shippingType: any;
-    additionalPaymentMethods: any;
+    requiredBillingAddressFields: STPBillingAddressFields;
+    requiredShippingAddressFields: PKAddressField;
+    verifyPrefilledShippingAddress: boolean;
+    shippingType: STPShippingType;
+    additionalPaymentMethods: STPPaymentMethodType;
+    createCardSources: boolean;
+    stripeAccount: string;
 }
 export declare class StripeConfig extends StripeConfigCommon {
     native: any;

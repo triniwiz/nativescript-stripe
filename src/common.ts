@@ -34,4 +34,6 @@ export class StripeConfigCommon {
     verifyPrefilledShippingAddress: boolean = undefined;
     shippingType: STPShippingType = undefined;
     additionalPaymentMethods: STPPaymentMethodType = undefined;
+    createCardSources: boolean = undefined;
+    stripeAccount: string = undefined;
 }
