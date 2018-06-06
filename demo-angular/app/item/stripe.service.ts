@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { PKAddressField, STPPaymentMethodType, STPShippingType, StripeConfig, StripeCustomerContext, StripePaymentContext } from "nativescript-stripe";
+import { PKAddressField, STPPaymentMethodType, STPShippingType, StripeConfig, StripeCustomerContext, StripePaymentContext, StripePaymentListener } from "nativescript-stripe";
 import { Page } from "tns-core-modules/ui/page";
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
@@ -32,8 +32,8 @@ export class StripeService {
         this.customerContext = new StripeCustomerContext();
     }    
     
-    createPaymentContext(page: Page, price: number): StripePaymentContext {
-        return new StripePaymentContext(page, this.customerContext, price, "usd");
+    createPaymentContext(page: Page, price: number, listener?: StripePaymentListener): StripePaymentContext {
+        return new StripePaymentContext(page, this.customerContext, price, "usd", listener);
     }
 
     showPaymentMethods(paymentContext: StripePaymentContext) {

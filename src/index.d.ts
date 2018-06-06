@@ -32,21 +32,31 @@ export declare class StripePaymentContext {
     constructor(page: Page,
         customerContext: StripeCustomerContext,
         amount: number,
-        currency: string);
+        currency: string,
+        listener?: StripePaymentListener);
     readonly selectedPaymentMethod: StripePaymentMethod;
     readonly selectedShippingMethod: StripeShippingMethod;
     requestPayment(): void;
     presentPaymentMethods(): void;
     presentShipping(): void;
 }
+export declare interface StripePaymentListener {
+    onPaymentDataChanged(data: StripePaymentData): void;
+    onError(errorCode: number, message: string): void;
+}
 export declare interface StripePaymentMethod {
-	image: any; // TODO: UIImage marshals to ???
-	label: string;
-	templateImage: any;
+	readonly image: any; // TODO: UIImage marshals to ???
+	readonly label: string;
+	readonly templateImage: any;
 }
 export declare interface StripeShippingMethod {
-    detail: string;
-	identifier: string;
+    readonly detail: string;
+	readonly label: string;
+}
+export declare interface StripePaymentData {
+    readonly isReadyToCharge: boolean;
+    readonly paymentMethod: StripePaymentMethod;
+    readonly shippingInfo: StripeShippingMethod;
 }
 export declare class Card {
     private _card;

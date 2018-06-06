@@ -87,7 +87,8 @@ export class StripePaymentContext {
     constructor(private page: Page,
         customerContext: StripeCustomerContext,
         amount: number,
-        currency: string) {
+        currency: string,
+        listener?: StripePaymentListener) {
         this.native = STPPaymentContext.alloc()
             .initWithCustomerContextConfigurationTheme(
                 customerContext.native,
@@ -96,27 +97,40 @@ export class StripePaymentContext {
         this.native.prefilledInformation = STPUserInformation.alloc().init();
         this.native.paymentAmount = amount;
         this.native.paymentCurrency = currency;
+        if (listener) {
+            this.native.delegate = StripePaymentDelegate.create(listener);
+        }
     }
 
     get selectedPaymentMethod(): StripePaymentMethod {
-        return {
-            label: this.native.selectedPaymentMethod.label,
-            image: this.native.selectedPaymentMethod.image,
-            templateImage: this.native.selectedPaymentMethod.templateImage
-        };
+        return StripePaymentContext.createPaymentMethod(this.native);
     }
 
     get selectedShippingMethod(): StripeShippingMethod {
+        return StripePaymentContext.createShippingMethod(this.native);
+    }
+
+    static createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
+        if (!paymentContext.selectedPaymentMethod) return undefined;
         return {
-            detail: this.native.selectedShippingMethod.detail,
-            identifier: this.native.selectedShippingMethod.identifier
+            label: paymentContext.selectedPaymentMethod.label,
+            image: paymentContext.selectedPaymentMethod.image,
+            templateImage: paymentContext.selectedPaymentMethod.templateImage
+        };
+    }
+
+    static createShippingMethod(paymentContext: STPPaymentContext): StripeShippingMethod {
+        if (!paymentContext.selectedShippingMethod) return undefined;
+        return {
+            detail: paymentContext.selectedShippingMethod.detail,
+            label: paymentContext.selectedShippingMethod.label
         }
     }
-    
+
     /**
      * Makes sure the hostViewController is set.
      * For reasons TBD, setting hostViewController in an ngOnInit() results
-     * in infinite recursion. So to make life easier for clients, do it here.
+     * in infinite recursion. So to make life easier for clients, set the controller here.
      */
     private ensureHostViewController(): void {
         if (!this.native.hostViewController) this.native.hostViewController = this.page.ios;
@@ -138,13 +152,74 @@ export class StripePaymentContext {
     }
 }
 
+export interface StripePaymentListener {
+    onPaymentDataChanged(data: StripePaymentData): void;
+    onError(errorCode: number, message: string): void;
+}
+
+export interface StripePaymentData {
+    isReadyToCharge: boolean;
+    paymentMethod: StripePaymentMethod;
+    shippingInfo: StripeShippingMethod;
+}
+
+class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
+    static ObjCProtocols = [STPPaymentContextDelegate];
+
+    static create(listener: StripePaymentListener): StripePaymentDelegate {
+        let self = <StripePaymentDelegate>super.new();
+        self.listener = listener;
+        return self;
+    }
+
+    private listener: StripePaymentListener;
+
+    paymentContextDidChange(paymentContext: STPPaymentContext): void {
+        console.info("paymentContextDidChange");
+        let data = {
+            isReadyToCharge: false,
+            paymentMethod: StripePaymentContext.createPaymentMethod(paymentContext),
+            shippingInfo: StripePaymentContext.createShippingMethod(paymentContext)
+        };
+        this.listener.onPaymentDataChanged(data);
+    }
+
+    paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
+        console.info("paymentContextDidCreatePaymentResultCompletion");
+    }
+
+    paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void {
+        console.info("paymentContextDidFailToLoadWithError");
+        this.listener.onError(error.code, error.localizedDescription);
+    }
+
+    paymentContextDidFinishWithStatusError(paymentContext: STPPaymentContext, status: STPPaymentStatus, error: NSError): void {
+        console.info("paymentContextDidFinishWithStatusError");
+        switch (status) {
+            case STPPaymentStatus.Error:
+                this.listener.onError(error.code, error.localizedDescription);
+                break;
+            case STPPaymentStatus.Success:
+                console.info("paymentFinishedWithSuccess");
+                break;
+            case STPPaymentStatus.UserCancellation:
+                console.info("paymentCancellation");
+                break;
+        }
+    }
+
+    paymentContextDidUpdateShippingAddressCompletion(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
+        console.info("paymentContextDidUpdateShippingAddressCompletion");
+    }
+}
+
 export interface StripePaymentMethod {
     image: any; // TODO: UIImage marshals to ???
-	label: string;
-	templateImage: any;
+    label: string;
+    templateImage: any;
 }
 
 export interface StripeShippingMethod {
     detail: string;
-	identifier: string;
+    label: string;
 }
