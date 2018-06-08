@@ -1,5 +1,5 @@
-import { View } from "tns-core-modules/ui/core/view";
-import { Page } from "tns-core-modules/ui/page";
+import { View } from "ui/core/view";
+import { Page } from "ui/page";
 
 export declare class StripeConfigCommon {
     publishableKey: string;
@@ -43,20 +43,44 @@ export declare class StripePaymentContext {
 export declare interface StripePaymentListener {
     onPaymentDataChanged(data: StripePaymentData): void;
     onError(errorCode: number, message: string): void;
+    provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }
 export declare interface StripePaymentMethod {
-	readonly image: any; // TODO: UIImage marshals to ???
-	readonly label: string;
-	readonly templateImage: any;
+    image: any; // TODO: UIImage marshals to ???
+    label: string;
+    templateImage: any;
 }
 export declare interface StripeShippingMethod {
-    readonly detail: string;
-	readonly label: string;
+    amount: number;
+    detail: string;
+    label: string;
+    identifier: string;
 }
 export declare interface StripePaymentData {
-    readonly isReadyToCharge: boolean;
-    readonly paymentMethod: StripePaymentMethod;
-    readonly shippingInfo: StripeShippingMethod;
+    isReadyToCharge: boolean;
+    paymentMethod: StripePaymentMethod;
+    shippingInfo: StripeShippingMethod;
+}
+export declare interface StripeAddress {
+    name: string;
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    phone: string;
+    email: string;
+}
+export declare interface StripeShippingMethods {
+    /** Is shipping to the address valid? */
+    isValid: boolean;
+    /** If not valid, an error describing the issue with the address */
+    validationError: string;
+    /** The shipping methods available for the address. */
+    shippingMethods: StripeShippingMethod[];
+    /** The pre-selected (default) shipping method for the address. */
+    selectedShippingMethod: StripeShippingMethod;
 }
 export declare class Card {
     private _card;
@@ -103,12 +127,12 @@ export declare const enum STPBillingAddressFields {
     Full = 2
 }
 export declare const enum PKAddressField {
-	None = 0,
-	PostalAddress = 1,
-	Phone = 2,
-	Email = 4,
-	Name = 8,
-	All = 15
+    None = 0,
+    PostalAddress = 1,
+    Phone = 2,
+    Email = 4,
+    Name = 8,
+    All = 15
 }
 export declare const enum STPPaymentMethodType {
     None = 0,

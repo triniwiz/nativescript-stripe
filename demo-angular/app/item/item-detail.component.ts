@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { StripePaymentContext, StripePaymentData, StripePaymentListener } from "nativescript-stripe";
-import { Page } from "tns-core-modules/ui/page";
+import { StripeAddress, StripePaymentContext, StripePaymentData, StripePaymentListener, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe";
+import { Page } from "ui/page";
 import { Item } from "./item";
 import { StripeService } from "./stripe.service";
 
@@ -64,9 +64,48 @@ class Listener implements StripePaymentListener {
             "Enter Shipping Info";
         this.component.changeDetectionRef.detectChanges();
     }
-    
+
     onError(errorCode: number, message: string) {
         this.component.errorMessage = message;
         this.component.changeDetectionRef.detectChanges();
+    }
+
+    provideShippingMethods(address: StripeAddress): StripeShippingMethods {
+        let upsGround: StripeShippingMethod = {
+            amount: 0,
+            label: "UPS Ground",
+            detail: "Arrives in 3-5 days",
+            identifier: "ups_ground"
+        };
+        let upsWorldwide: StripeShippingMethod = {
+            amount: 10.99,
+            label: "UPS Worldwide Express",
+            detail: "Arrives in 1-3 days",
+            identifier: "ups_worldwide"
+        };
+        let fedEx: StripeShippingMethod = {
+            amount: 5.99,
+            label: "FedEx",
+            detail: "Arrives tomorrow",
+            identifier: "fedex"
+        };
+
+        let methods = <StripeShippingMethods>{};
+        if (!address.country || address.country == "US") {
+            methods.isValid = true;
+            methods.validationError = undefined;
+            methods.shippingMethods = [upsGround, fedEx];
+            methods.selectedShippingMethod = fedEx;
+        } else if (address.country === "AQ") {
+            methods.isValid = false;
+            methods.validationError = "We can't ship to this country.";
+        } else {
+            fedEx.amount = 20.99
+            methods.isValid = true;
+            methods.validationError = undefined;
+            methods.shippingMethods = [upsWorldwide, fedEx];
+            methods.selectedShippingMethod = fedEx;
+        }
+        return methods;
     }
 }

@@ -1,12 +1,12 @@
 import { Page } from "tns-core-modules/ui/page";
+import * as utils from "tns-core-modules/utils/utils";
 import { StripeConfigCommon } from "../common";
 
 const httpModule = require("http");
-const getter = require("utils/utils").ios.getter;
 
 export class Stripe {
     createToken(card: any/*Native Card Instance*/, cb: Function) {
-        const apiClient = getter(STPAPIClient, STPAPIClient.sharedClient);
+        const apiClient = utils.ios.getter(STPAPIClient, STPAPIClient.sharedClient);
         apiClient.createTokenWithCardCompletion(card, (token: STPToken, error: NSError) => {
             if (!error) {
                 if (typeof cb === "function") {
@@ -110,23 +110,6 @@ export class StripePaymentContext {
         return StripePaymentContext.createShippingMethod(this.native);
     }
 
-    static createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
-        if (!paymentContext.selectedPaymentMethod) return undefined;
-        return {
-            label: paymentContext.selectedPaymentMethod.label,
-            image: paymentContext.selectedPaymentMethod.image,
-            templateImage: paymentContext.selectedPaymentMethod.templateImage
-        };
-    }
-
-    static createShippingMethod(paymentContext: STPPaymentContext): StripeShippingMethod {
-        if (!paymentContext.selectedShippingMethod) return undefined;
-        return {
-            detail: paymentContext.selectedShippingMethod.detail,
-            label: paymentContext.selectedShippingMethod.label
-        }
-    }
-
     /**
      * Makes sure the hostViewController is set.
      * For reasons TBD, setting hostViewController in an ngOnInit() results
@@ -150,11 +133,54 @@ export class StripePaymentContext {
         this.ensureHostViewController();
         this.native.presentShippingViewController();
     }
+
+    static createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
+        if (!paymentContext.selectedPaymentMethod) return undefined;
+        return {
+            label: paymentContext.selectedPaymentMethod.label,
+            image: paymentContext.selectedPaymentMethod.image,
+            templateImage: paymentContext.selectedPaymentMethod.templateImage
+        };
+    }
+
+    static createShippingMethod(paymentContext: STPPaymentContext): StripeShippingMethod {
+        if (!paymentContext.selectedShippingMethod) return undefined;
+        return {
+            amount: paymentContext.selectedShippingMethod.amount.doubleValue,
+            detail: paymentContext.selectedShippingMethod.detail,
+            label: paymentContext.selectedShippingMethod.label,
+            identifier: paymentContext.selectedShippingMethod.identifier
+        };
+    }
+
+    static createPKShippingMethod(method: StripeShippingMethod): PKShippingMethod {
+        let m = PKShippingMethod.alloc().init();
+        m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount);
+        m.detail = method.detail;
+        m.label = method.label;
+        m.identifier = method.identifier;
+        return m;
+    }
+
+    static createAddress(address: STPAddress): StripeAddress {
+        return {
+            name: address.name,
+            line1: address.line1,
+            line2: address.line2,
+            city: address.city,
+            state: address.state,
+            postalCode: address.postalCode,
+            country: address.country,
+            phone: address.phone,
+            email: address.email
+        };
+    }
 }
 
 export interface StripePaymentListener {
     onPaymentDataChanged(data: StripePaymentData): void;
     onError(errorCode: number, message: string): void;
+    provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }
 
 export interface StripePaymentData {
@@ -210,6 +236,29 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 
     paymentContextDidUpdateShippingAddressCompletion(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
         console.info("paymentContextDidUpdateShippingAddressCompletion");
+        let methods = this.listener.provideShippingMethods(StripePaymentContext.createAddress(address));
+        if (!methods.isValid) {
+            let userInfo = <NSMutableDictionary<string, any>>NSMutableDictionary.alloc().init();
+            userInfo.setValueForKey(methods.validationError, NSLocalizedDescriptionKey);
+            // let userInfo = new NSDictionary(
+            //     [methods.validationError],
+            //     [NSLocalizedDescriptionKey]);
+            let error = new NSError({
+                domain: "ShippingError", code: 123, userInfo: userInfo
+            });
+            setTimeout(
+                completion(STPShippingStatus.Invalid, error, null, null), 1);
+        } else {
+            let sh = <NSMutableArray<PKShippingMethod>>NSMutableArray.alloc().init();
+            methods.shippingMethods.forEach(m => sh.addObject(StripePaymentContext.createPKShippingMethod(m)));
+            setTimeout(
+                completion(
+                    STPShippingStatus.Valid,
+                    null,
+                    sh,
+                    StripePaymentContext.createPKShippingMethod(methods.selectedShippingMethod)
+                ), 1);
+        }
     }
 }
 
@@ -220,6 +269,31 @@ export interface StripePaymentMethod {
 }
 
 export interface StripeShippingMethod {
+    amount: number;
     detail: string;
     label: string;
+    identifier: string;
+}
+
+export interface StripeAddress {
+    name: string;
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    phone: string;
+    email: string;
+}
+
+export interface StripeShippingMethods {
+    /** Is shipping to the address valid? */
+    isValid: boolean;
+    /** If not valid, an error describing the issue with the address */
+    validationError: string;
+    /** The shipping methods available for the address. */
+    shippingMethods: StripeShippingMethod[];
+    /** The pre-selected (default) shipping method for the address. */
+    selectedShippingMethod: StripeShippingMethod;
 }
