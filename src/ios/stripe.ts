@@ -1,6 +1,6 @@
 import { Page } from "tns-core-modules/ui/page";
 import * as utils from "tns-core-modules/utils/utils";
-import { StripeConfigCommon } from "../common";
+import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingMethod } from "../common";
 
 const httpModule = require("http");
 
@@ -83,6 +83,7 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
 
 export class StripePaymentContext {
     native: STPPaymentContext;
+    private delegate: StripePaymentDelegate; // Necessary to keep delegate in memory
 
     constructor(private page: Page,
         customerContext: StripeCustomerContext,
@@ -98,16 +99,17 @@ export class StripePaymentContext {
         this.native.paymentAmount = amount;
         this.native.paymentCurrency = currency;
         if (listener) {
-            this.native.delegate = StripePaymentDelegate.create(listener);
+            this.delegate = StripePaymentDelegate.create(listener);
+            this.native.delegate = this.delegate;
         }
     }
 
     get selectedPaymentMethod(): StripePaymentMethod {
-        return StripePaymentContext.createPaymentMethod(this.native);
+        return createPaymentMethod(this.native);
     }
 
     get selectedShippingMethod(): StripeShippingMethod {
-        return StripePaymentContext.createShippingMethod(this.native);
+        return createShippingMethod(this.native);
     }
 
     /**
@@ -134,59 +136,6 @@ export class StripePaymentContext {
         this.native.presentShippingViewController();
     }
 
-    static createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
-        if (!paymentContext.selectedPaymentMethod) return undefined;
-        return {
-            label: paymentContext.selectedPaymentMethod.label,
-            image: paymentContext.selectedPaymentMethod.image,
-            templateImage: paymentContext.selectedPaymentMethod.templateImage
-        };
-    }
-
-    static createShippingMethod(paymentContext: STPPaymentContext): StripeShippingMethod {
-        if (!paymentContext.selectedShippingMethod) return undefined;
-        return {
-            amount: paymentContext.selectedShippingMethod.amount.doubleValue,
-            detail: paymentContext.selectedShippingMethod.detail,
-            label: paymentContext.selectedShippingMethod.label,
-            identifier: paymentContext.selectedShippingMethod.identifier
-        };
-    }
-
-    static createPKShippingMethod(method: StripeShippingMethod): PKShippingMethod {
-        let m = PKShippingMethod.alloc().init();
-        m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount);
-        m.detail = method.detail;
-        m.label = method.label;
-        m.identifier = method.identifier;
-        return m;
-    }
-
-    static createAddress(address: STPAddress): StripeAddress {
-        return {
-            name: address.name,
-            line1: address.line1,
-            line2: address.line2,
-            city: address.city,
-            state: address.state,
-            postalCode: address.postalCode,
-            country: address.country,
-            phone: address.phone,
-            email: address.email
-        };
-    }
-}
-
-export interface StripePaymentListener {
-    onPaymentDataChanged(data: StripePaymentData): void;
-    onError(errorCode: number, message: string): void;
-    provideShippingMethods(address: StripeAddress): StripeShippingMethods;
-}
-
-export interface StripePaymentData {
-    isReadyToCharge: boolean;
-    paymentMethod: StripePaymentMethod;
-    shippingInfo: StripeShippingMethod;
 }
 
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
@@ -204,8 +153,8 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
         console.info("paymentContextDidChange");
         let data = {
             isReadyToCharge: false,
-            paymentMethod: StripePaymentContext.createPaymentMethod(paymentContext),
-            shippingInfo: StripePaymentContext.createShippingMethod(paymentContext)
+            paymentMethod: createPaymentMethod(paymentContext),
+            shippingInfo: createShippingMethod(paymentContext)
         };
         this.listener.onPaymentDataChanged(data);
     }
@@ -236,7 +185,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 
     paymentContextDidUpdateShippingAddressCompletion(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
         console.info("paymentContextDidUpdateShippingAddressCompletion");
-        let methods = this.listener.provideShippingMethods(StripePaymentContext.createAddress(address));
+        let methods = this.listener.provideShippingMethods(createAddress(address));
         if (!methods.isValid) {
             let userInfo = <NSMutableDictionary<string, any>>NSMutableDictionary.alloc().init();
             userInfo.setValueForKey(methods.validationError, NSLocalizedDescriptionKey);
@@ -246,54 +195,58 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
             let error = new NSError({
                 domain: "ShippingError", code: 123, userInfo: userInfo
             });
-            setTimeout(
-                completion(STPShippingStatus.Invalid, error, null, null), 1);
+            completion(STPShippingStatus.Invalid, error, null, null);
         } else {
             let sh = <NSMutableArray<PKShippingMethod>>NSMutableArray.alloc().init();
-            methods.shippingMethods.forEach(m => sh.addObject(StripePaymentContext.createPKShippingMethod(m)));
-            setTimeout(
-                completion(
-                    STPShippingStatus.Valid,
-                    null,
-                    sh,
-                    StripePaymentContext.createPKShippingMethod(methods.selectedShippingMethod)
-                ), 1);
+            methods.shippingMethods.forEach(m => sh.addObject(createPKShippingMethod(m)));
+            completion(
+                STPShippingStatus.Valid,
+                null,
+                sh,
+                createPKShippingMethod(methods.selectedShippingMethod)
+            );
         }
     }
 }
 
-export interface StripePaymentMethod {
-    image: any; // TODO: UIImage marshals to ???
-    label: string;
-    templateImage: any;
+function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
+    if (!paymentContext.selectedPaymentMethod) return undefined;
+    return {
+        label: paymentContext.selectedPaymentMethod.label,
+        image: paymentContext.selectedPaymentMethod.image,
+        templateImage: paymentContext.selectedPaymentMethod.templateImage
+    };
 }
 
-export interface StripeShippingMethod {
-    amount: number;
-    detail: string;
-    label: string;
-    identifier: string;
+function createShippingMethod(paymentContext: STPPaymentContext): StripeShippingMethod {
+    if (!paymentContext.selectedShippingMethod) return undefined;
+    return {
+        amount: paymentContext.selectedShippingMethod.amount.doubleValue,
+        detail: paymentContext.selectedShippingMethod.detail,
+        label: paymentContext.selectedShippingMethod.label,
+        identifier: paymentContext.selectedShippingMethod.identifier
+    };
 }
 
-export interface StripeAddress {
-    name: string;
-    line1: string;
-    line2: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-    phone: string;
-    email: string;
+function createPKShippingMethod(method: StripeShippingMethod): PKShippingMethod {
+    let m = PKShippingMethod.alloc().init();
+    m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount);
+    m.detail = method.detail;
+    m.label = method.label;
+    m.identifier = method.identifier;
+    return m;
 }
 
-export interface StripeShippingMethods {
-    /** Is shipping to the address valid? */
-    isValid: boolean;
-    /** If not valid, an error describing the issue with the address */
-    validationError: string;
-    /** The shipping methods available for the address. */
-    shippingMethods: StripeShippingMethod[];
-    /** The pre-selected (default) shipping method for the address. */
-    selectedShippingMethod: StripeShippingMethod;
+function createAddress(address: STPAddress): StripeAddress {
+    return {
+        name: address.name,
+        line1: address.line1,
+        line2: address.line2,
+        city: address.city,
+        state: address.state,
+        postalCode: address.postalCode,
+        country: address.country,
+        phone: address.phone,
+        email: address.email
+    };
 }
