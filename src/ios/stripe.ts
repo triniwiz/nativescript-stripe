@@ -104,6 +104,11 @@ export class StripePaymentContext {
         }
     }
 
+    /** Is the Stripe native component loading? */
+    get loading(): boolean {
+        return this.native.loading;
+    }
+
     /** Total amount (including shipping) in pennies. */
     get amount(): number {
         return this.native.paymentAmount;

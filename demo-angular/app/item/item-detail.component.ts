@@ -11,9 +11,9 @@ import { StripeService } from "./stripe.service";
 })
 export class ItemDetailComponent implements OnInit {
     item: Item;
-    paymentType = "Select Payment";
-    shippingType = "Enter Shipping Info";
-    errorMessage = "";
+    paymentType: string;
+    shippingType: string;
+    errorMessage: string;
     private paymentContext: StripePaymentContext;
     private paymentInProgress: boolean;
 
@@ -31,6 +31,10 @@ export class ItemDetailComponent implements OnInit {
         };
         this.paymentContext = this.stripeService.createPaymentContext(
             this.page, this.item.price, new Listener(this));
+    }
+
+    get isLoading(): boolean {
+        return this.paymentContext ? this.paymentContext.loading : true;
     }
 
     get total(): number {

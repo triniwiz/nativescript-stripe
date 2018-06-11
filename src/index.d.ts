@@ -34,6 +34,8 @@ export declare class StripePaymentContext {
         amount: number,
         currency: string,
         listener?: StripePaymentListener);
+    /** Is the native component loading? */
+    readonly loading: boolean;
     /** Total amount (including shipping) in pennies. */
     readonly amount: number;
     readonly selectedPaymentMethod: StripePaymentMethod;
