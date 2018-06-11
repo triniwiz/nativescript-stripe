@@ -34,6 +34,8 @@ export declare class StripePaymentContext {
         amount: number,
         currency: string,
         listener?: StripePaymentListener);
+    /** Total amount (including shipping) in pennies. */
+    readonly amount: number;
     readonly selectedPaymentMethod: StripePaymentMethod;
     readonly selectedShippingMethod: StripeShippingMethod;
     requestPayment(): void;
@@ -51,6 +53,7 @@ export declare interface StripePaymentMethod {
     templateImage: any;
 }
 export declare interface StripeShippingMethod {
+    /** Cost of shipping in pennies. */
     amount: number;
     detail: string;
     label: string;

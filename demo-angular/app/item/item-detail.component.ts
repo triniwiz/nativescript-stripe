@@ -34,7 +34,7 @@ export class ItemDetailComponent implements OnInit {
     }
 
     get total(): number {
-        return this.item.price;
+        return this.paymentContext ? this.paymentContext.amount : this.item.price;
     }
 
     showPaymentMethods() {
@@ -59,9 +59,12 @@ class Listener implements StripePaymentListener {
         this.component.paymentType = data.paymentMethod ?
             data.paymentMethod.label :
             "Select Payment";
-        this.component.shippingType = data.shippingInfo ?
-            data.shippingInfo.label :
-            "Enter Shipping Info";
+        if (data.shippingInfo) {
+            this.component.shippingType =
+                `${data.shippingInfo.label} ($${data.shippingInfo.amount / 100})`;
+        } else {
+            this.component.shippingType = "Enter Shipping Info";
+        }
         this.component.changeDetectionRef.detectChanges();
     }
 
@@ -78,13 +81,13 @@ class Listener implements StripePaymentListener {
             identifier: "ups_ground"
         };
         let upsWorldwide: StripeShippingMethod = {
-            amount: 10.99,
+            amount: 1099,
             label: "UPS Worldwide Express",
             detail: "Arrives in 1-3 days",
             identifier: "ups_worldwide"
         };
         let fedEx: StripeShippingMethod = {
-            amount: 5.99,
+            amount: 599,
             label: "FedEx",
             detail: "Arrives tomorrow",
             identifier: "fedex"
@@ -100,7 +103,7 @@ class Listener implements StripePaymentListener {
             methods.isValid = false;
             methods.validationError = "We can't ship to this country.";
         } else {
-            fedEx.amount = 20.99
+            fedEx.amount = 2099
             methods.isValid = true;
             methods.validationError = undefined;
             methods.shippingMethods = [upsWorldwide, fedEx];

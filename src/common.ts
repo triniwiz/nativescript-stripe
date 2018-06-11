@@ -46,7 +46,7 @@ export interface StripePaymentMethod {
 }
 
 export interface StripeShippingMethod {
-    amount: number;
+    amount: number; // in pennies
     detail: string;
     label: string;
     identifier: string;

@@ -104,6 +104,11 @@ export class StripePaymentContext {
         }
     }
 
+    /** Total amount (including shipping) in pennies. */
+    get amount(): number {
+        return this.native.paymentAmount;
+    }
+
     get selectedPaymentMethod(): StripePaymentMethod {
         return createPaymentMethod(this.native);
     }
@@ -135,7 +140,6 @@ export class StripePaymentContext {
         this.ensureHostViewController();
         this.native.presentShippingViewController();
     }
-
 }
 
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
@@ -221,7 +225,7 @@ function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMe
 function createShippingMethod(paymentContext: STPPaymentContext): StripeShippingMethod {
     if (!paymentContext.selectedShippingMethod) return undefined;
     return {
-        amount: paymentContext.selectedShippingMethod.amount.doubleValue,
+        amount: paymentContext.selectedShippingMethod.amount.doubleValue * 100,
         detail: paymentContext.selectedShippingMethod.detail,
         label: paymentContext.selectedShippingMethod.label,
         identifier: paymentContext.selectedShippingMethod.identifier
@@ -230,7 +234,7 @@ function createShippingMethod(paymentContext: STPPaymentContext): StripeShipping
 
 function createPKShippingMethod(method: StripeShippingMethod): PKShippingMethod {
     let m = PKShippingMethod.alloc().init();
-    m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount);
+    m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount/100);
     m.detail = method.detail;
     m.label = method.label;
     m.identifier = method.identifier;

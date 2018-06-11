@@ -1,6 +1,9 @@
 <ActionBar title="Details" class="action-bar"></ActionBar>
 <StackLayout class="page p-10">
-    <Label [text]="item.name" class="h2"></Label>
+    <GridLayout rows="auto" columns="auto,*">
+        <Label row="0" col="0" [text]="item.name" class="h2"></Label>
+        <Label row="0" col="1" [text]="'$' + item.price/100" class="text-right text-muted"></Label>
+    </GridLayout>
     <StackLayout class="hr-light m-10"></StackLayout>
     <GridLayout rows="auto" columns="auto,*" (tap)="showPaymentMethods()" class="list-group-item">
         <Label row="0" col="0" text="Payment Type"></Label>
