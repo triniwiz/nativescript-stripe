@@ -83,6 +83,7 @@ export interface StripePaymentData {
 
 export interface StripePaymentListener {
     onPaymentDataChanged(data: StripePaymentData): void;
+    onPaymentSuccess(): void;
     onError(errorCode: number, message: string): void;
     provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }

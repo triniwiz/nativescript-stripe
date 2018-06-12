@@ -1,8 +1,7 @@
+import * as httpModule from "http";
 import { Page } from "tns-core-modules/ui/page";
 import * as utils from "tns-core-modules/utils/utils";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingMethod } from "../common";
-
-const httpModule = require("http");
 
 export class Stripe {
     createToken(card: any/*Native Card Instance*/, cb: Function) {
@@ -72,6 +71,7 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
         httpModule.request({
             url: url,
             method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
             content: "api_version=" + apiVersion
         }).then(response => {
             completion(response.content.toJSON(), null);
@@ -170,6 +170,25 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 
     paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
         console.info("paymentContextDidCreatePaymentResultCompletion");
+        let url = StripeConfig.shared().backendURL("charge");
+        let shippingDic = STPAddress.shippingInfoForChargeWithAddressShippingMethod(paymentContext.shippingAddress, paymentContext.selectedShippingMethod);
+        httpModule.request({
+            url: url,
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
+            content:
+                "source=" + paymentResult.source.stripeID +
+                "&amount=" + paymentContext.paymentAmount +
+                "&" + encodeDictionary("shipping", shippingDic)
+        }).then(response => {
+            if (response.statusCode >= 200 && response.statusCode < 300) {
+                completion(null);
+            } else {
+                completion(createError("PaymentError", 110, "Error: " + response.content.toString()))
+            }
+        }, e => {
+            completion(createError("PaymentError", 100, "Error: " + e));
+        });
     }
 
     paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void {
@@ -184,10 +203,10 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
                 this.listener.onError(error.code, error.localizedDescription);
                 break;
             case STPPaymentStatus.Success:
-                console.info("paymentFinishedWithSuccess");
+                this.listener.onPaymentSuccess();
                 break;
             case STPPaymentStatus.UserCancellation:
-                console.info("paymentCancellation");
+                // Nothing to do.
                 break;
         }
     }
@@ -196,26 +215,52 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
         console.info("paymentContextDidUpdateShippingAddressCompletion");
         let methods = this.listener.provideShippingMethods(createAddress(address));
         if (!methods.isValid) {
-            let userInfo = <NSMutableDictionary<string, any>>NSMutableDictionary.alloc().init();
-            userInfo.setValueForKey(methods.validationError, NSLocalizedDescriptionKey);
-            // let userInfo = new NSDictionary(
-            //     [methods.validationError],
-            //     [NSLocalizedDescriptionKey]);
-            let error = new NSError({
-                domain: "ShippingError", code: 123, userInfo: userInfo
-            });
-            completion(STPShippingStatus.Invalid, error, null, null);
+            completion(STPShippingStatus.Invalid, createError("ShippingError", 123, methods.validationError), null, null);
         } else {
             let sh = <NSMutableArray<PKShippingMethod>>NSMutableArray.alloc().init();
             methods.shippingMethods.forEach(m => sh.addObject(createPKShippingMethod(m)));
-            completion(
-                STPShippingStatus.Valid,
-                null,
-                sh,
-                createPKShippingMethod(methods.selectedShippingMethod)
-            );
+            completion(STPShippingStatus.Valid, null, sh, createPKShippingMethod(methods.selectedShippingMethod));
         }
     }
+}
+
+function createError(domain: string, code: number, error: string): NSError {
+    let userInfo = <NSMutableDictionary<string, any>>NSMutableDictionary.alloc().init();
+    userInfo.setValueForKey(error, NSLocalizedDescriptionKey);
+    // let userInfo = new NSDictionary(
+    //     [error],
+    //     [NSLocalizedDescriptionKey]);
+    return new NSError({
+        domain: domain, code: code, userInfo: userInfo
+    });
+}
+
+function encodeDictionary(key: string, dict: NSDictionary<string, any>): string {
+    let entries = encodeComponents(key, dict);
+    return entries.map(e => `${e[0]}=${e[1]}`).join("&");
+}
+
+function encodeComponents(key: string, value: any): [string, string][] {
+    let result: [string, string][] = [];
+
+    if (value instanceof NSDictionary) {
+        let keys = value.allKeys;
+        for (let i = 0; i < keys.count; i++) {
+            let k = keys[i];
+            result = result.concat(encodeComponents(`${key}[${k}]`, value.objectForKey(k)));
+        }
+    } else if (value instanceof NSArray) {
+        for (let i = 0; i < value.count; i++) {
+            result = result.concat(encodeComponents(`${key}[]`, value[i]));
+        }
+    } else if (typeof value === "number") {
+        result.push([encodeURI(key), "" + value]);
+    } else if (typeof value === "boolean") {
+        result.push([encodeURI(key), value ? "1" : "0"]);
+    } else {
+        result.push([encodeURI(key), encodeURI(value)]);
+    }
+    return result;
 }
 
 function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
@@ -239,7 +284,7 @@ function createShippingMethod(paymentContext: STPPaymentContext): StripeShipping
 
 function createPKShippingMethod(method: StripeShippingMethod): PKShippingMethod {
     let m = PKShippingMethod.alloc().init();
-    m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount/100);
+    m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount / 100);
     m.detail = method.detail;
     m.label = method.label;
     m.identifier = method.identifier;

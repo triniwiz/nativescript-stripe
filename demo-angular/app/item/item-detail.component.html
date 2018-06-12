@@ -21,6 +21,7 @@
         <Label row="0" col="1" [text]="'$' + (total / 100)" class="text-right"></Label>
     </GridLayout>
     <StackLayout class="hr-light m-10"></StackLayout>
-    <Label [text]="errorMessage" class="text-danger"></Label>
+    <Label [text]="errorMessage" class="text-danger" textWrap="true"></Label>
     <Button text="Buy" class="btn btn-primary btn-active" (tap)="buy()"></Button>
+    <Label [text]="successMessage" class="text-primary" textWrap="true"></Label>
 </StackLayout>

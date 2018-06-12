@@ -46,6 +46,7 @@ export declare class StripePaymentContext {
 }
 export declare interface StripePaymentListener {
     onPaymentDataChanged(data: StripePaymentData): void;
+    onPaymentSuccess(): void;
     onError(errorCode: number, message: string): void;
     provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }

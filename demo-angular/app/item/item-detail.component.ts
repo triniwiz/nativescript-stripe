@@ -14,6 +14,7 @@ export class ItemDetailComponent implements OnInit {
     paymentType: string;
     shippingType: string;
     errorMessage: string;
+    successMessage: string;
     private paymentContext: StripePaymentContext;
     private paymentInProgress: boolean;
 
@@ -70,6 +71,11 @@ class Listener implements StripePaymentListener {
             this.component.shippingType = "Enter Shipping Info";
         }
         this.component.changeDetectionRef.detectChanges();
+    }
+
+    onPaymentSuccess(): void {
+        this.component.successMessage =
+         `Congratulations! You bought a ${this.component.item.name} for $${this.component.item.price/100}.`;
     }
 
     onError(errorCode: number, message: string) {
