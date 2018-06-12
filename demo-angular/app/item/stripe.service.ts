@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { PKAddressField, STPPaymentMethodType, STPShippingType, StripeConfig, StripeCustomerContext, StripePaymentContext, StripePaymentListener } from "nativescript-stripe";
+import * as httpModule from "http";
+import { PKAddressField, STPPaymentMethodType, STPShippingType, StripeBackendAPI, StripeConfig, StripeCustomerContext, StripePaymentContext, StripePaymentListener } from "nativescript-stripe";
 import { Page } from "ui/page";
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
@@ -17,12 +18,12 @@ const backendBaseURL = "https://rg-example-stripe-backend.herokuapp.com/";
 const appleMerchantID = "merchant.com.hearingclinic.hearingaids";
 
 @Injectable()
-export class StripeService {
+export class StripeService implements StripeBackendAPI {
     private customerContext: StripeCustomerContext;
 
     constructor() {
+        StripeConfig.shared().backendAPI = this;
         StripeConfig.shared().publishableKey = publishableKey;
-        StripeConfig.shared().backendBaseURL = backendBaseURL;
         StripeConfig.shared().appleMerchantID = appleMerchantID;
         StripeConfig.shared().companyName = "Demo Company";
         StripeConfig.shared().shippingType = STPShippingType.Shipping;
@@ -30,8 +31,49 @@ export class StripeService {
         StripeConfig.shared().additionalPaymentMethods = STPPaymentMethodType.All;
 
         this.customerContext = new StripeCustomerContext();
-    }    
-    
+    }
+
+    private backendURL(pathComponent: string): string {
+        if (!backendBaseURL) throw new Error("backendBaseURL must be set");
+        if (!backendBaseURL.endsWith("/")) {
+            return backendBaseURL + "/" + pathComponent;
+        } else {
+            return backendBaseURL + pathComponent;
+        }
+    }
+
+    createCustomerKey(apiVersion: string): Promise<any> {
+        let url = this.backendURL("ephemeral_keys");
+        return httpModule.request({
+            url: url,
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
+            content: "api_version=" + apiVersion
+        }).then(response => {
+            if (response.statusCode < 200 || response.statusCode >= 300) {
+                throw new Error(response.content.toString());
+            }
+            return response.content.toJSON();
+        });
+    }
+
+    completeCharge(stripeID: string, amount: number, shippingHash: string): Promise<void> {
+        let url = this.backendURL("charge");
+        return httpModule.request({
+            url: url,
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
+            content:
+                "source=" + stripeID +
+                "&amount=" + amount +
+                "&" + shippingHash
+        }).then(response => {
+            if (response.statusCode < 200 || response.statusCode >= 300) {
+                throw new Error(response.content.toString());
+            }
+        });
+    }
+
     createPaymentContext(page: Page, price: number, listener?: StripePaymentListener): StripePaymentContext {
         return new StripePaymentContext(page, this.customerContext, price, "usd", listener);
     }

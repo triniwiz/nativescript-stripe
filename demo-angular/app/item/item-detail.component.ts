@@ -72,10 +72,11 @@ class Listener implements StripePaymentListener {
         }
         this.component.changeDetectionRef.detectChanges();
     }
-
+    
     onPaymentSuccess(): void {
         this.component.successMessage =
-         `Congratulations! You bought a ${this.component.item.name} for $${this.component.item.price/100}.`;
+        `Congratulations! You bought a "${this.component.item.name}" for $${this.component.item.price/100}.`;
+        this.component.changeDetectionRef.detectChanges();
     }
 
     onError(errorCode: number, message: string) {

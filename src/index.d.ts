@@ -2,10 +2,9 @@ import { View } from "ui/core/view";
 import { Page } from "ui/page";
 
 export declare class StripeConfigCommon {
+    backendAPI: StripeBackendAPI;
     publishableKey: string;
     appleMerchantID: string;
-    backendBaseURL: string;
-    backendURL(pathComponent: string): string;
     companyName: string;
     requiredBillingAddressFields: STPBillingAddressFields;
     requiredShippingAddressFields: PKAddressField;
@@ -22,6 +21,35 @@ export declare class StripeConfig extends StripeConfigCommon {
 }
 export declare class Stripe {
     createToken(card: any, cb: Function): void;
+}
+export declare interface StripeBackendAPI {
+    /**
+     * Calls the client-implemented Stripe backend to retrieve a Customer Key
+     * (ephemeral key).
+     * 
+     * @param apiVersion The API Version to send to the backend.
+     * @returns a Promise with a response containing the ephemeral key as
+     *     returned by the Stripe backend. For example, response.content.toJSON().
+     */
+    createCustomerKey(apiVersion: string): Promise<any>;
+
+    /**
+     * Calls the client-implemented Stripe backend to complete a charge.
+     * 
+     * @param stripeID The Stripe ID to send to the backend.
+     * @param amount  The amount to charge, in pennies.
+     * @param shippingHash A hash representing shipping info that can be sent to
+     *     the Stripe backend. Looks similar to:
+     *     "shipping[name]=XX&shipping[address][city]=Sacramento"
+     * @returns a Promise that resolves on success and rejects on failure.
+     */
+    completeCharge(stripeID: string, amount: number, shippingHash: string): Promise<void>;
+}
+export declare interface StripePaymentListener {
+    onPaymentDataChanged(data: StripePaymentData): void;
+    onPaymentSuccess(): void;
+    onError(errorCode: number, message: string): void;
+    provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }
 export declare class StripeCustomerContext {
     native: any;
@@ -43,12 +71,6 @@ export declare class StripePaymentContext {
     requestPayment(): void;
     presentPaymentMethods(): void;
     presentShipping(): void;
-}
-export declare interface StripePaymentListener {
-    onPaymentDataChanged(data: StripePaymentData): void;
-    onPaymentSuccess(): void;
-    onError(errorCode: number, message: string): void;
-    provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }
 export declare interface StripePaymentMethod {
     image: any; // TODO: UIImage marshals to ???

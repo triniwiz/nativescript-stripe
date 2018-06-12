@@ -1,4 +1,3 @@
-import * as httpModule from "http";
 import { Page } from "tns-core-modules/ui/page";
 import * as utils from "tns-core-modules/utils/utils";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingMethod } from "../common";
@@ -67,17 +66,12 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
     }
 
     createCustomerKeyWithAPIVersionCompletion(apiVersion: string, completion: (p1: NSDictionary<any, any>, p2: NSError) => void): void {
-        let url = StripeConfig.shared().backendURL("ephemeral_keys");
-        httpModule.request({
-            url: url,
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
-            content: "api_version=" + apiVersion
-        }).then(response => {
-            completion(response.content.toJSON(), null);
-        }, e => {
-            completion(null, e);
-        });
+        StripeConfig.shared().backendAPI.createCustomerKey(apiVersion)
+            .then(key => {
+                completion(key, null);
+            }).catch(e => {
+                completion(null, createError("CustomerKey", 500, e));
+            });
     }
 }
 
@@ -170,25 +164,17 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 
     paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
         console.info("paymentContextDidCreatePaymentResultCompletion");
-        let url = StripeConfig.shared().backendURL("charge");
         let shippingDic = STPAddress.shippingInfoForChargeWithAddressShippingMethod(paymentContext.shippingAddress, paymentContext.selectedShippingMethod);
-        httpModule.request({
-            url: url,
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
-            content:
-                "source=" + paymentResult.source.stripeID +
-                "&amount=" + paymentContext.paymentAmount +
-                "&" + encodeDictionary("shipping", shippingDic)
-        }).then(response => {
-            if (response.statusCode >= 200 && response.statusCode < 300) {
+        let shippingHash = encodeDictionary("shipping", shippingDic);
+        StripeConfig.shared().backendAPI.completeCharge(
+            paymentResult.source.stripeID,
+            paymentContext.paymentAmount,
+            shippingHash)
+            .then(() => {
                 completion(null);
-            } else {
-                completion(createError("PaymentError", 110, "Error: " + response.content.toString()))
-            }
-        }, e => {
-            completion(createError("PaymentError", 100, "Error: " + e));
-        });
+            }).catch(e => {
+                completion(createError("PaymentError", 100, e));
+            });
     }
 
     paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void {
