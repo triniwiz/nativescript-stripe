@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as httpModule from "http";
-import { PKAddressField, STPPaymentMethodType, STPShippingType, StripeBackendAPI, StripeConfig, StripeCustomerContext, StripePaymentContext, StripePaymentListener } from "nativescript-stripe";
+import { StripeBackendAPI, StripeConfig, StripeCustomerContext, StripePaymentContext, StripePaymentListener, StripeShippingAddressField } from "nativescript-stripe";
 import { Page } from "ui/page";
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
@@ -26,9 +26,7 @@ export class StripeService implements StripeBackendAPI {
         StripeConfig.shared().publishableKey = publishableKey;
         StripeConfig.shared().appleMerchantID = appleMerchantID;
         StripeConfig.shared().companyName = "Demo Company";
-        StripeConfig.shared().shippingType = STPShippingType.Shipping;
-        StripeConfig.shared().requiredShippingAddressFields = PKAddressField.PostalAddress;
-        StripeConfig.shared().additionalPaymentMethods = STPPaymentMethodType.All;
+        StripeConfig.shared().requiredShippingAddressFields = StripeShippingAddressField.PostalAddress;
 
         this.customerContext = new StripeCustomerContext();
     }

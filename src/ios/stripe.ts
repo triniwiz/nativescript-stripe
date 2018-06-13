@@ -33,14 +33,11 @@ export class StripeConfig extends StripeConfigCommon {
         let config = STPPaymentConfiguration.sharedConfiguration();
         if (this.publishableKey) config.publishableKey = this.publishableKey;
         if (this.appleMerchantID) config.appleMerchantIdentifier = this.appleMerchantID;
-        if (this.requiredBillingAddressFields) config.requiredBillingAddressFields = this.requiredBillingAddressFields;
-        if (this.requiredShippingAddressFields) config.requiredShippingAddressFields = this.requiredShippingAddressFields;
-        if (this.shippingType) config.shippingType = this.shippingType;
-        if (this.additionalPaymentMethods) config.additionalPaymentMethods = this.additionalPaymentMethods;
+        if (this.requiredBillingAddressFields) config.requiredBillingAddressFields = this.requiredBillingAddressFields as any;
+        if (this.requiredShippingAddressFields) config.requiredShippingAddressFields = this.requiredShippingAddressFields as any;
         if (this.createCardSources !== undefined) config.createCardSources = this.createCardSources;
         if (this.companyName) config.companyName = this.companyName;
         if (this.verifyPrefilledShippingAddress !== undefined) config.verifyPrefilledShippingAddress = this.verifyPrefilledShippingAddress;
-        if (this.stripeAccount) config.stripeAccount = this.stripeAccount;
         return config;
     }
 
@@ -226,9 +223,6 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 function createError(domain: string, code: number, error: string): NSError {
     let userInfo = <NSMutableDictionary<string, any>>NSMutableDictionary.alloc().init();
     userInfo.setValueForKey(error, NSLocalizedDescriptionKey);
-    // let userInfo = new NSDictionary(
-    //     [error],
-    //     [NSLocalizedDescriptionKey]);
     return new NSError({
         domain: domain, code: code, userInfo: userInfo
     });

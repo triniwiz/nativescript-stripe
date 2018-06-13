@@ -6,13 +6,10 @@ export declare class StripeConfigCommon {
     publishableKey: string;
     appleMerchantID: string;
     companyName: string;
-    requiredBillingAddressFields: STPBillingAddressFields;
-    requiredShippingAddressFields: PKAddressField;
+    requiredBillingAddressFields: StripeBillingAddressFields;
+    requiredShippingAddressFields: StripeShippingAddressField;
     verifyPrefilledShippingAddress: boolean;
-    shippingType: STPShippingType;
-    additionalPaymentMethods: STPPaymentMethodType;
     createCardSources: boolean;
-    stripeAccount: string;
 }
 export declare class StripeConfig extends StripeConfigCommon {
     native: any;
@@ -169,4 +166,20 @@ export declare const enum STPPaymentMethodType {
     None = 0,
     ApplePay = 1,
     All = 1
+}
+export declare const enum StripeBillingAddressFields {
+    None = 0,
+    Zip = 1,
+    Full = 2,
+    Name = 3
+}
+
+/** Bitfield of available shipping address fields. */
+export declare const enum StripeShippingAddressField {
+    None = 0,
+    PostalAddress = 1,
+    Phone = 2,
+    Email = 4,
+    Name = 8,
+    All = 15
 }

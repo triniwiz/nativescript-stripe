@@ -19,21 +19,17 @@ export class StripeConfigCommon {
 
     // See documentation for STPPaymentConfiguration for using these fields.
     // If left 'undefined' the default value will be used.
-    // TODO: Don't use iOS-specific data types
     companyName: string = undefined;
-    requiredBillingAddressFields: STPBillingAddressFields = undefined;
-    requiredShippingAddressFields: PKAddressField = undefined;
+    requiredBillingAddressFields: StripeBillingAddressFields = undefined;
+    requiredShippingAddressFields: StripeShippingAddressField = undefined;
     verifyPrefilledShippingAddress: boolean = undefined;
-    shippingType: STPShippingType = undefined;
-    additionalPaymentMethods: STPPaymentMethodType = undefined;
     createCardSources: boolean = undefined;
-    stripeAccount: string = undefined;
 }
 
 export interface StripeBackendAPI {
     /**
      * Calls the client-implemented Stripe backend to retrieve a Customer Key
-     * (ephemeral key).
+     * (ephemeral key) for this session.
      * 
      * @param apiVersion The API Version to send to the backend.
      * @returns a Promise with a response containing the ephemeral key as
@@ -95,6 +91,23 @@ export interface StripeAddress {
     country: string;
     phone: string;
     email: string;
+}
+
+export const enum StripeBillingAddressFields {
+    None = 0,
+    Zip = 1,
+    Full = 2,
+    Name = 3
+}
+
+/** Bitfield of available shipping address fields. */
+export const enum StripeShippingAddressField {
+    None = 0,
+    PostalAddress = 1,
+    Phone = 2,
+    Email = 4,
+    Name = 8,
+    All = 15
 }
 
 export interface StripePaymentData {
