@@ -78,6 +78,7 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
 export class StripePaymentContext {
     native: STPPaymentContext;
     private delegate: StripePaymentDelegate; // Necessary to keep delegate in memory
+     _paymentInProgress: boolean;
 
     constructor(private page: Page,
         customerContext: StripeCustomerContext,
@@ -93,7 +94,7 @@ export class StripePaymentContext {
         this.native.paymentAmount = amount;
         this.native.paymentCurrency = currency;
         if (listener) {
-            this.delegate = StripePaymentDelegate.create(listener);
+            this.delegate = StripePaymentDelegate.create(this, listener);
             this.native.delegate = this.delegate;
         }
     }
@@ -101,6 +102,14 @@ export class StripePaymentContext {
     /** Is the Stripe native component loading? */
     get loading(): boolean {
         return this.native.loading;
+    }
+
+    get isPaymentReady(): boolean {
+        return this.native.selectedPaymentMethod != null;
+    }
+
+    get paymentInProgress(): boolean {
+        return this._paymentInProgress;
     }
 
     /** Total amount (including shipping) in pennies. */
@@ -127,6 +136,7 @@ export class StripePaymentContext {
 
     requestPayment() {
         this.ensureHostViewController();
+        this._paymentInProgress = true;
         this.native.requestPayment();
     }
 
@@ -144,12 +154,14 @@ export class StripePaymentContext {
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
     static ObjCProtocols = [STPPaymentContextDelegate];
 
-    static create(listener: StripePaymentListener): StripePaymentDelegate {
+    static create(parent: StripePaymentContext, listener: StripePaymentListener): StripePaymentDelegate {
         let self = <StripePaymentDelegate>super.new();
+        self.parent = parent;
         self.listener = listener;
         return self;
     }
 
+    private parent: StripePaymentContext;
     private listener: StripePaymentListener;
 
     paymentContextDidChange(paymentContext: STPPaymentContext): void {
@@ -184,6 +196,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 
     paymentContextDidFinishWithStatusError(paymentContext: STPPaymentContext, status: STPPaymentStatus, error: NSError): void {
         console.info("paymentContextDidFinishWithStatusError");
+        this.parent._paymentInProgress = false;
         switch (status) {
             case STPPaymentStatus.Error:
                 this.listener.onError(error.code, error.localizedDescription);

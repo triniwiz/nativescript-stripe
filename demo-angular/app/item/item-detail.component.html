@@ -22,6 +22,7 @@
     </GridLayout>
     <StackLayout class="hr-light m-10"></StackLayout>
     <Label [text]="errorMessage" class="text-danger" textWrap="true"></Label>
-    <Button text="Buy" class="btn btn-primary btn-active" (tap)="buy()"></Button>
+    <Button text="Buy" [isEnabled]="canBuy" class="btn btn-primary btn-active" (tap)="buy()"></Button>
+    <ActivityIndicator [busy]="paymentInProgress" [visibility]="paymentInProgress ? 'visible' : 'collapse'"></ActivityIndicator>
     <Label [text]="successMessage" class="text-primary" textWrap="true"></Label>
 </StackLayout>

@@ -64,6 +64,9 @@ export declare class StripePaymentContext {
         listener?: StripePaymentListener);
     /** Is the native component loading? */
     readonly loading: boolean;
+    /** Has user entered enough info that a charge can be made? */
+    readonly isPaymentReady: boolean;
+    readonly paymentInProgress: boolean;
     /** Total amount (including shipping) in pennies. */
     readonly amount: number;
     readonly selectedPaymentMethod: StripePaymentMethod;

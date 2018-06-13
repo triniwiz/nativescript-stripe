@@ -16,7 +16,6 @@ export class ItemDetailComponent implements OnInit {
     errorMessage: string;
     successMessage: string;
     private paymentContext: StripePaymentContext;
-    private paymentInProgress: boolean;
 
     constructor(
         private page: Page,
@@ -38,6 +37,16 @@ export class ItemDetailComponent implements OnInit {
         return this.paymentContext ? this.paymentContext.loading : true;
     }
 
+    get paymentInProgress(): boolean {
+        return this.paymentContext ? this.paymentContext.paymentInProgress : false;
+    }
+
+    get canBuy(): boolean {
+        return this.paymentContext ?
+            this.paymentContext.isPaymentReady && !this.paymentContext.paymentInProgress :
+            false;
+    }
+
     get total(): number {
         return this.paymentContext ? this.paymentContext.amount : this.item.price;
     }
@@ -51,7 +60,6 @@ export class ItemDetailComponent implements OnInit {
     }
 
     buy() {
-        this.paymentInProgress = true;
         this.stripeService.requestPayment(this.paymentContext);
     }
 }
@@ -72,10 +80,10 @@ class Listener implements StripePaymentListener {
         }
         this.component.changeDetectionRef.detectChanges();
     }
-    
+
     onPaymentSuccess(): void {
         this.component.successMessage =
-        `Congratulations! You bought a "${this.component.item.name}" for $${this.component.item.price/100}.`;
+            `Congratulations! You bought a "${this.component.item.name}" for $${this.component.item.price / 100}.`;
         this.component.changeDetectionRef.detectChanges();
     }
 
