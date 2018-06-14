@@ -1,20 +1,19 @@
-import { CardBrand } from "../common";
+import { CardBrand, CardCommon } from "../common";
 
-export class Card {
-    private _card: STPCardParams;
-    constructor(cardNumber: string, cardExpMonth: any, cardExpYear: any, cardCVC: string) {
-        this._card = STPCardParams.alloc().init();
-        this._card.number = cardNumber;
-        this._card.expMonth = cardExpMonth;
-        this._card.expYear = cardExpYear;
-        this._card.cvc = cardCVC;
+export class Card implements CardCommon {
+    native: STPCardParams;
+
+    constructor(cardNumber: string, expMonth: any, expYear: any, cvc: string) {
+        this.native = STPCardParams.alloc().init();
+        this.native.number = cardNumber;
+        this.native.expMonth = expMonth;
+        this.native.expYear = expYear;
+        this.native.cvc = cvc;
     }
-    get card(): STPCardParams {
-        return this._card;
-    }
+
     validateNumber(): boolean {
         let isValid: boolean = false;
-        const state = STPCardValidator.validationStateForNumberValidatingCardBrand(this._card.number, true)
+        const state = STPCardValidator.validationStateForNumberValidatingCardBrand(this.native.number, true)
         switch (state) {
             case STPCardValidationState.Valid:
                 isValid = true;
@@ -28,11 +27,10 @@ export class Card {
         }
         return isValid;
     }
-
     validateCVC(): boolean {
         let isValid: boolean = false;
-        const brand = STPCardValidator.brandForNumber(this._card.number);
-        const state = STPCardValidator.validationStateForCVCCardBrand(this._card.cvc, brand);
+        const brand = STPCardValidator.brandForNumber(this.native.number);
+        const state = STPCardValidator.validationStateForCVCCardBrand(this.native.cvc, brand);
         switch (state) {
             case STPCardValidationState.Valid:
                 isValid = true;
@@ -48,14 +46,14 @@ export class Card {
     }
     validateCard(): boolean {
         try {
-            return STPCardValidator.validationStateForCard(this._card) === STPCardValidationState.Valid;
+            return STPCardValidator.validationStateForCard(this.native) === STPCardValidationState.Valid;
         } catch (ex) {
             return false;
         }
     }
     validateExpMonth(): boolean {
         let isValid: boolean = false;
-        const state = STPCardValidator.validationStateForExpirationMonth(String(this._card.expMonth));
+        const state = STPCardValidator.validationStateForExpirationMonth(String(this.native.expMonth));
         switch (state) {
             case STPCardValidationState.Valid:
                 isValid = true;
@@ -73,8 +71,8 @@ export class Card {
         let isValid: boolean = false;
         const date = new Date();
         const state = STPCardValidator.validationStateForExpirationYearInMonthInCurrentYearCurrentMonth(
-            String(this._card.expYear),
-            String(this._card.expMonth),
+            String(this.native.expYear),
+            String(this.native.expMonth),
             date.getFullYear(),
             (date.getMonth() + 1)
         );
@@ -92,92 +90,92 @@ export class Card {
         return isValid;
     }
     get number(): string {
-        return this._card.number;
+        return this.native.number;
     }
     get cvc(): string {
-        return this._card.cvc;
+        return this.native.cvc;
     }
     get expMonth(): any {
-        return this._card.expMonth;
+        return this.native.expMonth;
     }
     get expYear(): any {
-        return this._card.expYear;
+        return this.native.expYear;
     }
     get name(): string {
-        return this._card.name;
+        return this.native.name;
     }
     set name(value: string) {
-        this._card.name = value;
+        this.native.name = value;
     }
 
     get addressLine1(): string {
-        return this._card.addressLine1;
+        return this.native.addressLine1;
     }
 
     set addressLine1(value: string) {
-        this._card.addressLine1 = value;
+        this.native.addressLine1 = value;
     }
 
     get addressLine2(): string {
-        return this._card.addressLine2;
+        return this.native.addressLine2;
     }
     set addressLine2(value: string) {
-        this._card.addressLine2 = value;
+        this.native.addressLine2 = value;
     }
 
     get addressCity(): string {
-        return this._card.addressCity;
+        return this.native.addressCity;
     }
 
     set addressCity(value: string) {
-        this._card.addressCity = value;
+        this.native.addressCity = value;
     }
 
     get addressZip(): string {
-        return this._card.addressZip;
+        return this.native.addressZip;
     }
 
     set addressZip(value: string) {
-        this._card.addressZip = value;
+        this.native.addressZip = value;
     }
 
     get addressState(): string {
-        return this._card.addressState;
+        return this.native.addressState;
     }
 
     set addressState(value: string) {
-        this._card.addressState = value;
+        this.native.addressState = value;
     }
 
 
     get addressCountry(): string {
-        return this._card.addressCountry;
+        return this.native.addressCountry;
     }
 
 
     set addressCountry(value: string) {
-        this._card.addressCountry = value;
+        this.native.addressCountry = value;
     }
 
 
     get currency(): string {
-        return this._card.currency;
+        return this.native.currency;
     }
 
 
     set currency(value: string) {
-        this._card.currency = value;
+        this.native.currency = value;
     }
 
 
     get last4(): string {
-        return this._card.last4;
+        return this.native.last4;
     }
 
 
     get brand(): CardBrand {
         let brand: CardBrand = "Unknown";
-        switch (STPCardValidator.brandForNumber(this._card.number)) {
+        switch (STPCardValidator.brandForNumber(this.native.number)) {
             case STPCardBrand.Visa:
                 brand = "Visa";
                 break;
@@ -203,23 +201,5 @@ export class Card {
         }
 
         return brand;
-    }
-
-    /**
-     * Not available in IOS
-     */
-    get fingerprint(): string {
-        return "";
-    }
-
-    /**
-     * Not available in IOS
-     */
-    get funding(): string {
-        return "";
-    }
-
-    get country(): string {
-        return this._card.addressCountry;
     }
 }

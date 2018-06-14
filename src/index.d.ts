@@ -1,6 +1,67 @@
 import { View } from "ui/core/view";
 import { Page } from "ui/page";
 
+// ****** Custom Integration components
+
+export declare class StripeCommon {
+    constructor(apiKey: string);
+    createToken(card: CardCommon, cb: Function);
+}
+export declare class Stripe extends StripeCommon {
+    constructor(apiKey: string);
+    createToken(card: Card, cb: Function): void;
+}
+
+export declare interface CardCommon {
+    readonly native: any;
+    name: string;
+    readonly number: string;
+    readonly cvc: string;
+    readonly expMonth: number;
+    readonly expYear: number;
+    addressLine1: string;
+    addressLine2: string;
+    addressCity: string;
+    addressState: string;
+    addressZip: string;
+    addressCountry: string;
+    currency: string;
+    last4: string;
+    brand: CardBrand;
+
+    validateCard(): boolean;
+    validateNumber(): boolean;
+    validateCVC(): boolean;
+    validateExpMonth(): boolean;
+    validateExpYear(): boolean;
+}
+export declare class Card implements CardCommon {
+    readonly native: any;
+    readonly number: string;
+    readonly cvc: string;
+    readonly expMonth: any;
+    readonly expYear: any;
+    readonly last4: string;
+    readonly brand: CardBrand;
+    name: string;
+    addressLine1: string;
+    addressLine2: string;
+    addressCity: string;
+    addressZip: string;
+    addressState: string;
+    addressCountry: string;
+    currency: string;
+    
+    constructor(cardNumber: string, expMonth: number, expYear: number, cvc: string);
+    validateNumber(): boolean;
+    validateCVC(): boolean;
+    validateCard(): boolean;
+    validateExpMonth(): boolean;
+    validateExpYear(): boolean;
+}
+
+// ***** Standard Integration components
+
 export declare class StripeConfigCommon {
     backendAPI: StripeBackendAPI;
     publishableKey: string;
@@ -15,9 +76,6 @@ export declare class StripeConfig extends StripeConfigCommon {
     native: any;
     private toNative(): any;
     static shared(): StripeConfig;
-}
-export declare class Stripe {
-    createToken(card: any, cb: Function): void;
 }
 export declare interface StripeBackendAPI {
     /**
@@ -109,33 +167,6 @@ export declare interface StripeShippingMethods {
     shippingMethods: StripeShippingMethod[];
     /** The pre-selected (default) shipping method for the address. */
     selectedShippingMethod: StripeShippingMethod;
-}
-export declare class Card {
-    private _card;
-    constructor(cardNumber: string, cardExpMonth: any, cardExpYear: any, cardCVC: string);
-    readonly card: any;
-    validateNumber(): boolean;
-    validateCVC(): boolean;
-    validateCard(): boolean;
-    validateExpMonth(): boolean;
-    validateExpYear(): boolean;
-    readonly number: string;
-    readonly cvc: string;
-    readonly expMonth: any;
-    readonly expYear: any;
-    name: string;
-    addressLine1: string;
-    addressLine2: string;
-    addressCity: string;
-    addressZip: string;
-    addressState: string;
-    addressCountry: string;
-    currency: string;
-    readonly last4: string;
-    readonly brand: CardBrand;
-    readonly fingerprint: string;
-    readonly funding: string;
-    readonly country: string;
 }
 export declare class CreditCardView extends View {
     nativeView: any;

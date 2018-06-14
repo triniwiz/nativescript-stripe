@@ -1,5 +1,34 @@
-export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
+// ***** Custom Integration components
+export abstract class StripeCommon {
+    protected constructor(apiKey: string) { }
+    abstract createToken(card: CardCommon, cb: (token, error) => void);
+}
 
+export interface CardCommon {
+    readonly native: any;
+    name: string;
+    readonly number: string;
+    readonly cvc: string;
+    readonly expMonth: number;
+    readonly expYear: number;
+    readonly last4: string;
+    readonly brand: CardBrand;
+    addressLine1: string;
+    addressLine2: string;
+    addressCity: string;
+    addressState: string;
+    addressZip: string;
+    addressCountry: string;
+    currency: string;
+
+    validateCard(): boolean;
+    validateNumber(): boolean;
+    validateCVC(): boolean;
+    validateExpMonth(): boolean;
+    validateExpYear(): boolean;
+}
+
+// ***** Standard Integration components
 export class StripeConfigCommon {
     protected static instance: StripeConfigCommon;
 
@@ -115,3 +144,5 @@ export interface StripePaymentData {
     paymentMethod: StripePaymentMethod;
     shippingInfo: StripeShippingMethod;
 }
+
+export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";

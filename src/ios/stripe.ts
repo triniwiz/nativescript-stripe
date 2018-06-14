@@ -1,11 +1,17 @@
 import { Page } from "tns-core-modules/ui/page";
 import * as utils from "tns-core-modules/utils/utils";
-import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingMethod } from "../common";
+import { StripeAddress, StripeCommon, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingMethod } from "../common";
+import { Card } from "./card";
 
-export class Stripe {
-    createToken(card: any/*Native Card Instance*/, cb: Function) {
+export class Stripe extends StripeCommon {
+    constructor(apiKey: string) {
+        super(apiKey);
+        STPPaymentConfiguration.sharedConfiguration().publishableKey = apiKey;
+    }
+
+    createToken(card: Card, cb: Function) {
         const apiClient = utils.ios.getter(STPAPIClient, STPAPIClient.sharedClient);
-        apiClient.createTokenWithCardCompletion(card, (token: STPToken, error: NSError) => {
+        apiClient.createTokenWithCardCompletion(card.native, (token: STPToken, error: NSError) => {
             if (!error) {
                 if (typeof cb === "function") {
                     cb(null, token);
@@ -75,7 +81,7 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
 export class StripePaymentContext {
     native: STPPaymentContext;
     private delegate: StripePaymentDelegate; // Necessary to keep delegate in memory
-     _paymentInProgress: boolean;
+    _paymentInProgress: boolean;
 
     constructor(private page: Page,
         customerContext: StripeCustomerContext,
