@@ -3,11 +3,11 @@ import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { CreditCardViewModule } from "nativescript-stripe/angular";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app.routing";
-import { CreditCardViewComponent } from "./item/creditcardview.component";
-import { CustomersComponent } from "./item/customers.component";
-import { HomeComponent } from "./item/home.component";
-import { StandardComponent } from "./item/standard.component";
-import { StripeService } from "./item/stripe.service";
+import { CreditCardViewComponent } from "./demo/creditcardview.component";
+import { CustomersComponent } from "./demo/customers.component";
+import { HomeComponent } from "./demo/home.component";
+import { StandardComponent } from "./demo/standard.component";
+import { StripeService } from "./demo/stripe.service";
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";

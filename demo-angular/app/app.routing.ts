@@ -1,10 +1,10 @@
 import { NgModule } from "@angular/core";
 import { Routes } from "@angular/router";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
-import { CreditCardViewComponent } from "./item/creditcardview.component";
-import { CustomersComponent } from "./item/customers.component";
-import { HomeComponent } from "./item/home.component";
-import { StandardComponent } from "./item/standard.component";
+import { CreditCardViewComponent } from "./demo/creditcardview.component";
+import { CustomersComponent } from "./demo/customers.component";
+import { HomeComponent } from "./demo/home.component";
+import { StandardComponent } from "./demo/standard.component";
 
 const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
