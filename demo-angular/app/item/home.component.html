@@ -1,0 +1,13 @@
+<ActionBar title="Stripe Angular Demo" class="action-bar">
+</ActionBar>
+
+<StackLayout class="page p-10">
+    <Label text="Standard Integration" class="h2"></Label>
+    <Button text="Demo" [nsRouterLink]="['/std']" class="btn btn-primary btn-active"></Button>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <Label text="Custom Integration" class="h2"></Label>
+    <Button text="CreditCardView" [nsRouterLink]="['/ccview']" class="btn btn-primary btn-active"></Button>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <Label text="Customers" class="h2"></Label>
+    <Button text="Demo" [nsRouterLink]="['/cust']" class="btn btn-primary btn-active"></Button>
+</StackLayout>

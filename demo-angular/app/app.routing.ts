@@ -2,14 +2,16 @@ import { NgModule } from "@angular/core";
 import { Routes } from "@angular/router";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
 import { CreditCardViewComponent } from "./item/creditcardview.component";
-import { ItemDetailComponent } from "./item/item-detail.component";
-import { ItemsComponent } from "./item/items.component";
+import { CustomersComponent } from "./item/customers.component";
+import { HomeComponent } from "./item/home.component";
+import { StandardComponent } from "./item/standard.component";
 
 const routes: Routes = [
-    { path: "", redirectTo: "/items", pathMatch: "full" },
-    { path: "items", component: ItemsComponent },
-    { path: "item", component: ItemDetailComponent },
+    { path: "", redirectTo: "/home", pathMatch: "full" },
+    { path: "home", component: HomeComponent },
+    { path: "std", component: StandardComponent },
     { path: "ccview", component: CreditCardViewComponent },
+    { path: "cust", component: CustomersComponent },
 ];
 
 @NgModule({

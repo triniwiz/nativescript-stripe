@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
 
 @Component({
-    selector: "ns-items",
+    selector: "stp-home",
     moduleId: module.id,
-    templateUrl: "./items.component.html",
+    templateUrl: "./home.component.html",
 })
-export class ItemsComponent {
+export class HomeComponent {
     constructor() { }
 }

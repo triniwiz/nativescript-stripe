@@ -1,11 +1,12 @@
-import { NO_ERRORS_SCHEMA, NgModule } from "@angular/core";
+import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { CreditCardViewModule } from "nativescript-stripe/angular";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app.routing";
 import { CreditCardViewComponent } from "./item/creditcardview.component";
-import { ItemDetailComponent } from "./item/item-detail.component";
-import { ItemsComponent } from "./item/items.component";
+import { CustomersComponent } from "./item/customers.component";
+import { HomeComponent } from "./item/home.component";
+import { StandardComponent } from "./item/standard.component";
 import { StripeService } from "./item/stripe.service";
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
@@ -25,9 +26,10 @@ import { StripeService } from "./item/stripe.service";
     ],
     declarations: [
         AppComponent,
-        ItemsComponent,
-        ItemDetailComponent,
-        CreditCardViewComponent
+        HomeComponent,
+        StandardComponent,
+        CreditCardViewComponent,
+        CustomersComponent
     ],
     providers: [
         StripeService

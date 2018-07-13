@@ -5,11 +5,11 @@ import { Item } from "./item";
 import { StripeService } from "./stripe.service";
 
 @Component({
-    selector: "ns-details",
+    selector: "stp-details",
     moduleId: module.id,
-    templateUrl: "./item-detail.component.html",
+    templateUrl: "./standard.component.html",
 })
-export class ItemDetailComponent implements OnInit {
+export class StandardComponent implements OnInit {
     item: Item;
     paymentType: string;
     shippingType: string;
@@ -65,7 +65,7 @@ export class ItemDetailComponent implements OnInit {
 }
 
 class Listener implements StripePaymentListener {
-    constructor(private component: ItemDetailComponent) {
+    constructor(private component: StandardComponent) {
     }
 
     onPaymentDataChanged(data: StripePaymentData) {

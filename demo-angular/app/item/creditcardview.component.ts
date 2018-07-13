@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component } from "@angular/core";
 import { CreditCardView, Stripe } from "nativescript-stripe";
 
 @Component({
-    selector: "ns-ccview",
+    selector: "stp-ccview",
     moduleId: module.id,
     templateUrl: "./creditcardview.component.html",
 })
