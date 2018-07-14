@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { StripeAddress, StripePaymentContext, StripePaymentData, StripePaymentListener, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe";
+import { StripeAddress, StripePaymentData, StripePaymentListener, StripePaymentSession, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe";
 import { Page } from "ui/page";
 import { Item } from "./item";
 import { StripeService } from "./stripe.service";
@@ -15,7 +15,7 @@ export class StandardComponent implements OnInit {
     shippingType: string;
     errorMessage: string;
     successMessage: string;
-    private paymentContext: StripePaymentContext;
+    private paymentSession: StripePaymentSession;
 
     constructor(
         private page: Page,
@@ -29,38 +29,38 @@ export class StandardComponent implements OnInit {
             name: "Something to buy",
             price: 1200
         };
-        this.paymentContext = this.stripeService.createPaymentContext(
+        this.paymentSession = this.stripeService.createPaymentSession(
             this.page, this.item.price, new Listener(this));
     }
 
     get isLoading(): boolean {
-        return this.paymentContext ? this.paymentContext.loading : true;
+        return this.paymentSession ? this.paymentSession.loading : true;
     }
 
     get paymentInProgress(): boolean {
-        return this.paymentContext ? this.paymentContext.paymentInProgress : false;
+        return this.paymentSession ? this.paymentSession.paymentInProgress : false;
     }
 
     get canBuy(): boolean {
-        return this.paymentContext ?
-            this.paymentContext.isPaymentReady && !this.paymentContext.paymentInProgress :
+        return this.paymentSession ?
+            this.paymentSession.isPaymentReady && !this.paymentSession.paymentInProgress :
             false;
     }
 
     get total(): number {
-        return this.paymentContext ? this.paymentContext.amount : this.item.price;
+        return this.paymentSession ? this.paymentSession.amount : this.item.price;
     }
 
     showPaymentMethods() {
-        this.stripeService.showPaymentMethods(this.paymentContext);
+        this.stripeService.showPaymentMethods(this.paymentSession);
     }
 
     showShipping() {
-        this.stripeService.showShipping(this.paymentContext);
+        this.stripeService.showShipping(this.paymentSession);
     }
 
     buy() {
-        this.stripeService.requestPayment(this.paymentContext);
+        this.stripeService.requestPayment(this.paymentSession);
     }
 }
 

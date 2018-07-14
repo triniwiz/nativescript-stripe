@@ -17,7 +17,6 @@ export class Stripe extends StripeCommon {
                     cb(null, token);
                 }
             } else {
-                console.log(error.localizedDescription);
                 if (typeof cb === "function") {
                     cb(new Error(error.localizedDescription));
                 }
@@ -53,7 +52,7 @@ export class StripeConfig extends StripeConfigCommon {
     }
 }
 
-export class StripeCustomerContext {
+export class StripeCustomerSession {
     native: STPCustomerContext;
 
     constructor() {
@@ -78,19 +77,19 @@ class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
     }
 }
 
-export class StripePaymentContext {
+export class StripePaymentSession {
     native: STPPaymentContext;
     private delegate: StripePaymentDelegate; // Necessary to keep delegate in memory
     _paymentInProgress: boolean;
 
     constructor(private page: Page,
-        customerContext: StripeCustomerContext,
+        customerSession: StripeCustomerSession,
         amount: number,
         currency: string,
         listener?: StripePaymentListener) {
         this.native = STPPaymentContext.alloc()
             .initWithCustomerContextConfigurationTheme(
-                customerContext.native,
+                customerSession.native,
                 StripeConfig.shared().native,
                 STPTheme.defaultTheme());
         this.native.prefilledInformation = STPUserInformation.alloc().init();
@@ -157,18 +156,17 @@ export class StripePaymentContext {
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
     static ObjCProtocols = [STPPaymentContextDelegate];
 
-    static create(parent: StripePaymentContext, listener: StripePaymentListener): StripePaymentDelegate {
+    static create(parent: StripePaymentSession, listener: StripePaymentListener): StripePaymentDelegate {
         let self = <StripePaymentDelegate>super.new();
         self.parent = parent;
         self.listener = listener;
         return self;
     }
 
-    private parent: StripePaymentContext;
+    private parent: StripePaymentSession;
     private listener: StripePaymentListener;
 
     paymentContextDidChange(paymentContext: STPPaymentContext): void {
-        console.info("paymentContextDidChange");
         let data = {
             isReadyToCharge: false,
             paymentMethod: createPaymentMethod(paymentContext),
@@ -178,7 +176,6 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     }
 
     paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
-        console.info("paymentContextDidCreatePaymentResultCompletion");
         let shippingDic = STPAddress.shippingInfoForChargeWithAddressShippingMethod(paymentContext.shippingAddress, paymentContext.selectedShippingMethod);
         let shippingHash = encodeDictionary("shipping", shippingDic);
         StripeConfig.shared().backendAPI.completeCharge(
@@ -193,12 +190,10 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     }
 
     paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void {
-        console.info("paymentContextDidFailToLoadWithError");
         this.listener.onError(error.code, error.localizedDescription);
     }
 
     paymentContextDidFinishWithStatusError(paymentContext: STPPaymentContext, status: STPPaymentStatus, error: NSError): void {
-        console.info("paymentContextDidFinishWithStatusError");
         this.parent._paymentInProgress = false;
         switch (status) {
             case STPPaymentStatus.Error:
@@ -214,7 +209,6 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     }
 
     paymentContextDidUpdateShippingAddressCompletion(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
-        console.info("paymentContextDidUpdateShippingAddressCompletion");
         let methods = this.listener.provideShippingMethods(createAddress(address));
         if (!methods.isValid) {
             completion(STPShippingStatus.Invalid, createError("ShippingError", 123, methods.validationError), null, null);

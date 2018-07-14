@@ -106,14 +106,14 @@ export declare interface StripePaymentListener {
     onError(errorCode: number, message: string): void;
     provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }
-export declare class StripeCustomerContext {
+export declare class StripeCustomerSession {
     native: any;
     constructor();
 }
-export declare class StripePaymentContext {
+export declare class StripePaymentSession {
     native: any;
     constructor(page: Page,
-        customerContext: StripeCustomerContext,
+        customerSession: StripeCustomerSession,
         amount: number,
         currency: string,
         listener?: StripePaymentListener);

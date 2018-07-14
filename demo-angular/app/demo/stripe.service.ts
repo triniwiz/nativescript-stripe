@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as httpModule from "http";
-import { StripeBackendAPI, StripeConfig, StripeCustomerContext, StripePaymentContext, StripePaymentListener, StripeShippingAddressField } from "nativescript-stripe";
+import { StripeBackendAPI, StripeConfig, StripeCustomerSession, StripePaymentListener, StripePaymentSession, StripeShippingAddressField } from "nativescript-stripe";
 import { Page } from "ui/page";
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
@@ -19,7 +19,7 @@ const appleMerchantID = "merchant.com.hearingclinic.hearingaids";
 
 @Injectable()
 export class StripeService implements StripeBackendAPI {
-    private customerContext: StripeCustomerContext;
+    private customerSession: StripeCustomerSession;
 
     constructor() {
         StripeConfig.shared().backendAPI = this;
@@ -28,7 +28,7 @@ export class StripeService implements StripeBackendAPI {
         StripeConfig.shared().companyName = "Demo Company";
         StripeConfig.shared().requiredShippingAddressFields = StripeShippingAddressField.PostalAddress;
 
-        this.customerContext = new StripeCustomerContext();
+        this.customerSession = new StripeCustomerSession();
     }
 
     private backendURL(pathComponent: string): string {
@@ -72,19 +72,19 @@ export class StripeService implements StripeBackendAPI {
         });
     }
 
-    createPaymentContext(page: Page, price: number, listener?: StripePaymentListener): StripePaymentContext {
-        return new StripePaymentContext(page, this.customerContext, price, "usd", listener);
+    createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
+        return new StripePaymentSession(page, this.customerSession, price, "usd", listener);
     }
 
-    showPaymentMethods(paymentContext: StripePaymentContext) {
-        paymentContext.presentPaymentMethods();
+    showPaymentMethods(paymentSession: StripePaymentSession) {
+        paymentSession.presentPaymentMethods();
     }
 
-    showShipping(paymentContext: StripePaymentContext) {
-        paymentContext.presentShipping();
+    showShipping(paymentSession: StripePaymentSession) {
+        paymentSession.presentShipping();
     }
 
-    requestPayment(paymentContext: StripePaymentContext) {
-        paymentContext.requestPayment();
+    requestPayment(paymentSession: StripePaymentSession) {
+        paymentSession.requestPayment();
     }
 }

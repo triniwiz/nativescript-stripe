@@ -31,8 +31,8 @@ export class Stripe {
     }
 }
 
-export class StripeCustomerContext {
+export class StripeCustomerSession {
 }
 
-export class StripePaymentContext {
+export class StripePaymentSession {
 }
