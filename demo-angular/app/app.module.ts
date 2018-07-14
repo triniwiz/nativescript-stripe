@@ -4,7 +4,6 @@ import { CreditCardViewModule } from "nativescript-stripe/angular";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app.routing";
 import { CreditCardViewComponent } from "./demo/creditcardview.component";
-import { CustomersComponent } from "./demo/customers.component";
 import { HomeComponent } from "./demo/home.component";
 import { StandardComponent } from "./demo/standard.component";
 import { StripeService } from "./demo/stripe.service";
@@ -28,8 +27,7 @@ import { StripeService } from "./demo/stripe.service";
         AppComponent,
         HomeComponent,
         StandardComponent,
-        CreditCardViewComponent,
-        CustomersComponent
+        CreditCardViewComponent
     ],
     providers: [
         StripeService
