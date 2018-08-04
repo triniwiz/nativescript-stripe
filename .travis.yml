@@ -1,23 +1,34 @@
-branches:
-  only: 
-    - master
 matrix:
   include:
     - stage: "Lint"
       language: node_js
       os: linux
       node_js: "6"
-      script: cd src && npm run ci.tslint && cd ../demo && npm run ci.tslint
-    - stage: "Build and Test"
+      script: cd src && npm run ci.tslint && cd ../demo && npm run ci.tslint && cd ../demo-angular && npm run ci.tslint
+    - stage: "WebPack, Build and Test"
+      os: osx
+      env:
+        - WebPack="iOS"
+      osx_image: xcode9.2
+      language: node_js 
+      node_js: "6"
+      jdk: oraclejdk8
+      script: cd demo && npm run build.plugin && npm i && tns build ios --bundle --env.uglify
+    - language: android
+      os: linux
+      env:
+        - WebPack="Android"
+      jdk: oraclejdk8
+      before_install: nvm install 6.10.3
+      script: cd demo && npm run build.plugin && npm i && tns build android --bundle --env.uglify --env.snapshot
+    - language: android
       env: 
         - BuildAndroid="26"
-      language: android
       os: linux
       jdk: oraclejdk8
       before_install: nvm install stable
       script:
-        - cd src && npm i && npm run tsc && cd ../demo
-        - travis_wait travis_retry tns build android
+        - cd src && npm i && npm run tsc && cd ../demo && tns build android && cd ../demo-angular && tns build android
     - os: osx
       env: 
         - BuildiOS="11"
@@ -27,40 +38,33 @@ matrix:
       node_js: "6"
       jdk: oraclejdk8
       script: 
-        - cd src && npm i && npm run tsc && cd ../demo
-        - travis_wait travis_retry tns build ios
+        - cd src && npm i && npm run tsc && cd ../demo && tns build ios && cd ../demo-angular && tns build ios
     - os: linux
       language: android
-      env:
-        - TestVersion="latest"
+      dist: precise
+      sudo: required
       jdk: oraclejdk8
-      before_install:
-        - nvm install stable
       before_script:
-        - cd seed-tests && npm i
         - echo no | android create avd --force -n test -t android-21 -b armeabi-v7a
         - emulator -avd test -no-audio -no-window &
         - android-wait-for-emulator
-      script: travis_wait travis_retry npm run test.android
-      dist: precise
+      before_install:
+        - nvm install 6
+      script: cd src && npm run test.android
     - os: osx
-      env:
-        - TestVersion="latest"
       language: node_js
       node_js: "6"
       jdk: oraclejdk8
-      osx_image: xcode8.3
-      before_script:
-        - cd seed-tests && npm i
-      script: travis_wait travis_retry npm run test.ios
+      osx_image: xcode9.2
+      script: cd src && npm run test.ios
 
 android:
   components:
     - tools
     - platform-tools
-    - build-tools-26.0.2
-    - android-23
+    - build-tools-26.0.1
     - android-26
+    - android-23
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-21
 

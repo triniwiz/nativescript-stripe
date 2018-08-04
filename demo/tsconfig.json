@@ -5,7 +5,6 @@
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "declaration": true,
         "noLib": false,
         "noEmitHelpers": true,
         "experimentalDecorators": true,
