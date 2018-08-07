@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/triniwiz/nativescript-stripe.svg?branch=master)](https://travis-ci.org/triniwiz/nativescript-stripe)
 # Installation
 
-*Requires I0S 9.x +*
+**Requires I0S 9.x +**
 
 
 #### NativeScript 4x
