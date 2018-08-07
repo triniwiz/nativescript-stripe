@@ -4,8 +4,8 @@ export class Card {
     constructor(cardNumber: string, cardExpMonth: any, cardExpYear: any, cardCVC: string) {
         this._card = new com.stripe.android.model.Card(
             new java.lang.String(cardNumber),
-            new java.lang.Integer(cardExpMonth),
-            new java.lang.Integer(cardExpYear),
+            new java.lang.Integer(cardExpMonth.intValue()),
+            new java.lang.Integer(cardExpYear.intValue()),
             new java.lang.String(cardCVC)
         );
     }
