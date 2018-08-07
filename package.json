@@ -1,0 +1,62 @@
+{
+  "name": "nativescript-stripe",
+  "version": "3.2.1",
+  "description": "",
+  "main": "stripe",
+  "nativescript": {
+    "platforms": {
+      "android": "3.2.0",
+      "ios": "3.2.0"
+    }
+  },
+  "scripts": {
+    "build": "tsc -skipLibCheck",
+    "demo.ios": "npm run preparedemo && cd demo && tns debug ios",
+    "demo.ios.device": "npm run preparedemo && cd demo && tns run ios",
+    "demo.android": "npm run preparedemo && cd demo && tns run android",
+    "test.ios": "cd demo && tns test ios --emulator",
+    "test.ios.device": "cd demo && tns test ios",
+    "test.android": "cd demo && tns test android",
+    "preparedemo": "npm run build && cd demo && tns plugin remove nativescript-stripe && tns plugin add .. && tns install",
+    "setup": "npm i && cd demo && npm i && cd .. && npm run build && cd demo && tns plugin add .. && cd .."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/triniwiz/nativescript-stripe.git"
+  },
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "Android",
+    "iOS"
+  ],
+  "author": {
+    "name": "Osei Fortune",
+    "email": "fortune.osei@yahoo.com"
+  },
+  "bugs": {
+    "url": "https://github.com/triniwiz/nativescript-stripe/issues"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/triniwiz/nativescript-stripe",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "tns-core-modules": "^3.2.0",
+    "tns-platform-declarations": "^3.2.0",
+    "typescript": "^2.3.4",
+    "@angular/compiler": "~4.4.1",
+    "@angular/core": "~4.4.1",
+    "@angular/common": "~4.4.1",
+    "@angular/platform-browser": "~4.4.1",
+    "@angular/forms": "~4.4.1",
+    "@angular/http": "~4.4.1",
+    "@angular/router": "~4.4.1",
+    "rxjs": "~5.0.0",
+    "zone.js": "^0.8.4",
+    "nativescript-angular": "^4.4.1"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "tns-core-modules": "^3.2.0"
+  }
+}
