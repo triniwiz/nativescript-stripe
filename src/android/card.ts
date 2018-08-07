@@ -1,7 +1,7 @@
 declare const com, java;
 export class Card {
     private _card: any /*com.stripe.android.model.Card*/;
-    constructor(cardNumber: string, cardExpMonth: any, cardExpYear: any, cardCVC: string) {
+    constructor(cardNumber: string, cardExpMonth: number, cardExpYear: number, cardCVC: string) {
         this._card = new com.stripe.android.model.Card(
             new java.lang.String(cardNumber),
             new java.lang.Integer(cardExpMonth),
@@ -33,10 +33,10 @@ export class Card {
     get cvc(): string {
         return this._card.getCVC();
     }
-    get expMonth(): any {
+    get expMonth(): number {
         return this._card.getExpMonth();
     }
-    get expYear(): any {
+    get expYear(): number {
         return this._card.getExpYear();
     }
     get name(): string {
