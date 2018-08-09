@@ -19,7 +19,6 @@ export class Stripe {
         owner: that.get(),
         onSuccess: function(token) {
           if (typeof cb === 'function') {
-            console.log('class', types.getClass(token.getCard()));
             const newToken: Token = {
               id: token.getId(),
               bankAccount: token.getBankAccount(),
