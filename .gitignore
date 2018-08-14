@@ -15,3 +15,4 @@ demo/metadata-x86_64/
 .idea
 hooks
 **/.DS_Store
+**/*.aar

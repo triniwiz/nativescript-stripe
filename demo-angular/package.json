@@ -1,10 +1,10 @@
 {
-  "description": "NativeScript Application",
-  "license": "SEE LICENSE IN <your-license-filename>",
-  "readme": "NativeScript Application",
+  "description": "NativeScript Stripe Demo Application",
+  "license": "MIT",
+  "readme": "NativeScript Stripe Demo Application",
   "repository": "<fill-your-repository-here>",
   "nativescript": {
-    "id": "org.nativescript.demoangular",
+    "id": "org.nativescript.stripe.demoangular",
     "tns-ios": {
       "version": "4.0.1"
     },
