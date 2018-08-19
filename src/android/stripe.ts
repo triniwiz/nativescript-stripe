@@ -68,26 +68,23 @@ export class StripeCustomerSession {
     native: com.stripe.android.CustomerSession;
 
     constructor() {
-        com.stripe.android.CustomerSession.initCustomerSession(new InternalKeyProvider());
+        com.stripe.android.CustomerSession.initCustomerSession(createKeyProvider());
         this.native = com.stripe.android.CustomerSession.getInstance();
     }
 }
 
-export class InternalKeyProvider extends com.stripe.android.EphemeralKeyProvider {
-    constructor() {
-        super();
-        return global.__native(this);
-    }
-
-    createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void {
-        StripeConfig.shared().backendAPI.createCustomerKey(apiVersion)
-            .then(key => {
-                keyUpdateListener.onKeyUpdate(key);
-            }).catch(e => {
-                // TODO: Figure out what message to display here, instead of JSON.toString()
-                keyUpdateListener.onKeyUpdateFailure(500, "CustomerKey: " + JSON.stringify(e));
-            });
-    }
+function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
+    return new com.stripe.android.EphemeralKeyProvider({
+        createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void {
+            StripeConfig.shared().backendAPI.createCustomerKey(apiVersion)
+                .then(key => {
+                    keyUpdateListener.onKeyUpdate(key);
+                }).catch(e => {
+                    // TODO: Figure out what message to display here, instead of JSON.toString()
+                    keyUpdateListener.onKeyUpdateFailure(500, "CustomerKey: " + JSON.stringify(e));
+                });
+        }
+    });
 }
 
 export class StripePaymentSession {
@@ -101,7 +98,7 @@ export class StripePaymentSession {
         public currency: string,
         listener?: StripePaymentListener) {
         this.native = new com.stripe.android.PaymentSession(android.foregroundActivity);
-        if (!this.native.init(new InternalPaymentListener().init(this, listener), StripeConfig.shared().native)) {
+        if (!this.native.init(createPaymentListener(this, listener), StripeConfig.shared().native)) {
             throw new Error("CustomerSession not initialized");
         }
     }
@@ -124,7 +121,7 @@ export class StripePaymentSession {
 
     requestPayment() {
         this._paymentInProgress = true;
-        this.native.completePayment(new InternalPaymentCompletionProvider());
+        this.native.completePayment(createPaymentCompletionProvider());
     }
 
     presentPaymentMethods(): void {
@@ -138,39 +135,23 @@ export class StripePaymentSession {
     }
 }
 
-// TODO: is export necessary?
-export class InternalPaymentListener extends com.stripe.android.PaymentSession.PaymentSessionListener {
-    private parent: StripePaymentSession;
-    private listener: StripePaymentListener;
-
-    // TODO: Can parameters be passed here (and eliminate the init() method)?
-    constructor() {
-        super();
-        return global.__native(this);
-    }
-
-    init(parent: StripePaymentSession, listener: StripePaymentListener): InternalPaymentListener {
-        this.parent = parent;
-        this.listener = listener;
-        return this;
-    }
-
-    onPaymentSessionDataChanged(paymentData: com.stripe.android.PaymentSessionData): void {
-        let data = {
-            isReadyToCharge: paymentData.isPaymentReadyToCharge(),
-            paymentMethod: createPaymentMethod(this.parent, paymentData.getSelectedPaymentMethodId()),
-            shippingInfo: createShippingMethod(this.parent, paymentData)
-        };
-        this.listener.onPaymentDataChanged(data);
-    }
-
-    onCommunicatingStateChanged(isCommunicating: boolean): void {
-        this.parent.loading = isCommunicating;
-    }
-
-    onError(code: number, message: string): void {
-        this.listener.onError(code, message);
-    }
+function createPaymentListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
+    return new com.stripe.android.PaymentSession.PaymentSessionListener({
+        onPaymentSessionDataChanged(paymentData: com.stripe.android.PaymentSessionData): void {
+            let data = {
+                isReadyToCharge: paymentData.isPaymentReadyToCharge(),
+                paymentMethod: createPaymentMethod(parent, paymentData.getSelectedPaymentMethodId()),
+                shippingInfo: createShippingMethod(parent, paymentData)
+            };
+            listener.onPaymentDataChanged(data);
+        },
+        onCommunicatingStateChanged(isCommunicating: boolean): void {
+            parent.loading = isCommunicating;
+        },
+        onError(code: number, message: string): void {
+            listener.onError(code, message);
+        }
+    });
 
     // paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
     //     let shippingDic = STPAddress.shippingInfoForChargeWithAddressShippingMethod(paymentContext.shippingAddress, paymentContext.selectedShippingMethod);
@@ -213,24 +194,21 @@ export class InternalPaymentListener extends com.stripe.android.PaymentSession.P
     // }
 }
 
-export class InternalPaymentCompletionProvider extends com.stripe.android.PaymentCompletionProvider {
-    constructor() {
-        super();
-        return global.__native(this);
-    }
-
-    completePayment(data: com.stripe.android.PaymentSessionData, listener: com.stripe.android.PaymentResultListener): void {
-        // TODO: See https://stripe.com/docs/mobile/android/standard#void-completepaymentnonnull-paymentsessiondata-data-nonnull-paymentresultlistener-listener
-        // StripeConfig.shared().backendAPI.completeCharge(
-        //     paymentResult.source.stripeID,
-        //     paymentContext.paymentAmount,
-        //     shippingHash)
-        //     .then(() => {
-        //         listener.onPaymentResult(null);
-        //     }).catch(e => {
-        //         listener(createError("PaymentError", 100, e));
-        //     });
-    }
+function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletionProvider {
+    return new com.stripe.android.PaymentCompletionProvider({
+        completePayment(data: com.stripe.android.PaymentSessionData, listener: com.stripe.android.PaymentResultListener): void {
+            // TODO: See https://stripe.com/docs/mobile/android/standard#void-completepaymentnonnull-paymentsessiondata-data-nonnull-paymentresultlistener-listener
+            // StripeConfig.shared().backendAPI.completeCharge(
+            //     paymentResult.source.stripeID,
+            //     paymentContext.paymentAmount,
+            //     shippingHash)
+            //     .then(() => {
+            //         listener.onPaymentResult(null);
+            //     }).catch(e => {
+            //         listener(createError("PaymentError", 100, e));
+            //     });
+        }
+    });
 }
 
 function createPaymentMethod(paymentSession: StripePaymentSession, paymentMethodId: string): StripePaymentMethod {
