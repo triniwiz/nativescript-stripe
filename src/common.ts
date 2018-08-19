@@ -40,19 +40,22 @@ export class StripeConfigCommon {
 
     // The Publishable Key found at https://dashboard.stripe.com/account/apikeys
     // Use "Test Publishable Key" (it looks like pk_test_abcdef) during development.
+    /** The Stripe Publishable Key. Required. */
     publishableKey = "";
 
     // To enable Apple Pay, follow the instructions at https://stripe.com/docs/mobile/apple-pay
     // to create an Apple Merchant ID (it looks like merchant.com.yourappname).
+    /** Apple Merchange ID used by Apple Pay. Default: No Apple Pay */
     appleMerchantID = "";
 
-    // See documentation for STPPaymentConfiguration for using these fields.
-    // If left 'undefined' the default value will be used.
+    /** Company name to display during payment flows. Used by Apple Pay Default: iOS application name */
     companyName: string = undefined;
-    requiredBillingAddressFields: StripeBillingAddressFields = undefined;
-    requiredShippingAddressFields: StripeShippingAddressField = undefined;
-    verifyPrefilledShippingAddress: boolean = undefined;
-    createCardSources: boolean = undefined;
+
+    /** Billing address fields the user must fill out. Used by Apple Pay. Default: None */
+    requiredBillingAddressFields: StripeBillingAddressFields = StripeBillingAddressFields.None;
+
+    /** Shipping address fields the user must fill out (bitfield). If None, shipping will not be requested. Default: None */
+    requiredShippingAddressFields: StripeShippingAddressField = StripeShippingAddressField.None;
 }
 
 export interface StripeBackendAPI {

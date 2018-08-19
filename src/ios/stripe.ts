@@ -40,9 +40,7 @@ export class StripeConfig extends StripeConfigCommon {
         if (this.appleMerchantID) config.appleMerchantIdentifier = this.appleMerchantID;
         if (this.requiredBillingAddressFields) config.requiredBillingAddressFields = this.requiredBillingAddressFields as any;
         if (this.requiredShippingAddressFields) config.requiredShippingAddressFields = this.requiredShippingAddressFields as any;
-        if (this.createCardSources !== undefined) config.createCardSources = this.createCardSources;
         if (this.companyName) config.companyName = this.companyName;
-        if (this.verifyPrefilledShippingAddress !== undefined) config.verifyPrefilledShippingAddress = this.verifyPrefilledShippingAddress;
         return config;
     }
 
