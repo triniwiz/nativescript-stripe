@@ -45,15 +45,15 @@ export class Card {
   _card: any /*com.stripe.android.model.Card*/;
   constructor(
     cardNumber: string,
-    cardExpMonth: number,
-    cardExpYear: number,
+    cardExpMonth: any,
+    cardExpYear: any,
     cardCVC: string
   ) {
     if (cardNumber && cardExpMonth && cardExpYear && cardCVC) {
       this._card = new com.stripe.android.model.Card(
         new java.lang.String(cardNumber),
-        new java.lang.Integer(cardExpMonth),
-        new java.lang.Integer(cardExpYear),
+        new java.lang.Integer(cardExpMonth.intValue()),
+        new java.lang.Integer(cardExpYear.intValue()),
         new java.lang.String(cardCVC)
       );
     }
