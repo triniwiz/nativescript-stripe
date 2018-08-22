@@ -21,13 +21,13 @@ export class Stripe {
                 },
                 onError: function (error) {
                     // Show localized error message
-                    console.log(error.getLocalizedMessage())
+                    console.log(error.getLocalizedMessage());
                     if (typeof cb === "function") {
-                        cb(new Error(error.getLocalizedMessage()))
+                        cb(new Error(error.getLocalizedMessage()));
                     }
                 }
             })
-        )
+        );
     }
 }
 
@@ -44,15 +44,15 @@ export class StripeConfig extends StripeConfigCommon {
         com.stripe.android.PaymentConfiguration.init(this.publishableKey);
 
         let optionalFields = [];
-        if ((this.requiredShippingAddressFields & StripeShippingAddressField.PostalAddress) == 0) {
+        if ((this.requiredShippingAddressFields & StripeShippingAddressField.PostalAddress) === 0) {
             optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.ADDRESS_LINE_ONE_FIELD);
         }
-        if ((this.requiredShippingAddressFields & StripeShippingAddressField.Phone) == 0) {
+        if ((this.requiredShippingAddressFields & StripeShippingAddressField.Phone) === 0) {
             optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.PHONE_FIELD);
         }
 
         let config = new com.stripe.android.PaymentSessionConfig.Builder()
-            .setShippingInfoRequired(this.requiredShippingAddressFields != StripeShippingAddressField.None)
+            .setShippingInfoRequired(this.requiredShippingAddressFields !== StripeShippingAddressField.None)
             .setOptionalShippingInfoFields(optionalFields)
             .build();
         return config;
@@ -78,9 +78,11 @@ function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
         createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void {
             StripeConfig.shared().backendAPI.createCustomerKey(apiVersion)
                 .then(key => {
-                    keyUpdateListener.onKeyUpdate(key);
+                    keyUpdateListener.onKeyUpdate(JSON.stringify(key));
+                    console.log("CustomerKey: " + JSON.stringify(key));
                 }).catch(e => {
                     // TODO: Figure out what message to display here, instead of JSON.toString()
+                    console.log("CustomerKeyError: " + JSON.stringify(e));
                     keyUpdateListener.onKeyUpdateFailure(500, "CustomerKey: " + JSON.stringify(e));
                 });
         }
@@ -97,7 +99,7 @@ export class StripePaymentSession {
         public amount: number,
         public currency: string,
         listener?: StripePaymentListener) {
-        this.native = new com.stripe.android.PaymentSession(android.foregroundActivity);
+        this.native = new com.stripe.android.PaymentSession(this.patchActivity());
         if (!this.native.init(createPaymentListener(this, listener), StripeConfig.shared().native)) {
             throw new Error("CustomerSession not initialized");
         }
@@ -133,6 +135,20 @@ export class StripePaymentSession {
         // and broadcasts them. Search for presentShippingFlow in https://stripe.com/docs/mobile/android/standard
         this.native.presentShippingFlow();
     }
+
+    private patchActivity(): globalAndroid.app.Activity {
+        let activity = android.foregroundActivity || android.startActivity;
+        let oldCallback = activity.onActivityResult;
+        let session = this;
+        activity.onActivityResult = function(requestCode, resultCode, data) {
+            // TODO: How do I call the original activity handler? The following doesn't work,
+            // it throws an "undefined" exception. Note JSON.stringify(oldCallback) returns "undefined".
+            // if (oldCallback) oldCallback(requestCode, resultCode, data);
+            console.log("oldCallback: " + JSON.stringify(oldCallback));
+            session.native.handlePaymentData(requestCode, resultCode, data);
+        };
+        return activity;
+    }
 }
 
 function createPaymentListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
@@ -144,12 +160,16 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
                 shippingInfo: createShippingMethod(parent, paymentData)
             };
             listener.onPaymentDataChanged(data);
+            console.log("Data now: " + JSON.stringify(data));
         },
         onCommunicatingStateChanged(isCommunicating: boolean): void {
             parent.loading = isCommunicating;
+            listener.onCommunicatingStateChanged(isCommunicating);
+            console.log("isCommunicating: " + isCommunicating);
         },
         onError(code: number, message: string): void {
             listener.onError(code, message);
+            console.log("Error: " + code + ", " + message);
         }
     });
 
@@ -234,6 +254,7 @@ function createPaymentMethod(paymentSession: StripePaymentSession, paymentMethod
 function createShippingMethod(paymentSession: StripePaymentSession, paymentData: com.stripe.android.PaymentSessionData): StripeShippingMethod {
     if (!paymentData) return undefined;
     let shipping = paymentData.getShippingMethod();
+    if (!shipping) return undefined;
     return {
         amount: shipping.getAmount(),
         detail: shipping.getDetail(),

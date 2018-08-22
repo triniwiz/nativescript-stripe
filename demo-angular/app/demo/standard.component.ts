@@ -68,6 +68,10 @@ class Listener implements StripePaymentListener {
     constructor(private component: StandardComponent) {
     }
 
+    onCommunicatingStateChanged(_isCommunicating: boolean): void {
+        this.component.changeDetectionRef.detectChanges();
+    }
+
     onPaymentDataChanged(data: StripePaymentData) {
         this.component.paymentType = data.paymentMethod ?
             data.paymentMethod.label :

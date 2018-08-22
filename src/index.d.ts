@@ -100,7 +100,16 @@ export declare interface StripeBackendAPI {
      */
     completeCharge(stripeID: string, amount: number, shippingHash: string): Promise<void>;
 }
+/**
+ * Called during event processing when status changes. On Angular apps, be sure to 
+ * trigger change detection when these are called since they are called in a background thread.
+ */
 export declare interface StripePaymentListener {
+    /**
+     * Called when communication with Stripe service changes. Currently only called on Android.
+     * Check StripePaymentSession.loading for current communication state on both platforms.
+     */
+    onCommunicatingStateChanged(isCommunicating: boolean): void;
     onPaymentDataChanged(data: StripePaymentData): void;
     onPaymentSuccess(): void;
     onError(errorCode: number, message: string): void;
@@ -143,8 +152,11 @@ export declare interface StripeShippingMethod {
     identifier: string;
 }
 export declare interface StripePaymentData {
+    /** Has user entered all necessary information to allow a charge to proceed? */
     isReadyToCharge: boolean;
+    /** The selected payment method, if any. */
     paymentMethod: StripePaymentMethod;
+    /** The selected shipping method, if any. */
     shippingInfo: StripeShippingMethod;
 }
 export declare interface StripeAddress {

@@ -62,7 +62,7 @@ export interface StripeBackendAPI {
     /**
      * Calls the client-implemented Stripe backend to retrieve a Customer Key
      * (ephemeral key) for this session.
-     * 
+     *
      * @param apiVersion The API Version to send to the backend.
      * @returns a Promise with a response containing the ephemeral key as
      *     returned by the Stripe backend. For example, response.content.toJSON().
@@ -71,7 +71,7 @@ export interface StripeBackendAPI {
 
     /**
      * Calls the client-implemented Stripe backend to complete a charge.
-     * 
+     *
      * @param stripeID The Stripe ID to send to the backend.
      * @param amount  The amount to charge, in pennies.
      * @param shippingHash A hash representing shipping info that can be sent to
@@ -83,6 +83,7 @@ export interface StripeBackendAPI {
 }
 
 export interface StripePaymentListener {
+    onCommunicatingStateChanged(isCommunicating: boolean): void;
     onPaymentDataChanged(data: StripePaymentData): void;
     onPaymentSuccess(): void;
     onError(errorCode: number, message: string): void;
@@ -143,8 +144,11 @@ export const enum StripeShippingAddressField {
 }
 
 export interface StripePaymentData {
+    /** Has user entered all necessary information to allow a charge to proceed? */
     isReadyToCharge: boolean;
+    /** The selected payment method, if any. */
     paymentMethod: StripePaymentMethod;
+    /** The selected shipping method, if any. */
     shippingInfo: StripeShippingMethod;
 }
 
