@@ -1,7 +1,7 @@
-import { android } from "application";
+import { android as androidApp } from "application";
 import { Page } from "ui/page/page";
 import * as utils from "utils/utils";
-import { StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "../common";
+import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "../common";
 
 export class Stripe {
     private _stripe: com.stripe.android.Stripe;
@@ -81,7 +81,7 @@ function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
                     keyUpdateListener.onKeyUpdate(JSON.stringify(key));
                     console.log("CustomerKey: " + JSON.stringify(key));
                 }).catch(e => {
-                    // TODO: Figure out what message to display here, instead of JSON.toString()
+                    // TODO: Figure out what message to display here, instead of JSON.stringify()
                     console.log("CustomerKeyError: " + JSON.stringify(e));
                     keyUpdateListener.onKeyUpdateFailure(500, "CustomerKey: " + JSON.stringify(e));
                 });
@@ -91,18 +91,26 @@ function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
 
 export class StripePaymentSession {
     native: com.stripe.android.PaymentSession;
+    private receiver: android.content.BroadcastReceiver;
+    shippingCost = 0;
     loading: boolean;
     _paymentInProgress: boolean;
 
     constructor(private page: Page,
         public customerSession: StripeCustomerSession,
-        public amount: number,
+        private _amount: number,
         public currency: string,
         listener?: StripePaymentListener) {
         this.native = new com.stripe.android.PaymentSession(this.patchActivity());
         if (!this.native.init(createPaymentListener(this, listener), StripeConfig.shared().native)) {
             throw new Error("CustomerSession not initialized");
         }
+        this.receiver = createShippingBroadcastReceiver(this, listener);
+        android.support.v4.content.LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowActivity.EVENT_SHIPPING_INFO_SUBMITTED));
+    }
+
+    get amount(): number {
+        return this._amount + this.shippingCost;
     }
 
     get isPaymentReady(): boolean {
@@ -131,21 +139,27 @@ export class StripePaymentSession {
     }
 
     presentShipping(): void {
-        // TODO: Create a BroadcastReceiver in ??? that calls listener.provideShippingMethods()
-        // and broadcasts them. Search for presentShippingFlow in https://stripe.com/docs/mobile/android/standard
         this.native.presentShippingFlow();
     }
 
-    private patchActivity(): globalAndroid.app.Activity {
-        let activity = android.foregroundActivity || android.startActivity;
-        let oldCallback = activity.onActivityResult;
+    private patchActivity(): android.app.Activity {
+        let activity = androidApp.foregroundActivity;
         let session = this;
-        activity.onActivityResult = function(requestCode, resultCode, data) {
-            // TODO: How do I call the original activity handler? The following doesn't work,
-            // it throws an "undefined" exception. Note JSON.stringify(oldCallback) returns "undefined".
-            // if (oldCallback) oldCallback(requestCode, resultCode, data);
-            console.log("oldCallback: " + JSON.stringify(oldCallback));
+
+        // TODO: How do I call the original activity handler? The following doesn't work,
+        // it throws an "undefined" exception. Note JSON.stringify(oldResultCallback) returns "undefined".
+        let oldResultCallback = activity.onActivityResult;
+        activity.onActivityResult = function (requestCode, resultCode, data) {
+            console.log("oldResultCallback: " + JSON.stringify(oldResultCallback));
+            // if (oldResultCallback) oldResultCallback(requestCode, resultCode, data);
             session.native.handlePaymentData(requestCode, resultCode, data);
+        };
+        let oldDestroyCallback = activity.onDestroy;
+        activity.onDestroy = function () {
+            console.log("oldDestroyCallback: " + JSON.stringify(oldDestroyCallback));
+            if (oldDestroyCallback) oldDestroyCallback();
+            session.native.onDestroy();
+            android.support.v4.content.LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
         };
         return activity;
     }
@@ -159,6 +173,7 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
                 paymentMethod: createPaymentMethod(parent, paymentData.getSelectedPaymentMethodId()),
                 shippingInfo: createShippingMethod(parent, paymentData)
             };
+            parent.shippingCost = data.shippingInfo ? data.shippingInfo.amount : 0;
             listener.onPaymentDataChanged(data);
             console.log("Data now: " + JSON.stringify(data));
         },
@@ -214,6 +229,35 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
     // }
 }
 
+function createShippingBroadcastReceiver(parent: StripePaymentSession, listener: StripePaymentListener): android.content.BroadcastReceiver {
+    class InternalReceiver extends android.content.BroadcastReceiver {
+        constructor(private parent: StripePaymentSession, private listener: StripePaymentListener) {
+            super();
+            return global.__native(this);
+        }
+
+        onReceive(context: android.content.Context, intent: android.content.Intent) {
+            let shippingInformation = <com.stripe.android.model.ShippingInformation>intent.getParcelableExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_SHIPPING_INFO_DATA);
+            let shippingMethods = this.listener.provideShippingMethods(createAddress(shippingInformation));
+
+            let shippingInfoProcessedIntent = new android.content.Intent(com.stripe.android.view.PaymentFlowActivity.EVENT_SHIPPING_INFO_PROCESSED);
+            if (!shippingMethods.isValid) {
+                shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_IS_SHIPPING_INFO_VALID, false);
+                shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_SHIPPING_INFO_ERROR, shippingMethods.validationError);
+            } else {
+                shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_IS_SHIPPING_INFO_VALID, true);
+                let methods = new java.util.ArrayList<com.stripe.android.model.ShippingMethod>();
+                shippingMethods.shippingMethods.forEach(m => methods.add(createAdShippingMethod(m, this.parent.currency)));
+                shippingInfoProcessedIntent.putParcelableArrayListExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_VALID_SHIPPING_METHODS, methods);
+                shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_DEFAULT_SHIPPING_METHOD,
+                    createAdShippingMethod(shippingMethods.selectedShippingMethod, this.parent.currency));
+            }
+            android.support.v4.content.LocalBroadcastManager.getInstance(context).sendBroadcast(shippingInfoProcessedIntent);
+        }
+    }
+    return new InternalReceiver(parent, listener);
+}
+
 function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletionProvider {
     return new com.stripe.android.PaymentCompletionProvider({
         completePayment(data: com.stripe.android.PaymentSessionData, listener: com.stripe.android.PaymentResultListener): void {
@@ -261,4 +305,29 @@ function createShippingMethod(paymentSession: StripePaymentSession, paymentData:
         label: shipping.getLabel(),
         identifier: shipping.getIdentifier()
     };
+}
+
+function createAddress(info: com.stripe.android.model.ShippingInformation): StripeAddress {
+    let address = info.getAddress();
+    return {
+        name: info.getName(),
+        line1: address.getLine1(),
+        line2: address.getLine2(),
+        city: address.getCity(),
+        state: address.getState(),
+        postalCode: address.getPostalCode(),
+        country: address.getCountry(),
+        phone: info.getPhone(),
+        email: undefined
+    };
+}
+
+function createAdShippingMethod(method: StripeShippingMethod, currency: string): com.stripe.android.model.ShippingMethod {
+    return new com.stripe.android.model.ShippingMethod(
+        method.label,
+        method.identifier,
+        method.detail,
+        method.amount,
+        currency
+    );
 }
