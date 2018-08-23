@@ -13,6 +13,8 @@ matrix:
       language: node_js
       node_js: "8"
       jdk: oraclejdk8
+      before_install:
+      - travis_wait pod repo update --silent
       script: cd demo && npm run build.plugin && npm i && tns build ios --bundle --env.uglify
     - language: android
       os: linux
@@ -37,6 +39,8 @@ matrix:
       language: node_js
       node_js: "8"
       jdk: oraclejdk8
+      before_install:
+      - travis_wait pod repo update --silent
       script:
         - cd src && npm i && npm run tsc && cd ../demo && tns build ios
 
