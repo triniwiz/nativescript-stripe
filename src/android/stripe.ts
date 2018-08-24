@@ -277,17 +277,26 @@ function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletion
 
 function createPaymentMethod(paymentSession: StripePaymentSession, paymentMethodId: string): StripePaymentMethod {
     if (!paymentMethodId) return undefined;
-    let customer = paymentSession.customerSession.native.getCachedCustomer();
-    let sourceId = customer.getDefaultSource();
-    if (sourceId == null) return undefined;
-    let card = customer.getSourceById(sourceId).asCard();
-    let label, image;
-    if (card) {
-        label = card.getBrand() + " ..." + card.getLast4();
-        image = com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand());
-    } else {
-        label = customer.getSourceById(sourceId).getSourceType();
-    }
+    let label: string;
+    let image: any;
+    paymentSession.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
+        onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
+            let sourceId = customer.getDefaultSource();
+            if (sourceId == null) return undefined;
+            let source = customer.getSourceById(sourceId).asSource();
+            if (source.getType() === com.stripe.android.model.Source.CARD) {
+                let card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
+                label = `${card.getBrand()} ...${card.getLast4()}`;
+                image = com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue();
+            } else {
+                label = source.getType();
+            }
+        },
+
+        onError(errorCode: number, errorMessage: string) {
+            label = `${errorMessage} (${errorCode})`;
+        }
+    }));
     return {
         label: label,
         image: image,
