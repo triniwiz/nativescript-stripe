@@ -92,25 +92,26 @@ function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
 export class StripePaymentSession {
     native: com.stripe.android.PaymentSession;
     private receiver: android.content.BroadcastReceiver;
-    shippingCost = 0;
     loading: boolean;
-    _paymentInProgress: boolean;
+    private _paymentInProgress: boolean;
 
     constructor(private page: Page,
         public customerSession: StripeCustomerSession,
-        private _amount: number,
+        amount: number,
         public currency: string,
         listener?: StripePaymentListener) {
         this.native = new com.stripe.android.PaymentSession(this.patchActivity());
         if (!this.native.init(createPaymentListener(this, listener), StripeConfig.shared().native)) {
             throw new Error("CustomerSession not initialized");
         }
+        this.native.setCartTotal(amount);
         this.receiver = createShippingBroadcastReceiver(this, listener);
         android.support.v4.content.LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowActivity.EVENT_SHIPPING_INFO_SUBMITTED));
     }
 
     get amount(): number {
-        return this._amount + this.shippingCost;
+        let data = this.native.getPaymentSessionData();
+        return data.getCartTotal() + (data.getShippingMethod() ? data.getShippingMethod().getAmount() : 0);
     }
 
     get isPaymentReady(): boolean {
@@ -119,6 +120,10 @@ export class StripePaymentSession {
 
     get paymentInProgress(): boolean {
         return this._paymentInProgress;
+    }
+
+    set paymentInProgress(progress: boolean) {
+        this._paymentInProgress = progress;
     }
 
     get selectedPaymentMethod(): StripePaymentMethod {
@@ -168,12 +173,21 @@ export class StripePaymentSession {
 function createPaymentListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
     return new com.stripe.android.PaymentSession.PaymentSessionListener({
         onPaymentSessionDataChanged(paymentData: com.stripe.android.PaymentSessionData): void {
+            if (parent.paymentInProgress) {
+                if (paymentData.getPaymentResult() === com.stripe.android.PaymentResultListener.SUCCESS) {
+                    listener.onPaymentSuccess();
+                } else if (paymentData.getPaymentResult() === com.stripe.android.PaymentResultListener.ERROR) {
+                    // TODO: What to pass here?
+                    listener.onError(100, "Payment processing failed");
+                }
+                parent.paymentInProgress = false;
+                return;
+            }
             let data = {
                 isReadyToCharge: paymentData.isPaymentReadyToCharge(),
                 paymentMethod: createPaymentMethod(parent, paymentData.getSelectedPaymentMethodId()),
                 shippingInfo: createShippingMethod(parent, paymentData)
             };
-            parent.shippingCost = data.shippingInfo ? data.shippingInfo.amount : 0;
             listener.onPaymentDataChanged(data);
             console.log("Data now: " + JSON.stringify(data));
         },
@@ -187,46 +201,6 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
             console.log("Error: " + code + ", " + message);
         }
     });
-
-    // paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
-    //     let shippingDic = STPAddress.shippingInfoForChargeWithAddressShippingMethod(paymentContext.shippingAddress, paymentContext.selectedShippingMethod);
-    //     let shippingHash = encodeDictionary("shipping", shippingDic);
-    //     StripeConfig.shared().backendAPI.completeCharge(
-    //         paymentResult.source.stripeID,
-    //         paymentContext.paymentAmount,
-    //         shippingHash)
-    //         .then(() => {
-    //             completion(null);
-    //         }).catch(e => {
-    //             completion(createError("PaymentError", 100, e));
-    //         });
-    // }
-
-    // paymentContextDidFinishWithStatusError(paymentContext: STPPaymentContext, status: STPPaymentStatus, error: NSError): void {
-    //     this.parent._paymentInProgress = false;
-    //     switch (status) {
-    //         case STPPaymentStatus.Error:
-    //             this.listener.onError(error.code, error.localizedDescription);
-    //             break;
-    //         case STPPaymentStatus.Success:
-    //             this.listener.onPaymentSuccess();
-    //             break;
-    //         case STPPaymentStatus.UserCancellation:
-    //             // Nothing to do.
-    //             break;
-    //     }
-    // }
-
-    // paymentContextDidUpdateShippingAddressCompletion(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
-    //     let methods = this.listener.provideShippingMethods(createAddress(address));
-    //     if (!methods.isValid) {
-    //         completion(STPShippingStatus.Invalid, createError("ShippingError", 123, methods.validationError), null, null);
-    //     } else {
-    //         let sh = <NSMutableArray<PKShippingMethod>>NSMutableArray.alloc().init();
-    //         methods.shippingMethods.forEach(m => sh.addObject(createPKShippingMethod(m)));
-    //         completion(STPShippingStatus.Valid, null, sh, createPKShippingMethod(methods.selectedShippingMethod));
-    //     }
-    // }
 }
 
 function createShippingBroadcastReceiver(parent: StripePaymentSession, listener: StripePaymentListener): android.content.BroadcastReceiver {
@@ -261,18 +235,46 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
 function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletionProvider {
     return new com.stripe.android.PaymentCompletionProvider({
         completePayment(data: com.stripe.android.PaymentSessionData, listener: com.stripe.android.PaymentResultListener): void {
-            // TODO: See https://stripe.com/docs/mobile/android/standard#void-completepaymentnonnull-paymentsessiondata-data-nonnull-paymentresultlistener-listener
-            // StripeConfig.shared().backendAPI.completeCharge(
-            //     paymentResult.source.stripeID,
-            //     paymentContext.paymentAmount,
-            //     shippingHash)
-            //     .then(() => {
-            //         listener.onPaymentResult(null);
-            //     }).catch(e => {
-            //         listener(createError("PaymentError", 100, e));
-            //     });
+            StripeConfig.shared().backendAPI.completeCharge(
+                data.getSelectedPaymentMethodId(),
+                data.getCartTotal() + data.getShippingMethod().getAmount(),
+                encodeMap("shipping", data.getShippingInformation().toMap()))
+                .then(() => {
+                    listener.onPaymentResult(com.stripe.android.PaymentResultListener.SUCCESS);
+                }).catch(e => {
+                    // TODO: How to return the error? createError("PaymentError", 100, e));
+                    listener.onPaymentResult(com.stripe.android.PaymentResultListener.ERROR);
+                });
         }
     });
+}
+
+function encodeMap(key: string, map: java.util.Map<string, any>): string {
+    let entries = encodeEntries(key, map);
+    return entries.map(e => `${e[0]}=${e[1]}`).join("&");
+}
+
+function encodeEntries(key: string, value: any): [string, string][] {
+    let result: [string, string][] = [];
+
+    if (value instanceof java.util.Map) {
+        let keys = value.keySet().iterator();
+        while (keys.hasNext()) {
+            let k = keys.next();
+            result = result.concat(encodeEntries(`${key}[${k}]`, value.get(k)));
+        }
+    } else if (value instanceof java.util.ArrayList) {
+        for (let i = 0; i < value.size(); i++) {
+            result = result.concat(encodeEntries(`${key}[]`, value[i]));
+        }
+    } else if (typeof value === "number") {
+        result.push([encodeURI(key), "" + value]);
+    } else if (typeof value === "boolean") {
+        result.push([encodeURI(key), value ? "1" : "0"]);
+    } else {
+        result.push([encodeURI(key), encodeURI(value)]);
+    }
+    return result;
 }
 
 function createPaymentMethod(paymentSession: StripePaymentSession, paymentMethodId: string): StripePaymentMethod {
