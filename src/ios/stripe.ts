@@ -179,7 +179,8 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
         StripeConfig.shared().backendAPI.completeCharge(
             paymentResult.source.stripeID,
             paymentContext.paymentAmount,
-            shippingHash)
+            createShippingMethod(paymentContext),
+            createAddress(paymentContext.shippingAddress))
             .then(() => {
                 completion(null);
             }).catch(e => {

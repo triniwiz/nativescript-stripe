@@ -131,7 +131,9 @@ export class StripePaymentSession {
     }
 
     get selectedShippingMethod(): StripeShippingMethod {
-        return createShippingMethod(this, this.native.getPaymentSessionData());
+        return this.native.getPaymentSessionData() ?
+            createShippingMethod(this.native.getPaymentSessionData().getShippingMethod()) :
+            undefined;
     }
 
     requestPayment() {
@@ -154,14 +156,14 @@ export class StripePaymentSession {
         // TODO: How do I call the original activity handler? The following doesn't work,
         // it throws an "undefined" exception. Note JSON.stringify(oldResultCallback) returns "undefined".
         let oldResultCallback = activity.onActivityResult;
+        console.log("oldResultCallback: " + JSON.stringify(oldResultCallback));
         activity.onActivityResult = function (requestCode, resultCode, data) {
-            console.log("oldResultCallback: " + JSON.stringify(oldResultCallback));
             // if (oldResultCallback) oldResultCallback(requestCode, resultCode, data);
             session.native.handlePaymentData(requestCode, resultCode, data);
         };
         let oldDestroyCallback = activity.onDestroy;
+        console.log("oldDestroyCallback: " + JSON.stringify(oldDestroyCallback));
         activity.onDestroy = function () {
-            console.log("oldDestroyCallback: " + JSON.stringify(oldDestroyCallback));
             if (oldDestroyCallback) oldDestroyCallback();
             session.native.onDestroy();
             android.support.v4.content.LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
@@ -186,7 +188,7 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
             let data = {
                 isReadyToCharge: paymentData.isPaymentReadyToCharge(),
                 paymentMethod: createPaymentMethod(parent, paymentData.getSelectedPaymentMethodId()),
-                shippingInfo: createShippingMethod(parent, paymentData)
+                shippingInfo: createShippingMethod(paymentData.getShippingMethod())
             };
             listener.onPaymentDataChanged(data);
             console.log("Data now: " + JSON.stringify(data));
@@ -238,10 +240,12 @@ function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletion
             StripeConfig.shared().backendAPI.completeCharge(
                 data.getSelectedPaymentMethodId(),
                 data.getCartTotal() + data.getShippingMethod().getAmount(),
-                encodeMap("shipping", data.getShippingInformation().toMap()))
+                createShippingMethod(data.getShippingMethod()),
+                createAddress(data.getShippingInformation()))
                 .then(() => {
                     listener.onPaymentResult(com.stripe.android.PaymentResultListener.SUCCESS);
                 }).catch(e => {
+                    console.log("PaymentError: " + JSON.stringify(e));
                     // TODO: How to return the error? createError("PaymentError", 100, e));
                     listener.onPaymentResult(com.stripe.android.PaymentResultListener.ERROR);
                 });
@@ -249,56 +253,24 @@ function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletion
     });
 }
 
-function encodeMap(key: string, map: java.util.Map<string, any>): string {
-    let entries = encodeEntries(key, map);
-    return entries.map(e => `${e[0]}=${e[1]}`).join("&");
-}
-
-function encodeEntries(key: string, value: any): [string, string][] {
-    let result: [string, string][] = [];
-
-    if (value instanceof java.util.Map) {
-        let keys = value.keySet().iterator();
-        while (keys.hasNext()) {
-            let k = keys.next();
-            result = result.concat(encodeEntries(`${key}[${k}]`, value.get(k)));
-        }
-    } else if (value instanceof java.util.ArrayList) {
-        for (let i = 0; i < value.size(); i++) {
-            result = result.concat(encodeEntries(`${key}[]`, value[i]));
-        }
-    } else if (typeof value === "number") {
-        result.push([encodeURI(key), "" + value]);
-    } else if (typeof value === "boolean") {
-        result.push([encodeURI(key), value ? "1" : "0"]);
-    } else {
-        result.push([encodeURI(key), encodeURI(value)]);
-    }
-    return result;
-}
-
 function createPaymentMethod(paymentSession: StripePaymentSession, paymentMethodId: string): StripePaymentMethod {
     if (!paymentMethodId) return undefined;
+    // TODO: getDefaultCache() doesn't always work!
+    let customer = paymentSession.customerSession.native.getCachedCustomer();
+    if (!customer) return { label: "Error (101)", image: undefined, templateImage: undefined };
+    let cs = customer.getSourceById(paymentMethodId);
+    if (!cs) return { label: "Error (102)", image: undefined, templateImage: undefined };
+    let source = cs.asSource();
+
     let label: string;
     let image: any;
-    paymentSession.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
-        onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
-            let sourceId = customer.getDefaultSource();
-            if (sourceId == null) return undefined;
-            let source = customer.getSourceById(sourceId).asSource();
-            if (source.getType() === com.stripe.android.model.Source.CARD) {
-                let card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
-                label = `${card.getBrand()} ...${card.getLast4()}`;
-                image = com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue();
-            } else {
-                label = source.getType();
-            }
-        },
-
-        onError(errorCode: number, errorMessage: string) {
-            label = `${errorMessage} (${errorCode})`;
-        }
-    }));
+    if (source.getType() === com.stripe.android.model.Source.CARD) {
+        let card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
+        label = `${card.getBrand()} ...${card.getLast4()}`;
+        image = com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue();
+    } else {
+        label = source.getType();
+    }
     return {
         label: label,
         image: image,
@@ -306,9 +278,7 @@ function createPaymentMethod(paymentSession: StripePaymentSession, paymentMethod
     };
 }
 
-function createShippingMethod(paymentSession: StripePaymentSession, paymentData: com.stripe.android.PaymentSessionData): StripeShippingMethod {
-    if (!paymentData) return undefined;
-    let shipping = paymentData.getShippingMethod();
+function createShippingMethod(shipping: com.stripe.android.model.ShippingMethod): StripeShippingMethod {
     if (!shipping) return undefined;
     return {
         amount: shipping.getAmount(),
@@ -319,6 +289,7 @@ function createShippingMethod(paymentSession: StripePaymentSession, paymentData:
 }
 
 function createAddress(info: com.stripe.android.model.ShippingInformation): StripeAddress {
+    if (!info) return undefined;
     let address = info.getAddress();
     return {
         name: info.getName(),

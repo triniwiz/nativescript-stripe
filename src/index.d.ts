@@ -11,7 +11,14 @@ export declare class Stripe extends StripeCommon {
     constructor(apiKey: string);
     createToken(card: Card, cb: Function): void;
 }
-
+export declare class CreditCardView extends View {
+    nativeView: any;
+    createNativeView(): Object;
+    initNativeView(): void;
+    disposeNativeView(): void;
+    readonly card: Card;
+}
+export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
 export declare interface CardCommon {
     readonly native: any;
     name: string;
@@ -91,14 +98,13 @@ export declare interface StripeBackendAPI {
     /**
      * Calls the client-implemented Stripe backend to complete a charge.
      * 
-     * @param stripeID The Stripe ID to send to the backend.
+     * @param sourceID The Stripe Source ID to send to the backend.
      * @param amount  The amount to charge, in pennies.
-     * @param shippingHash A hash representing shipping info that can be sent to
-     *     the Stripe backend. Looks similar to:
-     *     "shipping[name]=XX&shipping[address][city]=Sacramento"
+     * @param shippingMethod The shipping method to use.
+     * @param shippingAddress The address to ship to.
      * @returns a Promise that resolves on success and rejects on failure.
      */
-    completeCharge(stripeID: string, amount: number, shippingHash: string): Promise<void>;
+    completeCharge(sourceID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void>;
 }
 /**
  * Called during event processing when status changes. On Angular apps, be sure to 
@@ -125,7 +131,7 @@ export declare class StripePaymentSession {
         customerSession: StripeCustomerSession,
         amount: number,
         currency: string,
-        listener?: StripePaymentListener);
+        listener: StripePaymentListener);
     /** Is the native component loading? */
     readonly loading: boolean;
     /** Has user entered enough info that a charge can be made? */
@@ -140,7 +146,7 @@ export declare class StripePaymentSession {
     presentShipping(): void;
 }
 export declare interface StripePaymentMethod {
-    image: any; // TODO: UIImage marshals to ???
+    image: any; // TODO: UIImage marshals to ??? (number on Android)
     label: string;
     templateImage: any;
 }
@@ -180,43 +186,12 @@ export declare interface StripeShippingMethods {
     /** The pre-selected (default) shipping method for the address. */
     selectedShippingMethod: StripeShippingMethod;
 }
-export declare class CreditCardView extends View {
-    nativeView: any;
-    createNativeView(): Object;
-    initNativeView(): void;
-    disposeNativeView(): void;
-    readonly card: Card;
-}
-export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
-declare const enum STPShippingType {
-    Shipping = 0,
-    Delivery = 1
-}
-export declare const enum STPBillingAddressFields {
-    None = 0,
-    Zip = 1,
-    Full = 2
-}
-export declare const enum PKAddressField {
-    None = 0,
-    PostalAddress = 1,
-    Phone = 2,
-    Email = 4,
-    Name = 8,
-    All = 15
-}
-export declare const enum STPPaymentMethodType {
-    None = 0,
-    ApplePay = 1,
-    All = 1
-}
 export declare const enum StripeBillingAddressFields {
     None = 0,
     Zip = 1,
     Full = 2,
     Name = 3
 }
-
 /** Bitfield of available shipping address fields. */
 export declare const enum StripeShippingAddressField {
     None = 0,

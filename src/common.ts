@@ -72,14 +72,13 @@ export interface StripeBackendAPI {
     /**
      * Calls the client-implemented Stripe backend to complete a charge.
      *
-     * @param stripeID The Stripe ID to send to the backend.
+     * @param sourceID The Stripe Source ID to send to the backend.
      * @param amount  The amount to charge, in pennies.
-     * @param shippingHash A hash representing shipping info that can be sent to
-     *     the Stripe backend. Looks similar to:
-     *     "shipping[name]=XX&shipping[address][city]=Sacramento"
+     * @param shippingMethod The shipping method to use.
+     * @param shippingAddress The address to ship to.
      * @returns a Promise that resolves on success and rejects on failure.
      */
-    completeCharge(stripeID: string, amount: number, shippingHash: string): Promise<void>;
+    completeCharge(sourceID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void>;
 }
 
 export interface StripePaymentListener {

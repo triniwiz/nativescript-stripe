@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as httpModule from "http";
-import { StripeBackendAPI, StripeConfig, StripeCustomerSession, StripePaymentListener, StripePaymentSession, StripeShippingAddressField } from "nativescript-stripe";
+import { StripeAddress, StripeBackendAPI, StripeConfig, StripeCustomerSession, StripePaymentListener, StripePaymentSession, StripeShippingAddressField, StripeShippingMethod } from "nativescript-stripe";
 import { Page } from "ui/page";
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
@@ -55,7 +55,7 @@ export class StripeService implements StripeBackendAPI {
         });
     }
 
-    completeCharge(stripeID: string, amount: number, shippingHash: string): Promise<void> {
+    completeCharge(stripeID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void> {
         let url = this.backendURL("charge");
         return httpModule.request({
             url: url,
@@ -64,12 +64,28 @@ export class StripeService implements StripeBackendAPI {
             content:
                 "source=" + stripeID +
                 "&amount=" + amount +
-                "&" + shippingHash
+                "&" + this.encodeShipping(shippingMethod, shippingAddress)
         }).then(response => {
             if (response.statusCode < 200 || response.statusCode >= 300) {
                 throw new Error(response.content.toString());
             }
         });
+    }
+
+    private encodeShipping(method: StripeShippingMethod, address: StripeAddress): string {
+        function entry(label: string, value: string): string {
+            return value ? encodeURI(label) + "=" + encodeURI(value) : "";
+        }
+        return entry("shipping[carrier]", method.label) +
+            entry("&shipping[name]", address.name) +
+            entry("&shipping[address][line1]", address.line1) +
+            entry("&shipping[address][line2]", address.line2) +
+            entry("&shipping[address][city]", address.city) +
+            entry("&shipping[address][state]", address.state) +
+            entry("&shipping[address][country]", address.country) +
+            entry("&shipping[address][postal_code]", address.postalCode) +
+            entry("&phone", address.phone) +
+            entry("&email", address.email);
     }
 
     createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
