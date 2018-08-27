@@ -79,11 +79,8 @@ function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
             StripeConfig.shared().backendAPI.createCustomerKey(apiVersion)
                 .then(key => {
                     keyUpdateListener.onKeyUpdate(JSON.stringify(key));
-                    console.log("CustomerKey: " + JSON.stringify(key));
                 }).catch(e => {
-                    // TODO: Figure out what message to display here, instead of JSON.stringify()
-                    console.log("CustomerKeyError: " + JSON.stringify(e));
-                    keyUpdateListener.onKeyUpdateFailure(500, "CustomerKey: " + JSON.stringify(e));
+                    keyUpdateListener.onKeyUpdateFailure(500, e);
                 });
         }
     });
@@ -137,7 +134,7 @@ export class StripePaymentSession {
         let activity = androidApp.foregroundActivity;
         let session = this;
 
-        // TODO: How do I call the original activity handler? The following doesn't work,
+        // TODO: How do I call the callback? The code below doesn't work,
         // it throws an "undefined" exception. Note JSON.stringify(oldResultCallback) returns "undefined".
         let oldResultCallback = activity.onActivityResult;
         console.log("oldResultCallback: " + JSON.stringify(oldResultCallback));
@@ -148,7 +145,7 @@ export class StripePaymentSession {
         let oldDestroyCallback = activity.onDestroy;
         console.log("oldDestroyCallback: " + JSON.stringify(oldDestroyCallback));
         activity.onDestroy = function () {
-            if (oldDestroyCallback) oldDestroyCallback();
+            // if (oldDestroyCallback) oldDestroyCallback();
             session.native.onDestroy();
             android.support.v4.content.LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
         };
@@ -162,9 +159,8 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
             if (parent.paymentInProgress) {
                 if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.SUCCESS) {
                     listener.onPaymentSuccess();
-                } else if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.ERROR) {
-                    // TODO: What to pass here?
-                    listener.onError(100, "Payment processing failed");
+                } else if (sessionData.getPaymentResult().startsWith(com.stripe.android.PaymentResultListener.ERROR)) {
+                    listener.onError(100, sessionData.getPaymentResult());
                 }
                 parent.paymentInProgress = false;
                 return;
@@ -239,9 +235,8 @@ function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletion
                 .then(() => {
                     listener.onPaymentResult(com.stripe.android.PaymentResultListener.SUCCESS);
                 }).catch(e => {
-                    console.log("PaymentError: " + JSON.stringify(e));
-                    // TODO: How to return the error? createError("PaymentError", 100, e));
-                    listener.onPaymentResult(com.stripe.android.PaymentResultListener.ERROR);
+                    listener.onPaymentResult(com.stripe.android.PaymentResultListener.ERROR +
+                        ": " + e);
                 });
         }
     });

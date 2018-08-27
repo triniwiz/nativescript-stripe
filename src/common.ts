@@ -66,6 +66,7 @@ export interface StripeBackendAPI {
      * @param apiVersion The API Version to send to the backend.
      * @returns a Promise with a response containing the ephemeral key as
      *     returned by the Stripe backend. For example, response.content.toJSON().
+     *     Any error should be reported as a string that can be displayed to the user.
      */
     createCustomerKey(apiVersion: string): Promise<any>;
 
@@ -77,6 +78,7 @@ export interface StripeBackendAPI {
      * @param shippingMethod The shipping method to use.
      * @param shippingAddress The address to ship to.
      * @returns a Promise that resolves on success and rejects on failure.
+     *     Any error should be reported as a string that can be displayed to the user.
      */
     completeCharge(sourceID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void>;
 }
