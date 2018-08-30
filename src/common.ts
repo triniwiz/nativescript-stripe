@@ -1,8 +1,7 @@
+import { View } from "ui/core/view";
+
 // ***** Custom Integration components
-export abstract class StripeCommon {
-    protected constructor(apiKey: string) { }
-    abstract createToken(card: CardCommon, cb: (token, error) => void);
-}
+export class CreditCardViewBase extends View { }
 
 export interface CardCommon {
     readonly native: any;
@@ -25,7 +24,17 @@ export interface CardCommon {
     validateNumber(): boolean;
     validateCVC(): boolean;
     validateExpMonth(): boolean;
-    validateExpYear(): boolean;
+    validateExpiryDate(): boolean;
+}
+
+export interface Token {
+    id: string;
+    bankAccount: any;
+    card: CardCommon;
+    created: Date;
+    ios: any;
+    android: any;
+    livemode: boolean;
 }
 
 // ***** Standard Integration components

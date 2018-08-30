@@ -1,130 +1,135 @@
-declare const com;
-const javaLang = java.lang;
-const stripe = com.stripe.android;
+import { CardBrand, CardCommon } from "../common";
 
-export class Card {
-    native: any; /*stripe.model.Card;*/
+export class Card implements CardCommon {
+  native: any; /*stripe.model.Card;*/
 
-    constructor(cardNumber: string, expMonth: any, expYear: any, cvc: string) {
-        this.native = new stripe.model.Card(
-            new javaLang.String(cardNumber),
-            new javaLang.Integer(expMonth),
-            new javaLang.Integer(expYear),
-            new javaLang.String(cvc)
-        );
-    }
-    validateNumber(): boolean {
-        return this.native.validateNumber();
-    }
-    validateCVC(): boolean {
-        return this.native.validateCVC();
-    }
-    validateCard(): boolean {
-        return this.native.validateCard();
-    }
-    validateExpMonth(): boolean {
-        return this.native.validateExpMonth();
-    }
-    validateExpYear(): boolean {
-        return this.native.validateExpYear();
-    }
-    get number(): string {
-        return this.native.getNumber();
-    }
-    get cvc(): string {
-        return this.native.getCVC();
-    }
-    get expMonth(): any {
-        return this.native.getExpMonth();
-    }
-    get expYear(): any {
-        return this.native.getExpYear();
-    }
-    get name(): string {
-        return this.native.getName();
-    }
-    set name(value: string) {
-        this.native.setName(value);
-    }
+  public static fromNative(card) {
+    const newCard = new Card(null, null, null, null);
+    newCard.native = card;
+    return newCard;
+  }
 
-    get addressLine1(): string {
-        return this.native.getAddressLine1();
+  constructor(cardNumber: string, cardExpMonth: number, cardExpYear: number, cardCVC: string) {
+    if (cardNumber && cardExpMonth && cardExpYear && cardCVC) {
+      this.native = new com.stripe.android.model.Card(
+        cardNumber,
+        new java.lang.Integer(cardExpMonth),
+        new java.lang.Integer(cardExpYear),
+        cardCVC);
     }
+  }
+  validateNumber(): boolean {
+    return this.native.validateNumber();
+  }
+  validateCVC(): boolean {
+    return this.native.validateCVC();
+  }
+  validateCard(): boolean {
+    return this.native.validateCard();
+  }
+  validateExpMonth(): boolean {
+    return this.native.validateExpMonth();
+  }
+  validateExpiryDate(): boolean {
+    return this.native.validateExpDate();
+  }
+  get number(): string {
+    return this.native.getNumber();
+  }
+  get cvc(): string {
+    return this.native.getCVC();
+  }
+  get expMonth(): any {
+    return this.native.getExpMonth();
+  }
+  get expYear(): any {
+    return this.native.getExpYear();
+  }
+  get name(): string {
+    return this.native.getName();
+  }
+  set name(value: string) {
+    this.native.setName(value);
+  }
 
-    set addressLine1(value: string) {
-        this.native.setAddressLine1(value);
-    }
+  get addressLine1(): string {
+    return this.native.getAddressLine1();
+  }
 
-    get addressLine2(): string {
-        return this.native.getAddressLine2();
-    }
-    set addressLine2(value: string) {
-        this.native.setAddressLine2(value);
-    }
+  set addressLine1(value: string) {
+    this.native.setAddressLine1(value);
+  }
 
-    get addressCity(): string {
-        return this.native.getAddressCity();
-    }
+  get addressLine2(): string {
+    return this.native.getAddressLine2();
+  }
+  set addressLine2(value: string) {
+    this.native.setAddressLine2(value);
+  }
 
-    set addressCity(value: string) {
-        this.native.setAddressCity(value);
-    }
+  get addressCity(): string {
+    return this.native.getAddressCity();
+  }
 
-    get addressZip(): string {
-        return this.native.getAddressZip();
-    }
+  set addressCity(value: string) {
+    this.native.setAddressCity(value);
+  }
 
-    set addressZip(value: string) {
-        this.native.setAddressZip(value);
-    }
+  get addressZip(): string {
+    return this.native.getAddressZip();
+  }
 
-    get addressState(): string {
-        return this.native.getAddressState();
-    }
+  set addressZip(value: string) {
+    this.native.setAddressZip(value);
+  }
 
-    set addressState(value: string) {
-        this.native.setAddressState(value);
-    }
+  get addressState(): string {
+    return this.native.getAddressState();
+  }
 
-
-    get addressCountry(): string {
-        return this.native.getAddressCountry();
-    }
-
-
-    set addressCountry(value: string) {
-        this.native.setAddressCountry(value);
-    }
+  set addressState(value: string) {
+    this.native.setAddressState(value);
+  }
 
 
-    get currency(): string {
-        return this.native.getCurrency();
-    }
+  get addressCountry(): string {
+    return this.native.getAddressCountry();
+  }
 
 
-    set currency(value: string) {
-        this.native.setCurrency(value);
-    }
+  set addressCountry(value: string) {
+    this.native.setAddressCountry(value);
+  }
 
 
-    get last4(): string {
-        return this.native.getLast4();
-    }
+  get currency(): string {
+    return this.native.getCurrency();
+  }
 
 
-    get brand(): string {
-        return this.native.getBrand();
-    }
+  set currency(value: string) {
+    this.native.setCurrency(value);
+  }
 
-    get fingerprint(): string {
-        return this.native.getFingerprint();
-    }
 
-    get funding(): string {
-        return this.native.getFunding();
-    }
+  get last4(): string {
+    return this.native.getLast4();
+  }
 
-    get country(): string {
-        return this.native.getCountry();
-    }
+
+  get brand(): CardBrand {
+    return this.native.getBrand();
+  }
+
+  get fingerprint(): string {
+    return this.native.getFingerprint();
+  }
+
+  get funding(): string {
+    return this.native.getFunding();
+  }
+
+  get country(): string {
+    return this.native.getCountry();
+  }
 }

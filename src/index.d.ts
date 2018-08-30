@@ -1,55 +1,49 @@
-import { View } from "ui/core/view";
 import { Page } from "ui/page";
+import { CreditCardViewBase } from "./common";
 
 // ****** Custom Integration components
 
-export declare class StripeCommon {
+export declare class Stripe {
     constructor(apiKey: string);
-    createToken(card: CardCommon, cb: Function);
+    // TODO: change 'card' below to type CardCommon
+    createToken(card: any /*Native Card Instance*/, cb: (error: Error, token: Token) => void): void;
 }
-export declare class Stripe extends StripeCommon {
-    constructor(apiKey: string);
-    createToken(card: Card, cb: Function): void;
-}
-export declare class CreditCardView extends View {
-    nativeView: any;
-    createNativeView(): Object;
-    initNativeView(): void;
-    disposeNativeView(): void;
-    readonly card: Card;
-}
-export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
+export declare type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
 export declare interface CardCommon {
     readonly native: any;
-    name: string;
     readonly number: string;
     readonly cvc: string;
     readonly expMonth: number;
     readonly expYear: number;
+    readonly last4: string;
+    readonly fingerprint: string;
+    readonly brand: CardBrand;
+    readonly funding: string;
+    name: string;
     addressLine1: string;
     addressLine2: string;
     addressCity: string;
-    addressState: string;
     addressZip: string;
+    addressState: string;
     addressCountry: string;
     currency: string;
-    last4: string;
-    brand: CardBrand;
 
-    validateCard(): boolean;
     validateNumber(): boolean;
     validateCVC(): boolean;
+    validateCard(): boolean;
     validateExpMonth(): boolean;
-    validateExpYear(): boolean;
+    validateExpiryDate(): boolean;
 }
 export declare class Card implements CardCommon {
     readonly native: any;
     readonly number: string;
     readonly cvc: string;
-    readonly expMonth: any;
-    readonly expYear: any;
+    readonly expMonth: number;
+    readonly expYear: number;
     readonly last4: string;
+    readonly fingerprint: string;
     readonly brand: CardBrand;
+    readonly funding: string;
     name: string;
     addressLine1: string;
     addressLine2: string;
@@ -58,13 +52,29 @@ export declare class Card implements CardCommon {
     addressState: string;
     addressCountry: string;
     currency: string;
-    
-    constructor(cardNumber: string, expMonth: number, expYear: number, cvc: string);
+
+    static fromNative(card: any): Card;
+    constructor(cardNumber: string, expMonth: number, expYear: number, cardCVC: string);
     validateNumber(): boolean;
     validateCVC(): boolean;
     validateCard(): boolean;
     validateExpMonth(): boolean;
-    validateExpYear(): boolean;
+    validateExpiryDate(): boolean;
+}
+export declare interface Token {
+    id: string;
+    bankAccount: any;
+    card: CardCommon;
+    created: Date;
+    ios: any;
+    android: any;
+    livemode: boolean;
+}
+export declare class CreditCardView extends CreditCardViewBase {
+    readonly android: any;
+    readonly card: Card;
+    createNativeView(): Object;
+
 }
 
 // ***** Standard Integration components

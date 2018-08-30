@@ -1,18 +1,16 @@
-import { View } from "tns-core-modules/ui/page/page";
 import * as utils from "tns-core-modules/utils/utils";
+import { CreditCardViewBase } from "../common";
 import { Card } from "./card";
 
-export class CreditCardView extends View {
+export class CreditCardView extends CreditCardViewBase {
     private _android;
-    private _ctx;
 
     get android() {
         return this._android;
     }
 
     createNativeView() {
-        this._ctx = utils.ad.getApplicationContext();
-        this._android = new com.stripe.android.view.CardInputWidget(this._ctx);
+        this._android = new com.stripe.android.view.CardInputWidget(utils.ad.getApplicationContext());
         return this._android;
     }
 
@@ -24,5 +22,4 @@ export class CreditCardView extends View {
             return null;
         }
     }
-
 }

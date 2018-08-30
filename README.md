@@ -1,8 +1,24 @@
 [![npm](https://img.shields.io/npm/v/nativescript-stripe.svg)](https://www.npmjs.com/package/nativescript-stripe)
 [![npm](https://img.shields.io/npm/dt/nativescript-stripe.svg?label=npm%20downloads)](https://www.npmjs.com/package/nativescript-stripe)
+[![Build Status](https://travis-ci.org/triniwiz/nativescript-stripe.svg?branch=master)](https://travis-ci.org/triniwiz/nativescript-stripe)
 
 # Installation
-`tns plugin add nativescript-stripe`
+
+**Requires I0S 9.x +**
+
+
+#### NativeScript 4x
+
+* `tns plugin add nativescript-stripe`
+
+#### NativeScript 3x
+
+* `tns plugin add nativescript-stripe@3.3.0`
+
+#### NativeScript 2x
+
+* `tns plugin add nativescript-stripe@1.0.1`
+
 
 # Configure
 
@@ -114,10 +130,6 @@ stripe.createToken(cc.card,(error,token)=>{
   }
 });
 ```
-**Warning** At the moment the `token` sent back by createToken doesn't have the same API depending on the platform.
-
-For exemple, iOS will send back an object having `tokenId` or `card` properties while the Android version will have accessors like `getId()` or `getCard()`.
-
 
 # TODO
 * Android Pay

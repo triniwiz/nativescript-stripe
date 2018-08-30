@@ -2,9 +2,6 @@ Changelog
 ==============================
 
 ## 4.0.0 (2018, ??)
-### Breaking Changes
-- Major rework to better support Angular
-- Add Stripe Standard Integration support
 
 ## 3.0.0 (2017, August 1)
 ### Breaking Changes
