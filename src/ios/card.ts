@@ -3,7 +3,7 @@ import { CardBrand, CardCommon } from "../common";
 export class Card implements CardCommon {
   native: STPCardParams;
 
-  public static fromNative(card): Card {
+  public static fromNative(card: STPCardParams): Card {
     const newCard = new Card(null, null, null, null);
     newCard.native = card;
     return newCard;

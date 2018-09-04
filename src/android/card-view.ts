@@ -3,7 +3,7 @@ import { CreditCardViewBase } from "../common";
 import { Card } from "./card";
 
 export class CreditCardView extends CreditCardViewBase {
-    private _android;
+    private _android: com.stripe.android.view.CardInputWidget;
 
     get android() {
         return this._android;
@@ -17,7 +17,11 @@ export class CreditCardView extends CreditCardViewBase {
     get card(): Card {
         const card = this._android.getCard();
         if (card) {
-            return new Card(card.getNumber(), card.getExpMonth(), card.getExpYear(), card.getCVC());
+            return new Card(
+                card.getNumber(),
+                card.getExpMonth().intValue(),
+                card.getExpYear().intValue(),
+                card.getCVC());
         } else {
             return null;
         }

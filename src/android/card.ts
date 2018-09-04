@@ -1,9 +1,9 @@
 import { CardBrand, CardCommon } from "../common";
 
 export class Card implements CardCommon {
-  native: any; /*stripe.model.Card;*/
+  native: com.stripe.android.model.Card;
 
-  public static fromNative(card) {
+  public static fromNative(card: com.stripe.android.model.Card): Card {
     const newCard = new Card(null, null, null, null);
     newCard.native = card;
     return newCard;
@@ -31,7 +31,7 @@ export class Card implements CardCommon {
     return this.native.validateExpMonth();
   }
   validateExpiryDate(): boolean {
-    return this.native.validateExpDate();
+    return this.native.validateExpiryDate();
   }
   get number(): string {
     return this.native.getNumber();
@@ -116,9 +116,8 @@ export class Card implements CardCommon {
     return this.native.getLast4();
   }
 
-
   get brand(): CardBrand {
-    return this.native.getBrand();
+    return <CardBrand>this.native.getBrand();
   }
 
   get fingerprint(): string {

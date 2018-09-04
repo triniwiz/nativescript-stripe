@@ -2028,25 +2028,25 @@ declare module com {
 	}
 }
 
-declare module com {
-	export module stripe {
-		export module android {
-			export module view {
-				export class MaskedCardAdapter extends globalAndroid.support.v7.widget.RecyclerView.Adapter<com.stripe.android.view.MaskedCardAdapter.ViewHolder> {
-					public static class: java.lang.Class<com.stripe.android.view.MaskedCardAdapter>;
-					public onCreateViewHolder(param0: globalAndroid.view.ViewGroup, param1: number): com.stripe.android.view.MaskedCardAdapter.ViewHolder;
-					public onBindViewHolder(param0: com.stripe.android.view.MaskedCardAdapter.ViewHolder, param1: number): void;
-					public getItemCount(): number;
-				}
-				export module MaskedCardAdapter {
-					export class ViewHolder {
-						public static class: java.lang.Class<com.stripe.android.view.MaskedCardAdapter.ViewHolder>;
-					}
-				}
-			}
-		}
-	}
-}
+// declare module com {
+// 	export module stripe {
+// 		export module android {
+// 			export module view {
+// 				export class MaskedCardAdapter extends globalAndroid.support.v7.widget.RecyclerView.Adapter<com.stripe.android.view.MaskedCardAdapter.ViewHolder> {
+// 					public static class: java.lang.Class<com.stripe.android.view.MaskedCardAdapter>;
+// 					public onCreateViewHolder(param0: globalAndroid.view.ViewGroup, param1: number): com.stripe.android.view.MaskedCardAdapter.ViewHolder;
+// 					public onBindViewHolder(param0: com.stripe.android.view.MaskedCardAdapter.ViewHolder, param1: number): void;
+// 					public getItemCount(): number;
+// 				}
+// 				export module MaskedCardAdapter {
+// 					export class ViewHolder {
+// 						public static class: java.lang.Class<com.stripe.android.view.MaskedCardAdapter.ViewHolder>;
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 declare module com {
 	export module stripe {
@@ -2231,26 +2231,26 @@ declare module com {
 	}
 }
 
-declare module com {
-	export module stripe {
-		export module android {
-			export module view {
-				export class ShippingMethodAdapter extends globalAndroid.support.v7.widget.RecyclerView.Adapter<com.stripe.android.view.ShippingMethodAdapter.ViewHolder> {
-					public static class: java.lang.Class<com.stripe.android.view.ShippingMethodAdapter>;
-					public onBindViewHolder(param0: com.stripe.android.view.ShippingMethodAdapter.ViewHolder, param1: number): void;
-					public getItemCount(): number;
-					public getItemId(param0: number): number;
-					public onCreateViewHolder(param0: globalAndroid.view.ViewGroup, param1: number): com.stripe.android.view.ShippingMethodAdapter.ViewHolder;
-				}
-				export module ShippingMethodAdapter {
-					export class ViewHolder {
-						public static class: java.lang.Class<com.stripe.android.view.ShippingMethodAdapter.ViewHolder>;
-					}
-				}
-			}
-		}
-	}
-}
+// declare module com {
+// 	export module stripe {
+// 		export module android {
+// 			export module view {
+// 				export class ShippingMethodAdapter extends globalAndroid.support.v7.widget.RecyclerView.Adapter<com.stripe.android.view.ShippingMethodAdapter.ViewHolder> {
+// 					public static class: java.lang.Class<com.stripe.android.view.ShippingMethodAdapter>;
+// 					public onBindViewHolder(param0: com.stripe.android.view.ShippingMethodAdapter.ViewHolder, param1: number): void;
+// 					public getItemCount(): number;
+// 					public getItemId(param0: number): number;
+// 					public onCreateViewHolder(param0: globalAndroid.view.ViewGroup, param1: number): com.stripe.android.view.ShippingMethodAdapter.ViewHolder;
+// 				}
+// 				export module ShippingMethodAdapter {
+// 					export class ViewHolder {
+// 						public static class: java.lang.Class<com.stripe.android.view.ShippingMethodAdapter.ViewHolder>;
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
 
 declare module com {
 	export module stripe {

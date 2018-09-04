@@ -5,8 +5,7 @@ import { CreditCardViewBase } from "./common";
 
 export declare class Stripe {
     constructor(apiKey: string);
-    // TODO: change 'card' below to type CardCommon
-    createToken(card: any /*Native Card Instance*/, cb: (error: Error, token: Token) => void): void;
+    createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void;
 }
 export declare type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
 export declare interface CardCommon {

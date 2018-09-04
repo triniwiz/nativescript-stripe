@@ -17,7 +17,7 @@ export class Stripe {
             const newToken: Token = {
               id: token.tokenId,
               bankAccount: token.bankAccount,
-              card: Card.fromNative(card),
+              card: card,
               created: new Date(token.created),
               livemode: token.livemode,
               android: null,

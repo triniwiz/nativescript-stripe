@@ -1,8 +1,7 @@
 import { android as androidApp } from "application";
 import { Page } from "ui/page/page";
 import * as utils from "utils/utils";
-import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod, Token } from "../common";
-import { Card } from "./card";
+import { CardCommon, StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod, Token } from "../common";
 
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
@@ -13,16 +12,16 @@ export class Stripe {
       apiKey
     );
   }
-  createToken(card: any /*Native Card Instance*/, cb: (error: Error, token: Token) => void) {
+  createToken(card: CardCommon, cb: (error: Error, token: Token) => void) {
     this._stripe.createToken(
-      card,
+      card.native,
       new com.stripe.android.TokenCallback({
         onSuccess: (token) => {
           if (cb) {
             const newToken: Token = {
               id: token.getId(),
               bankAccount: token.getBankAccount(),
-              card: Card.fromNative(card),
+              card: card,
               created: new Date(token.getCreated().toString()),
               livemode: token.getLivemode(),
               android: token,
