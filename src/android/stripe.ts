@@ -2,6 +2,7 @@ import { android as androidApp } from "application";
 import { Page } from "ui/page/page";
 import * as utils from "utils/utils";
 import { CardCommon, StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod, Token } from "../common";
+import { Card } from "./card";
 
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
@@ -21,7 +22,7 @@ export class Stripe {
             const newToken: Token = {
               id: token.getId(),
               bankAccount: token.getBankAccount(),
-              card: card,
+              card: Card.fromNative(token.getCard()),
               created: new Date(token.getCreated().toString()),
               livemode: token.getLivemode(),
               android: token,

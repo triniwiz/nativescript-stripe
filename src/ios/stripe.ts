@@ -16,7 +16,7 @@ export class Stripe {
             const newToken: Token = {
               id: token.tokenId,
               bankAccount: token.bankAccount,
-              card: card,
+              card: card, // token.card is incomplete
               created: new Date(token.created),
               livemode: token.livemode,
               android: null,
