@@ -1,6 +1,6 @@
 import { Page } from "tns-core-modules/ui/page";
 import * as utils from "tns-core-modules/utils/utils";
-import { CardCommon, StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingMethod, Token } from "../common";
+import { CardCommon, StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod, Token } from "../common";
 
 export class Stripe {
   constructor(apiKey: string) {
@@ -47,7 +47,26 @@ export class StripeConfig extends StripeConfigCommon {
     if (this.publishableKey) config.publishableKey = this.publishableKey;
     if (this.appleMerchantID) config.appleMerchantIdentifier = this.appleMerchantID;
     if (this.requiredBillingAddressFields) config.requiredBillingAddressFields = this.requiredBillingAddressFields as any;
-    if (this.requiredShippingAddressFields) config.requiredShippingAddressFields = this.requiredShippingAddressFields as any;
+    if (this.requiredShippingAddressFields && this.requiredShippingAddressFields.length > 0) {
+      let fields = new NSMutableSet<string>({capacity: 4});
+      this.requiredShippingAddressFields.forEach(f => {
+        switch (f) {
+          case StripeShippingAddressField.Name:
+            fields.addObject(STPContactFieldName);
+            break;
+          case StripeShippingAddressField.PostalAddress:
+            fields.addObject(STPContactFieldPostalAddress);
+            break;
+          case StripeShippingAddressField.Phone:
+            fields.addObject(STPContactFieldPhoneNumber);
+            break;
+          case StripeShippingAddressField.Email:
+            fields.addObject(STPContactFieldEmailAddress);
+            break;
+        }
+      });
+      config.requiredShippingAddressFields = fields;
+    }
     if (this.companyName) config.companyName = this.companyName;
     return config;
   }

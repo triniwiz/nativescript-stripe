@@ -15,26 +15,26 @@ import { StripeService } from "./demo/stripe.service";
 // import { NativeScriptHttpModule } from "nativescript-angular/http";
 
 @NgModule({
-    bootstrap: [
-        AppComponent
-    ],
-    imports: [
-        NativeScriptModule,
-        AppRoutingModule,
-        CreditCardViewModule
-    ],
-    declarations: [
-        AppComponent,
-        HomeComponent,
-        StandardComponent,
-        CreditCardViewComponent
-    ],
-    providers: [
-        StripeService
-    ],
-    schemas: [
-        NO_ERRORS_SCHEMA
-    ]
+  bootstrap: [
+    AppComponent
+  ],
+  imports: [
+    NativeScriptModule,
+    AppRoutingModule,
+    CreditCardViewModule
+  ],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    StandardComponent,
+    CreditCardViewComponent
+  ],
+  providers: [
+    StripeService
+  ],
+  schemas: [
+    NO_ERRORS_SCHEMA
+  ]
 })
 /*
 Pass your application module to the bootstrapModule function located in main.ts to start your app

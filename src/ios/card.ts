@@ -117,52 +117,52 @@ export class Card implements CardCommon {
   }
 
   get addressLine1(): string {
-    return this.native.addressLine1;
+    return this.native.address.line1;
   }
 
   set addressLine1(value: string) {
-    this.native.addressLine1 = value;
+    this.native.address.line1 = value;
   }
 
   get addressLine2(): string {
-    return this.native.addressLine2;
+    return this.native.address.line2;
   }
   set addressLine2(value: string) {
-    this.native.addressLine2 = value;
+    this.native.address.line2 = value;
   }
 
   get addressCity(): string {
-    return this.native.addressCity;
+    return this.native.address.city;
   }
 
   set addressCity(value: string) {
-    this.native.addressCity = value;
+    this.native.address.city = value;
   }
 
   get addressZip(): string {
-    return this.native.addressZip;
+    return this.native.address.postalCode;
   }
 
   set addressZip(value: string) {
-    this.native.addressZip = value;
+    this.native.address.postalCode = value;
   }
 
   get addressState(): string {
-    return this.native.addressState;
+    return this.native.address.state;
   }
 
   set addressState(value: string) {
-    this.native.addressState = value;
+    this.native.address.state = value;
   }
 
 
   get addressCountry(): string {
-    return this.native.addressCountry;
+    return this.native.address.country;
   }
 
 
   set addressCountry(value: string) {
-    this.native.addressCountry = value;
+    this.native.address.country = value;
   }
 
 
@@ -177,7 +177,7 @@ export class Card implements CardCommon {
 
 
   get last4(): string {
-    return this.native.last4;
+    return this.native.last4();
   }
 
 

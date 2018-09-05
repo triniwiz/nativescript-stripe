@@ -19,88 +19,88 @@ const appleMerchantID = "merchant.com.hearingclinic.hearingaids";
 
 @Injectable()
 export class StripeService implements StripeBackendAPI {
-    private customerSession: StripeCustomerSession;
+  private customerSession: StripeCustomerSession;
 
-    constructor() {
-        StripeConfig.shared().backendAPI = this;
-        StripeConfig.shared().publishableKey = publishableKey;
-        StripeConfig.shared().appleMerchantID = appleMerchantID;
-        StripeConfig.shared().companyName = "Demo Company";
-        StripeConfig.shared().requiredShippingAddressFields = StripeShippingAddressField.PostalAddress;
+  constructor() {
+    StripeConfig.shared().backendAPI = this;
+    StripeConfig.shared().publishableKey = publishableKey;
+    StripeConfig.shared().appleMerchantID = appleMerchantID;
+    StripeConfig.shared().companyName = "Demo Company";
+    StripeConfig.shared().requiredShippingAddressFields = [StripeShippingAddressField.PostalAddress];
 
-        this.customerSession = new StripeCustomerSession();
+    this.customerSession = new StripeCustomerSession();
+  }
+
+  private backendURL(pathComponent: string): string {
+    if (!backendBaseURL) throw new Error("backendBaseURL must be set");
+    if (!backendBaseURL.endsWith("/")) {
+      return backendBaseURL + "/" + pathComponent;
+    } else {
+      return backendBaseURL + pathComponent;
     }
+  }
 
-    private backendURL(pathComponent: string): string {
-        if (!backendBaseURL) throw new Error("backendBaseURL must be set");
-        if (!backendBaseURL.endsWith("/")) {
-            return backendBaseURL + "/" + pathComponent;
-        } else {
-            return backendBaseURL + pathComponent;
-        }
-    }
+  createCustomerKey(apiVersion: string): Promise<any> {
+    let url = this.backendURL("ephemeral_keys");
+    return httpModule.request({
+      url: url,
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
+      content: "api_version=" + apiVersion
+    }).then(response => {
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw new Error(response.content.toString());
+      }
+      return response.content.toJSON();
+    });
+  }
 
-    createCustomerKey(apiVersion: string): Promise<any> {
-        let url = this.backendURL("ephemeral_keys");
-        return httpModule.request({
-            url: url,
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
-            content: "api_version=" + apiVersion
-        }).then(response => {
-            if (response.statusCode < 200 || response.statusCode >= 300) {
-                throw new Error(response.content.toString());
-            }
-            return response.content.toJSON();
-        });
-    }
+  completeCharge(stripeID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void> {
+    let url = this.backendURL("charge");
+    return httpModule.request({
+      url: url,
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
+      content:
+        "source=" + stripeID +
+        "&amount=" + amount +
+        "&" + this.encodeShipping(shippingMethod, shippingAddress)
+    }).then(response => {
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw new Error(response.content.toString());
+      }
+    });
+  }
 
-    completeCharge(stripeID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void> {
-        let url = this.backendURL("charge");
-        return httpModule.request({
-            url: url,
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
-            content:
-                "source=" + stripeID +
-                "&amount=" + amount +
-                "&" + this.encodeShipping(shippingMethod, shippingAddress)
-        }).then(response => {
-            if (response.statusCode < 200 || response.statusCode >= 300) {
-                throw new Error(response.content.toString());
-            }
-        });
+  private encodeShipping(method: StripeShippingMethod, address: StripeAddress): string {
+    function entry(label: string, value: string): string {
+      return value ? encodeURI(label) + "=" + encodeURI(value) : "";
     }
+    return entry("shipping[carrier]", method.label) +
+      entry("&shipping[name]", address.name) +
+      entry("&shipping[address][line1]", address.line1) +
+      entry("&shipping[address][line2]", address.line2) +
+      entry("&shipping[address][city]", address.city) +
+      entry("&shipping[address][state]", address.state) +
+      entry("&shipping[address][country]", address.country) +
+      entry("&shipping[address][postal_code]", address.postalCode) +
+      entry("&phone", address.phone) +
+      entry("&email", address.email);
+  }
 
-    private encodeShipping(method: StripeShippingMethod, address: StripeAddress): string {
-        function entry(label: string, value: string): string {
-            return value ? encodeURI(label) + "=" + encodeURI(value) : "";
-        }
-        return entry("shipping[carrier]", method.label) +
-            entry("&shipping[name]", address.name) +
-            entry("&shipping[address][line1]", address.line1) +
-            entry("&shipping[address][line2]", address.line2) +
-            entry("&shipping[address][city]", address.city) +
-            entry("&shipping[address][state]", address.state) +
-            entry("&shipping[address][country]", address.country) +
-            entry("&shipping[address][postal_code]", address.postalCode) +
-            entry("&phone", address.phone) +
-            entry("&email", address.email);
-    }
+  createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
+    return new StripePaymentSession(page, this.customerSession, price, "usd", listener);
+  }
 
-    createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
-        return new StripePaymentSession(page, this.customerSession, price, "usd", listener);
-    }
+  showPaymentMethods(paymentSession: StripePaymentSession) {
+    paymentSession.presentPaymentMethods();
+  }
 
-    showPaymentMethods(paymentSession: StripePaymentSession) {
-        paymentSession.presentPaymentMethods();
-    }
+  showShipping(paymentSession: StripePaymentSession) {
+    paymentSession.presentShipping();
+  }
 
-    showShipping(paymentSession: StripePaymentSession) {
-        paymentSession.presentShipping();
-    }
-
-    requestPayment(paymentSession: StripePaymentSession) {
-        paymentSession.requestPayment();
-    }
+  requestPayment(paymentSession: StripePaymentSession) {
+    paymentSession.requestPayment();
+  }
 }
