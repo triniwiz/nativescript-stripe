@@ -1,5 +1,5 @@
-import { Page } from "tns-core-modules/ui/page";
-import * as utils from "tns-core-modules/utils/utils";
+import { Page } from "ui/page";
+import * as utils from "utils/utils";
 import { CardCommon, StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod, Token } from "../common";
 
 export class Stripe {

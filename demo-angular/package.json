@@ -31,11 +31,18 @@
     "zone.js": "~0.8.2"
   },
   "devDependencies": {
+    "@angular/compiler-cli": "~6.1.0",
+    "@ngtools/webpack": "~6.1.0",
     "babel-traverse": "6.26.0",
     "babel-types": "6.26.0",
     "babylon": "6.18.0",
     "lazy": "1.0.11",
     "nativescript-dev-typescript": "~0.7.0",
+    "nativescript-dev-webpack": "^0.15.1",
     "typescript": "~2.7.2"
+  },
+  "scripts": {
+    "build.plugin": "cd ../src && npm run build",
+    "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"
   }
 }

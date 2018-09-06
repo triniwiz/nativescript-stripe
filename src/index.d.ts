@@ -97,7 +97,7 @@ export declare interface StripeBackendAPI {
   /**
    * Calls the client-implemented Stripe backend to retrieve a Customer Key
    * (ephemeral key).
-   * 
+   *
    * @param apiVersion The API Version to send to the backend.
    * @returns a Promise with a response containing the ephemeral key as
    *     returned by the Stripe backend. For example, response.content.toJSON().
@@ -107,7 +107,7 @@ export declare interface StripeBackendAPI {
 
   /**
    * Calls the client-implemented Stripe backend to complete a charge.
-   * 
+   *
    * @param sourceID The Stripe Source ID to send to the backend.
    * @param amount  The amount to charge, in pennies.
    * @param shippingMethod The shipping method to use.
@@ -118,7 +118,7 @@ export declare interface StripeBackendAPI {
   completeCharge(sourceID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void>;
 }
 /**
- * Called during event processing when status changes. On Angular apps, be sure to 
+ * Called during event processing when status changes. On Angular apps, be sure to
  * trigger change detection when these are called since they are called in a background thread.
  */
 export declare interface StripePaymentListener {
