@@ -27,7 +27,7 @@
     "nativescript-theme-core": "~1.0.4",
     "reflect-metadata": "~0.1.8",
     "rxjs": "~5.5.2",
-    "tns-core-modules": "~4.0.0",
+    "tns-core-modules": "^4.2.0",
     "zone.js": "~0.8.2"
   },
   "devDependencies": {
@@ -37,9 +37,9 @@
     "babel-types": "6.26.0",
     "babylon": "6.18.0",
     "lazy": "1.0.11",
-    "nativescript-dev-typescript": "~0.7.0",
+    "nativescript-dev-typescript": "~0.7.2",
     "nativescript-dev-webpack": "^0.15.1",
-    "typescript": "~2.7.2"
+    "typescript": "~2.8.2"
   },
   "scripts": {
     "build.plugin": "cd ../src && npm run build",

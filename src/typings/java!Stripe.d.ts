@@ -1,5 +1,3 @@
-import globalAndroid = android;
-
 declare module com {
 	export module stripe {
 		export module android {

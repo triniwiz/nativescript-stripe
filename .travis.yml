@@ -1,3 +1,6 @@
+branches:
+  only: 
+    - master
 matrix:
   include:
     - stage: "Lint"
@@ -5,53 +8,61 @@ matrix:
       os: linux
       node_js: "8"
       script: cd src && npm run ci.tslint && cd ../demo && npm run ci.tslint && cd ../demo-angular && npm run ci.tslint
-    - stage: "WebPack and Build"
-      os: osx
-      env:
-        - WebPack="iOS"
-      osx_image: xcode9.3
-      language: node_js 
-      node_js: "8"
-      jdk: oraclejdk8
-      before_install:
-      - travis_wait pod repo update --silent
-      script: cd demo && npm run build.plugin && npm i && tns build ios --bundle --env.uglify
-    - language: android
+    - stage: "Build and Test"
+      env: 
+        - BuildAndroid="26"
+      language: android
       os: linux
-      env:
-        - WebPack="Android"
       jdk: oraclejdk8
       before_install: nvm install 8
-      script: cd demo && npm run build.plugin && npm i && tns build android --bundle --env.uglify --env.snapshot
-    - language: android
-      env: 
-        - BuildAndroid="27"
-      os: linux
-      jdk: oraclejdk8
-      before_install: nvm install stable
       script:
-        - cd src && npm i && npm run tsc && cd ../demo && tns build android && cd ../demo-angular && tns build android
+        - cd src && npm i && npm run tsc && cd ../demo
+        - travis_wait travis_retry tns build android && cd ../demo-angular
+        - travis_wait travis_retry tns build android 
     - os: osx
       env: 
         - BuildiOS="11"
-        - Xcode="9.3"
-      osx_image: xcode9.3
+        - Xcode="9.2"
+      osx_image: xcode9.2
       language: node_js 
       node_js: "8"
       jdk: oraclejdk8
-      before_install:
-      - travis_wait pod repo update --silent
       script: 
-        - cd src && npm i && npm run tsc && cd ../demo && tns build ios && cd ../demo-angular && tns build ios
+        - cd src && npm i && npm run tsc && cd ../demo
+        - travis_wait travis_retry tns build ios && cd ../demo-angular
+        - travis_wait travis_retry tns build ios
+    - os: linux
+      language: android
+      env:
+        - TestVersion="latest"
+      jdk: oraclejdk8
+      before_install:
+        - nvm install 8
+      before_script:
+        - cd seed-tests && npm i
+        - echo no | android create avd --force -n test -t android-21 -b armeabi-v7a
+        - emulator -avd test -no-audio -no-window &
+        - android-wait-for-emulator
+      script: travis_wait travis_retry npm run test.android
+      dist: precise
+    - os: osx
+      env:
+        - TestVersion="latest"
+      language: node_js
+      node_js: "8"
+      jdk: oraclejdk8
+      osx_image: xcode9.2
+      before_script:
+        - cd seed-tests && npm i
+      script: travis_wait travis_retry npm run test.ios
 
 android:
   components:
     - tools
     - platform-tools
     - build-tools-27.0.3
-    - android-27
-    - android-26
     - android-23
+    - android-26
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-21
 

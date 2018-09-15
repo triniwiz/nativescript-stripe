@@ -12,7 +12,7 @@
     "nativescript-stripe": "file:../src",
     "nativescript-theme-core": "^1.0.4",
     "nativescript-unit-test-runner": "^0.3.4",
-    "tns-core-modules": "^4.1.0"
+    "tns-core-modules": "^4.2.0"
   },
   "devDependencies": {
     "awesome-typescript-loader": "~5.0.0",
@@ -37,7 +37,7 @@
     "resolve-url-loader": "~2.3.0",
     "tns-platform-declarations": "^4.1.0",
     "tslint": "~5.4.3",
-    "typescript": "~2.7.2",
+    "typescript": "~2.8.2",
     "uglifyjs-webpack-plugin": "~1.2.4",
     "webpack": "~4.5.0",
     "webpack-bundle-analyzer": "^2.9.1",
