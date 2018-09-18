@@ -266,7 +266,7 @@ function createPaymentMethod(customer: com.stripe.android.model.Customer, paymen
   if (source.getType() === com.stripe.android.model.Source.CARD) {
     let card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
     label = `${card.getBrand()} ...${card.getLast4()}`;
-    image = com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue();
+    image = getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue());
   } else {
     label = source.getType();
   }
@@ -275,6 +275,19 @@ function createPaymentMethod(customer: com.stripe.android.model.Customer, paymen
     image: image,
     templateImage: undefined
   };
+}
+
+function getBitmapFromResource(resID: number): android.graphics.Bitmap {
+  let image = androidApp.foregroundActivity.getResources().getDrawable(resID, null);
+  if (image instanceof android.graphics.Bitmap) {
+    return image;
+  }
+  let bitmap = android.graphics.Bitmap.createBitmap(image.getIntrinsicWidth(),
+    image.getIntrinsicHeight(), android.graphics.Bitmap.Config.ARGB_8888);
+  let canvas = new android.graphics.Canvas(bitmap);
+  image.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+  image.draw(canvas);
+  return bitmap;
 }
 
 function createShippingMethod(shipping: com.stripe.android.model.ShippingMethod): StripeShippingMethod {

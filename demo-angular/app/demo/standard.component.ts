@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { StripeAddress, StripePaymentData, StripePaymentListener, StripePaymentSession, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe";
+import { StripeAddress, StripePaymentData, StripePaymentListener, StripePaymentMethod, StripePaymentSession, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe";
 import { Page } from "ui/page";
 import { Item } from "./item";
 import { StripeService } from "./stripe.service";
@@ -11,11 +11,11 @@ import { StripeService } from "./stripe.service";
 })
 export class StandardComponent implements OnInit {
   item: Item;
-  paymentType: string;
-  shippingType: string;
   errorMessage: string;
   successMessage: string;
   private paymentSession: StripePaymentSession;
+  paymentMethod: StripePaymentMethod;
+  shippingInfo: StripeShippingMethod;
 
   constructor(
     private page: Page,
@@ -51,6 +51,20 @@ export class StandardComponent implements OnInit {
     return this.paymentSession ? this.paymentSession.amount : this.item.price;
   }
 
+  get paymentType(): string {
+    return this.paymentMethod ? this.paymentMethod.label : "Select Payment";
+  }
+
+  get paymentImage(): any {
+    return this.paymentMethod ? this.paymentMethod.image : null;
+  }
+
+  get shippingType(): string {
+    return this.shippingInfo ?
+      `${this.shippingInfo.label} ($${this.shippingInfo.amount / 100})` :
+      "Enter Shipping Info";
+  }
+
   showPaymentMethods() {
     this.stripeService.showPaymentMethods(this.paymentSession);
   }
@@ -73,15 +87,8 @@ class Listener implements StripePaymentListener {
   }
 
   onPaymentDataChanged(data: StripePaymentData) {
-    this.component.paymentType = data.paymentMethod ?
-      data.paymentMethod.label :
-      "Select Payment";
-    if (data.shippingInfo) {
-      this.component.shippingType =
-        `${data.shippingInfo.label} ($${data.shippingInfo.amount / 100})`;
-    } else {
-      this.component.shippingType = "Enter Shipping Info";
-    }
+    this.component.paymentMethod = data.paymentMethod;
+    this.component.shippingInfo = data.shippingInfo;
     this.component.changeDetectionRef.detectChanges();
   }
 
