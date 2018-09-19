@@ -1,7 +1,6 @@
 .vscode
 .idea
 **/.DS_Store
-**/*.esm.json
 **/*.js
 **/*.js.map
 **/*.log
@@ -11,16 +10,12 @@
 !src/typings/java!Stripe.d.ts
 !src/typings/objc!Stripe.d.ts
 !src/scripts/*.js
-!demo/karma.conf.js
-!demo/app/tests/*.js
-demo/**/*.d.ts
-!demo/references.d.ts
+!demo/webpack.config.js
+!demo-angular/webpack.config.js
 **/lib
 **/node_modules
 demo/platforms
 demo-angular/platforms
-demo/report/report.html
-demo/report/stats.json
 publish/src
 publish/package
 **/*.aar
