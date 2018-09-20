@@ -146,22 +146,18 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
             shippingInfo: parent.selectedShippingMethod
           };
           listener.onPaymentDataChanged(paymentData);
-          console.log("Data now: " + JSON.stringify(paymentData));
         },
         onError(errorCode: number, errorMessage: string) {
           listener.onError(errorCode, errorMessage);
-          console.log(`Data Error: ${errorMessage} (${errorCode})`);
         }
       }));
     },
     onCommunicatingStateChanged(isCommunicating: boolean): void {
       parent.loading = isCommunicating;
       listener.onCommunicatingStateChanged(isCommunicating);
-      console.log("isCommunicating: " + isCommunicating);
     },
     onError(code: number, message: string): void {
       listener.onError(code, message);
-      console.log("Error: " + code + ", " + message);
     }
   });
 }
