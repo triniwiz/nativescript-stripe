@@ -1,43 +1,4 @@
-import { View } from "ui/core/view";
 
-// ***** Custom Integration components
-export class CreditCardViewBase extends View { }
-
-export interface CardCommon {
-  readonly native: any;
-  name: string;
-  readonly number: string;
-  readonly cvc: string;
-  readonly expMonth: number;
-  readonly expYear: number;
-  readonly last4: string;
-  readonly brand: CardBrand;
-  addressLine1: string;
-  addressLine2: string;
-  addressCity: string;
-  addressState: string;
-  addressZip: string;
-  addressCountry: string;
-  currency: string;
-
-  validateCard(): boolean;
-  validateNumber(): boolean;
-  validateCVC(): boolean;
-  validateExpMonth(): boolean;
-  validateExpiryDate(): boolean;
-}
-
-export interface Token {
-  id: string;
-  bankAccount: any;
-  card: CardCommon;
-  created: Date;
-  ios: any;
-  android: any;
-  livemode: boolean;
-}
-
-// ***** Standard Integration components
 export class StripeConfigCommon {
   protected static instance: StripeConfigCommon;
 
@@ -159,5 +120,3 @@ export interface StripePaymentData {
   /** The selected shipping method, if any. */
   shippingInfo: StripeShippingMethod;
 }
-
-export type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";

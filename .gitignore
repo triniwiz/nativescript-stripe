@@ -6,6 +6,7 @@
 **/*.log
 **/*.d.ts
 !src/index.d.ts
+!src/standard/standard.d.ts
 !src/references.d.ts
 !src/typings/java!Stripe.d.ts
 !src/typings/objc!Stripe.d.ts

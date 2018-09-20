@@ -1,37 +1,5 @@
 import { Page } from "ui/page";
-import * as utils from "utils/utils";
-import { CardCommon, StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod, Token } from "../common";
-
-export class Stripe {
-  constructor(apiKey: string) {
-    STPPaymentConfiguration.sharedConfiguration().publishableKey = apiKey;
-  }
-
-  createToken(card: CardCommon, cb: (error: Error, token: Token) => void) {
-    const apiClient = utils.ios.getter(STPAPIClient, STPAPIClient.sharedClient);
-    apiClient.createTokenWithCardCompletion(
-      card.native, (token: STPToken, error: NSError) => {
-        if (!error) {
-          if (cb) {
-            const newToken: Token = {
-              id: token.tokenId,
-              bankAccount: token.bankAccount,
-              card: card, // token.card is incomplete
-              created: new Date(token.created),
-              livemode: token.livemode,
-              android: null,
-              ios: token
-            };
-            cb(null, newToken);
-          }
-        } else {
-          if (cb) {
-            cb(new Error(error.localizedDescription), null);
-          }
-        }
-      });
-  }
-}
+import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
 export class StripeConfig extends StripeConfigCommon {
   private _native: STPPaymentConfiguration;

@@ -1,47 +1,6 @@
 import { android as androidApp } from "application";
 import { Page } from "ui/page/page";
-import * as utils from "utils/utils";
-import { CardCommon, StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod, Token } from "../common";
-import { Card } from "./card";
-
-export class Stripe {
-  private _stripe: com.stripe.android.Stripe;
-
-  constructor(apiKey: string) {
-    this._stripe = new com.stripe.android.Stripe(
-      utils.ad.getApplicationContext(),
-      apiKey
-    );
-  }
-  createToken(card: CardCommon, cb: (error: Error, token: Token) => void) {
-    this._stripe.createToken(
-      card.native,
-      new com.stripe.android.TokenCallback({
-        onSuccess: (token) => {
-          if (cb) {
-            const newToken: Token = {
-              id: token.getId(),
-              bankAccount: token.getBankAccount(),
-              card: Card.fromNative(token.getCard()),
-              created: new Date(token.getCreated().toString()),
-              livemode: token.getLivemode(),
-              android: token,
-              ios: null
-            };
-            cb(null, newToken);
-          }
-        },
-        onError: (error) => {
-          // Show localized error message
-          console.log(error.getLocalizedMessage());
-          if (cb) {
-            cb(new Error(error.getLocalizedMessage()), null);
-          }
-        }
-      })
-    );
-  }
-}
+import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
 export class StripeConfig extends StripeConfigCommon {
   private _native: com.stripe.android.PaymentSessionConfig;
