@@ -1,5 +1,5 @@
 import { android as androidApp } from "application";
-import { Page } from "ui/page/page";
+import { Page } from "ui/page";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
 export class StripeConfig extends StripeConfigCommon {
