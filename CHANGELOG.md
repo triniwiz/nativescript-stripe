@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 4.1.0 (2018, October 1)
+### Additions
+- Add support for Stripe Standard Integration
+
 ## 3.0.0 (2017, August 1)
 ### Breaking Changes
 - [(# 6)](https://github.com/triniwiz/nativescript-stripe/issues/6) Android `createToken` now send back the full token object instead of only the `tokenId`
