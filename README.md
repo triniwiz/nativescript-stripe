@@ -130,6 +130,30 @@ stripe.createToken(cc.card,(error,token)=>{
 });
 ```
 
+### Standard Integration
+
+Set Stripe configuration values:
+
+```ts
+StripeConfig.shared().backendAPI = <Your API Service>;
+StripeConfig.shared().publishableKey = <Your Stripe Key>;
+StripeConfig.shared().companyName = <Your Company Name>;
+// To support Apple Pay, set appleMerchantID.
+StripeConfig.shared().appleMerchantID = <Your Apple Merchant ID>;
+```
+
+Create a Customer Session
+```ts
+let customerSession = new StripeCustomerSession();
+```
+
+Create a Payment Session
+```ts
+let paymentSession = new StripePaymentSession(page, customerSession, price, "usd", listener);
+```
+
+See [Stripe Docs](https://stripe.com/docs/mobile) for more information.
+
 # TODO
 * Android Pay
-* Apple Pay
+* Apple Pay (supported by Standard Integration, not by Custom Integration)
