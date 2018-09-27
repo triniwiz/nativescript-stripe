@@ -1,7 +1,7 @@
 import { ios } from 'tns-core-modules/utils/utils';
 import { CardBrand, CreditCardViewBase, Token } from './stripe.common';
 export class Stripe {
-  createToken(card: any /*Native Card Instance*/, cb: Function) {
+  createToken(card: STPCardParams, cb: (error: Error, token: Token) => void): void {
     const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
     apiClient.createTokenWithCardCompletion(
       card,
@@ -21,7 +21,7 @@ export class Stripe {
           }
         } else {
           if (typeof cb === 'function') {
-            cb(new Error(error.localizedDescription));
+            cb(new Error(error.localizedDescription), null);
           }
         }
       }
@@ -29,11 +29,11 @@ export class Stripe {
   }
 }
 export class Card {
-  _card: any /* STPCardParams*/;
+  _card: STPCardParams;
   constructor(
     cardNumber: string,
-    cardExpMonth: any,
-    cardExpYear: any,
+    cardExpMonth: number,
+    cardExpYear: number,
     cardCVC: string
   ) {
     if (cardNumber && cardExpMonth && cardExpYear && cardCVC) {
@@ -45,7 +45,7 @@ export class Card {
     }
   }
 
-  public static fromNative(card): Card {
+  public static fromNative(card: STPCardParams): Card {
     const newCard = new Card(null, null, null, null);
     newCard._card = card;
     return newCard;
@@ -152,10 +152,10 @@ export class Card {
   get cvc(): string {
     return this._card.cvc;
   }
-  get expMonth(): any {
+  get expMonth(): number {
     return this._card.expMonth;
   }
-  get expYear(): any {
+  get expYear(): number {
     return this._card.expYear;
   }
   get name(): string {
@@ -221,7 +221,7 @@ export class Card {
   }
 
   get last4(): string {
-    return this._card.last4;
+    return this._card.last4();
   }
 
   get brand(): CardBrand {
@@ -273,7 +273,7 @@ export class Card {
 }
 
 export class CreditCardView extends CreditCardViewBase {
-  public createNativeView(): Object {
+  public createNativeView(): STPPaymentCardTextField {
     return STPPaymentCardTextField.alloc().initWithFrame(
       CGRectMake(10, 10, 300, 44)
     );
