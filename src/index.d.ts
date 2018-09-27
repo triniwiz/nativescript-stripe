@@ -46,4 +46,3 @@ export interface Token {
     android: any /*com.stripe.android.model.Token*/;
     livemode: boolean;
   }
-  
