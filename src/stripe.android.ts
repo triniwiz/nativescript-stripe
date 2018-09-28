@@ -1,9 +1,7 @@
 import * as utils from 'tns-core-modules/utils/utils';
-import { CreditCardViewBase, Token } from './stripe.common';
-import * as types from 'tns-core-modules/utils/types';
-declare const com, java;
+import { CardBrand, CreditCardViewBase, Token } from './stripe.common';
 export class Stripe {
-  private _stripe: any /* com.stripe.android.Stripe */;
+  private _stripe: com.stripe.android.Stripe;
   constructor(apiKey: string) {
     this._stripe = new com.stripe.android.Stripe(
       utils.ad.getApplicationContext(),
@@ -11,19 +9,18 @@ export class Stripe {
     );
   }
 
-  public createToken(card: any /*Native Card Instance*/, cb: Function) {
+  public createToken(card: com.stripe.android.model.Card, cb: (error: Error, token: Token) => void): void {
     const that = new WeakRef(this);
     this._stripe.createToken(
       card,
       new com.stripe.android.TokenCallback({
-        owner: that.get(),
         onSuccess: function(token) {
           if (typeof cb === 'function') {
             const newToken: Token = {
               id: token.getId(),
               bankAccount: token.getBankAccount(),
               card: Card.fromNative(card),
-              created: new Date(token.getCreated()),
+              created: new Date(token.getCreated().toString()),
               livemode: token.getLivemode(),
               android: token,
               ios: null
@@ -33,7 +30,7 @@ export class Stripe {
         },
         onError: function(error) {
           if (typeof cb === 'function') {
-            cb(new Error(error.getLocalizedMessage()));
+            cb(new Error(error.getLocalizedMessage()), null);
           }
         }
       })
@@ -42,7 +39,7 @@ export class Stripe {
 }
 
 export class Card {
-  _card: any /*com.stripe.android.model.Card*/;
+  _card: com.stripe.android.model.Card;
   constructor(
     cardNumber: string,
     cardExpMonth: number,
@@ -51,21 +48,21 @@ export class Card {
   ) {
     if (cardNumber && cardExpMonth && cardExpYear && cardCVC) {
       this._card = new com.stripe.android.model.Card(
-        new java.lang.String(cardNumber),
+        cardNumber,
         new java.lang.Integer(cardExpMonth),
         new java.lang.Integer(cardExpYear),
-        new java.lang.String(cardCVC)
+        cardCVC
       );
     }
   }
 
-  public static fromNative(card) {
+  public static fromNative(card: com.stripe.android.model.Card): Card {
     const newCard = new Card(null, null, null, null);
     newCard._card = card;
     return newCard;
   }
 
-  get card(): any /*com.stripe.android.model.Card*/ {
+  get card(): com.stripe.android.model.Card {
     return this._card;
   }
 
@@ -91,10 +88,10 @@ export class Card {
     return this._card.getCVC();
   }
   get expMonth(): number {
-    return this._card.getExpMonth();
+    return this._card.getExpMonth().intValue();
   }
   get expYear(): number {
-    return this._card.getExpYear();
+    return this._card.getExpYear().intValue();
   }
   get name(): string {
     return this._card.getName();
@@ -162,8 +159,8 @@ export class Card {
     return this._card.getLast4();
   }
 
-  get brand(): string {
-    return this._card.getBrand();
+  get brand(): CardBrand {
+    return <CardBrand>this._card.getBrand();
   }
 
   get fingerprint(): string {
@@ -180,11 +177,11 @@ export class Card {
 }
 
 export class CreditCardView extends CreditCardViewBase {
-  private _android;
-  get android() {
+  private _android: com.stripe.android.view.CardInputWidget;
+  get android(): com.stripe.android.view.CardInputWidget {
     return this._android;
   }
-  public createNativeView() {
+  public createNativeView(): com.stripe.android.view.CardInputWidget {
     this._android = new com.stripe.android.view.CardInputWidget(this._context);
     return this._android;
   }
@@ -194,8 +191,8 @@ export class CreditCardView extends CreditCardViewBase {
     if (card) {
       return new Card(
         card.getNumber(),
-        card.getExpMonth(),
-        card.getExpYear(),
+        card.getExpMonth().intValue(),
+        card.getExpYear().intValue(),
         card.getCVC()
       );
     } else {

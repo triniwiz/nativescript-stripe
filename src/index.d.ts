@@ -2,13 +2,13 @@ import { CreditCardViewBase } from './stripe.common';
 export declare class Stripe {
     private _stripe;
     constructor(apiKey: string);
-    createToken(card: any, cb: Function): void;
+    createToken(card: any /*Card.card*/, cb: (error: Error, token: Token) => void): void;
 }
 export declare class Card {
     _card: any;
     constructor(cardNumber: string, cardExpMonth: number, cardExpYear: number, cardCVC: string);
     static fromNative(card: any): Card;
-    readonly card: any;
+    readonly card: any /*ios:STPCardParams, android:com.stripe.android.model.Card*/;
     validateNumber(): boolean;
     validateCVC(): boolean;
     validateCard(): boolean;
@@ -33,8 +33,16 @@ export declare class Card {
     readonly country: string;
 }
 export declare class CreditCardView extends CreditCardViewBase {
-    private _android;
-    readonly android: any;
-    createNativeView(): any;
+    readonly android: any /*com.stripe.android.view.CardInputWidget*/;
+    createNativeView(): any /*ios:STPPaymentCardTextField, android:com.stripe.android.view.CardInputWidget*/;
     readonly card: Card;
 }
+export interface Token {
+    id: string;
+    bankAccount: any;
+    card: Card;
+    created: Date;
+    ios: any /*STPToken*/;
+    android: any /*com.stripe.android.model.Token*/;
+    livemode: boolean;
+  }
