@@ -14,7 +14,9 @@ matrix:
       language: android
       os: linux
       jdk: oraclejdk8
-      before_install: nvm install 8
+      before_install:
+        - nvm install 8
+        - travis_wait pod repo update --silent
       script:
         - cd src && npm i && npm run tsc
         - cd ../demo
