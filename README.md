@@ -53,7 +53,7 @@ app.on(app.launchEvent, (args) => {
 ```
 
 ### Angular
-Place the following in your main.ts
+To use the Custom Integration's CreditCardView, place the following in your main.ts
 
 ```ts
 import { registerElement } from "nativescript-angular/element-registry";
@@ -131,6 +131,10 @@ stripe.createToken(cc.card,(error,token)=>{
 ```
 
 ### Standard Integration
+
+The `demo-angular` folder contains an Angular demo that uses the Standard Integration.
+It can be used as a starting point, and provides information on how to invoke the
+Standard Integration components.
 
 Set Stripe configuration values:
 
