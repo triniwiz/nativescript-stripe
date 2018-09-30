@@ -7,7 +7,7 @@ Changelog
 
 ### Breaking Changes
 - Now follows recommended approach for registering CreditCardView in Angular
-- `createToken()` now takes `card: CardCommon` as first parameter instead of `card.card`.
+- `createToken()` now takes `card: CardCommon` as first parameter instead of `card.card: any`.
 
 ## 4.1.0 (2018, September 26)
 ### Additions
