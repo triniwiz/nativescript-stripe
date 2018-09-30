@@ -1,6 +1,14 @@
 Changelog
 ==============================
 
+## 4.2.0 (2018, October 1)
+### Additions
+- [(# 24)](https://github.com/triniwiz/nativescript-stripe/issues/24) Add Support for Custom Integration to Angular demo
+
+### Breaking Changes
+- Now follows recommended approach for registering CreditCardView in Angular
+- `createToken()` now takes `card: CardCommon` as first parameter instead of `card.card`.
+
 ## 4.1.0 (2018, September 26)
 ### Additions
 - [(# 19)](https://github.com/triniwiz/nativescript-stripe/issues/19) Add support for Stripe Standard Integration

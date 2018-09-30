@@ -53,24 +53,23 @@ app.on(app.launchEvent, (args) => {
 ```
 
 ### Angular
-To use the Custom Integration's CreditCardView, place the following in your main.ts
+To use the Custom Integration's CreditCardView in Angular,
+register the Angular wrapper in the main module (typically `app.module.ts`), as follows:
 
 ```ts
-import { registerElement } from "nativescript-angular/element-registry";
-registerElement("CreditCardView", () => require("nativescript-stripe").CreditCardView);
+...
+import { CreditCardViewModule } from "nativescript-stripe/angular";
+...
+@NgModule({
+  imports: [
+    ...
+    CreditCardViewModule,
+    ...
+  ],
+  ...
+})
+export class AppModule { }
 ```
-
-```ts
-import * as app from 'application';
-import * as platform from "platform";
-declare const STPPaymentConfiguration;
-app.on(app.launchEvent, (args) => {
-    if (platform.isIOS) {
-        STPPaymentConfiguration.sharedConfiguration().publishableKey = "yourApiKey";
-    }
-});
-```
-
 
 ## Usage
 
@@ -107,7 +106,7 @@ cc.name = "Osei Fortune";
 ```ts
 import {Stripe} from 'nativescript-stripe';
 const stripe = new Stripe('yourApiKey');
-stripe.createToken(cc.card,(error,token)=>{
+stripe.createToken(cc,(error,token)=>{
   if(!error){
     //Do something with your token;
 
@@ -118,9 +117,9 @@ stripe.createToken(cc.card,(error,token)=>{
 ```
 
 ```js
-var Stripe =require('nativescript-stripe').Stripe;
+var Stripe = require('nativescript-stripe').Stripe;
 const stripe = new Stripe('yourApiKey');
-stripe.createToken(cc.card,(error,token)=>{
+stripe.createToken(cc,(error,token)=>{
   if(!error){
     //Do something with your token;
 

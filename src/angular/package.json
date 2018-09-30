@@ -1,3 +1,4 @@
 {
-    "main": "index"
+  "name": "nativescript-stripe",
+  "main": "index.js"
 }

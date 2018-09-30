@@ -1,7 +1,9 @@
 import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { NativeScriptModule } from "nativescript-angular/nativescript.module";
+import { CreditCardViewModule } from "nativescript-stripe/angular";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app.routing";
+import { CreditCardViewComponent } from "./demo/creditcardview.component";
 import { HomeComponent } from "./demo/home.component";
 import { StandardComponent } from "./demo/standard.component";
 import { StripeService } from "./demo/stripe.service";
@@ -18,12 +20,14 @@ import { StripeService } from "./demo/stripe.service";
   ],
   imports: [
     NativeScriptModule,
-    AppRoutingModule
+    AppRoutingModule,
+    CreditCardViewModule
   ],
   declarations: [
     AppComponent,
     HomeComponent,
-    StandardComponent
+    StandardComponent,
+    CreditCardViewComponent
   ],
   providers: [
     StripeService
