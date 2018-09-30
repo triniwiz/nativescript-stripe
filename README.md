@@ -23,36 +23,13 @@
 
 * [Android](#android)
 * [iOS](#ios)
+* [Angular](#angular)
 
 ## Android
 
-## IOS
-Place the following in your app.js before `app.start`
-JavaScript
-```js
-var app = require('application');
-var platform = ('platform');
-app.on(app.launchEvent, (args) => {
-    if (platform.isIOS) {
-        STPPaymentConfiguration.sharedConfiguration().publishableKey = "yourApiKey";
-    }
-});
-```
-Place the following in your app.ts before `app.start`
+## iOS
 
-TypeScript
-```ts
-import * as app from 'application';
-import * as platform from 'platform';
-declare const STPPaymentConfiguration;
-app.on(app.launchEvent, (args) => {
-    if (platform.isIOS) {
-        STPPaymentConfiguration.sharedConfiguration().publishableKey = "yourApiKey";
-    }
-});
-```
-
-### Angular
+## Angular
 To use the Custom Integration's CreditCardView in Angular,
 register the Angular wrapper in the main module (typically `app.module.ts`), as follows:
 
@@ -71,7 +48,7 @@ import { CreditCardViewModule } from "nativescript-stripe/angular";
 export class AppModule { }
 ```
 
-## Usage
+# Usage
 
 IMPORTANT: Make sure you include `xmlns:stripe="nativescript-stripe"` on the Page tag
 
@@ -82,12 +59,14 @@ IMPORTANT: Make sure you include `xmlns:stripe="nativescript-stripe"` on the Pag
 
 #### Add extra details to card
 
+JavaScript
 ```js
 const ccView = page.getViewById("card");
 const cc = ccView.card;
 cc.name = "Osei Fortune";
 ```
 
+TypeScript
 ```ts
 import { CreditCardView, Card } from 'nativescript-stripe';
 const ccView:CreditCardView = page.getViewById("card");
@@ -103,6 +82,7 @@ cc.name = "Osei Fortune";
 
 ### Get Token
 
+TypeScript
 ```ts
 import {Stripe} from 'nativescript-stripe';
 const stripe = new Stripe('yourApiKey');
@@ -116,6 +96,7 @@ stripe.createToken(cc,(error,token)=>{
 });
 ```
 
+JavaScript
 ```js
 var Stripe = require('nativescript-stripe').Stripe;
 const stripe = new Stripe('yourApiKey');
@@ -129,7 +110,7 @@ stripe.createToken(cc,(error,token)=>{
 });
 ```
 
-### Standard Integration
+## Standard Integration
 
 The `demo-angular` folder contains an Angular demo that uses the Standard Integration.
 It can be used as a starting point, and provides information on how to invoke the
