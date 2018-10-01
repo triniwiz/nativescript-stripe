@@ -1,9 +1,14 @@
 Changelog
 ==============================
 
-## 4.1.0 (2018, October 1)
+## 4.1.1 (2018, October 1)
+### Additions
+- [(# 23)](https://github.com/triniwiz/nativescript-stripe/issues/23) Add an Angular demo app that demonstrates the Standard integration
+
+## 4.1.0 (2018, September 26)
 ### Additions
 - [(# 19)](https://github.com/triniwiz/nativescript-stripe/issues/19) Add support for Stripe Standard Integration
+- [(# 21)](https://github.com/triniwiz/nativescript-stripe/issues/21) Improve type safety
 
 ## 3.0.0 (2017, August 1)
 ### Breaking Changes
