@@ -1,5 +1,5 @@
-import * as utils from 'tns-core-modules/utils/utils';
-import { CardBrand, CreditCardViewBase, Token } from './stripe.common';
+import * as utils from 'utils/utils';
+import { CardBrand, CardCommon, CreditCardViewBase, Token } from './stripe.common';
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
   constructor(apiKey: string) {
@@ -9,17 +9,22 @@ export class Stripe {
     );
   }
 
-  public createToken(card: com.stripe.android.model.Card, cb: (error: Error, token: Token) => void): void {
-    const that = new WeakRef(this);
+  public createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
+    if (!card) {
+      if (typeof cb === 'function') {
+        cb(new Error('Invalid card'), null);
+      }
+      return;
+    }
     this._stripe.createToken(
-      card,
+      card.native,
       new com.stripe.android.TokenCallback({
         onSuccess: function(token) {
           if (typeof cb === 'function') {
             const newToken: Token = {
               id: token.getId(),
               bankAccount: token.getBankAccount(),
-              card: Card.fromNative(card),
+              card: Card.fromNative(token.getCard()),
               created: new Date(token.getCreated().toString()),
               livemode: token.getLivemode(),
               android: token,
@@ -38,8 +43,8 @@ export class Stripe {
   }
 }
 
-export class Card {
-  _card: com.stripe.android.model.Card;
+export class Card implements CardCommon {
+  native: com.stripe.android.model.Card;
   constructor(
     cardNumber: string,
     cardExpMonth: number,
@@ -47,7 +52,7 @@ export class Card {
     cardCVC: string
   ) {
     if (cardNumber && cardExpMonth && cardExpYear && cardCVC) {
-      this._card = new com.stripe.android.model.Card(
+      this.native = new com.stripe.android.model.Card(
         cardNumber,
         new java.lang.Integer(cardExpMonth),
         new java.lang.Integer(cardExpYear),
@@ -58,121 +63,117 @@ export class Card {
 
   public static fromNative(card: com.stripe.android.model.Card): Card {
     const newCard = new Card(null, null, null, null);
-    newCard._card = card;
+    newCard.native = card;
     return newCard;
   }
 
-  get card(): com.stripe.android.model.Card {
-    return this._card;
-  }
-
   validateNumber(): boolean {
-    return this._card.validateNumber();
+    return this.native.validateNumber();
   }
   validateCVC(): boolean {
-    return this._card.validateCVC();
+    return this.native.validateCVC();
   }
   validateCard(): boolean {
-    return this._card.validateCard();
+    return this.native.validateCard();
   }
   validateExpMonth(): boolean {
-    return this._card.validateExpMonth();
+    return this.native.validateExpMonth();
   }
   validateExpiryDate(): boolean {
-    return this._card.validateExpiryDate();
+    return this.native.validateExpiryDate();
   }
   get number(): string {
-    return this._card.getNumber();
+    return this.native.getNumber();
   }
   get cvc(): string {
-    return this._card.getCVC();
+    return this.native.getCVC();
   }
   get expMonth(): number {
-    return this._card.getExpMonth().intValue();
+    return this.native.getExpMonth().intValue();
   }
   get expYear(): number {
-    return this._card.getExpYear().intValue();
+    return this.native.getExpYear().intValue();
   }
   get name(): string {
-    return this._card.getName();
+    return this.native.getName();
   }
   set name(value: string) {
-    this._card.setName(value);
+    this.native.setName(value);
   }
 
   get addressLine1(): string {
-    return this._card.getAddressLine1();
+    return this.native.getAddressLine1();
   }
 
   set addressLine1(value: string) {
-    this._card.setAddressLine1(value);
+    this.native.setAddressLine1(value);
   }
 
   get addressLine2(): string {
-    return this._card.getAddressLine2();
+    return this.native.getAddressLine2();
   }
   set addressLine2(value: string) {
-    this._card.setAddressLine2(value);
+    this.native.setAddressLine2(value);
   }
 
   get addressCity(): string {
-    return this._card.getAddressCity();
+    return this.native.getAddressCity();
   }
 
   set addressCity(value: string) {
-    this._card.setAddressCity(value);
+    this.native.setAddressCity(value);
   }
 
   get addressZip(): string {
-    return this._card.getAddressZip();
+    return this.native.getAddressZip();
   }
 
   set addressZip(value: string) {
-    this._card.setAddressZip(value);
+    this.native.setAddressZip(value);
   }
 
   get addressState(): string {
-    return this._card.getAddressState();
+    return this.native.getAddressState();
   }
 
   set addressState(value: string) {
-    this._card.setAddressState(value);
+    this.native.setAddressState(value);
   }
 
   get addressCountry(): string {
-    return this._card.getAddressCountry();
+    return this.native.getAddressCountry();
   }
 
   set addressCountry(value: string) {
-    this._card.setAddressCountry(value);
+    this.native.setAddressCountry(value);
   }
 
   get currency(): string {
-    return this._card.getCurrency();
+    return this.native.getCurrency();
   }
 
   set currency(value: string) {
-    this._card.setCurrency(value);
+    this.native.setCurrency(value);
   }
 
   get last4(): string {
-    return this._card.getLast4();
+    return this.native.getLast4();
   }
 
   get brand(): CardBrand {
-    return <CardBrand>this._card.getBrand();
+    return <CardBrand>this.native.getBrand();
   }
 
   get fingerprint(): string {
-    return this._card.getFingerprint();
+    return this.native.getFingerprint();
   }
 
   get funding(): string {
-    return this._card.getFunding();
+    return this.native.getFunding();
   }
 
   get country(): string {
-    return this._card.getCountry();
+    return this.native.getCountry();
   }
 }
 
