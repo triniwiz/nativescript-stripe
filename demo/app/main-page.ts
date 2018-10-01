@@ -1,24 +1,15 @@
-import * as observable from 'data/observable';
-import { Card, Stripe } from 'nativescript-stripe';
-import * as pages from 'ui/page';
-import { HelloWorldModel } from './main-view-model';
-let stripe;
-// Event handler for Page 'loaded' event attached in main-page.xml
-export function pageLoaded(args: observable.EventData) {
-  // Get the event sender
-  let page = <pages.Page>args.object;
-  page.bindingContext = new HelloWorldModel();
+import { EventData } from "data/observable";
+import { Button } from "ui/button";
 
-  const card = new Card('4242424242424242', 1, 21, '111');
-  if (card.validateCard()) {
-    stripe = new Stripe('pk_test_OHSX2noWHfjZMZ6uj0dbeSN7');
-    stripe.createToken(card, (error, token) => {
-      if (!error) {
-        console.log(`card: ${card.brand} ...${card.last4} ${card.expMonth}/${card.expYear}`);
-        console.log(`token: ${JSON.stringify(token)}`);
-      } else {
-        console.log(error);
-      }
-    });
-  }
+export function pageLoaded(args: EventData) {
+}
+
+export function stdDemo(args: EventData) {
+  const frame = (<Button>args.object).page.frame;
+  frame.navigate("demo/std-page");
+}
+
+export function ccViewDemo(args: EventData) {
+  const frame = (<Button>args.object).page.frame;
+  frame.navigate("demo/ccview-page");
 }
