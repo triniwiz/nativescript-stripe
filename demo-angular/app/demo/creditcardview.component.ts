@@ -8,12 +8,15 @@ import { CreditCardView, Stripe, Token } from "nativescript-stripe";
 })
 export class CreditCardViewComponent {
   token: string;
+  private stripe: Stripe;
 
-  constructor(public changeDetectionRef: ChangeDetectorRef) { }
+  constructor(public changeDetectionRef: ChangeDetectorRef) {
+    this.stripe = new Stripe("pk_test_s3dHtM9w6XmgB7ak7AbCSj51");
+  }
 
   createToken(cardView: CreditCardView): void {
-    let stripe = new Stripe("pk_test_s3dHtM9w6XmgB7ak7AbCSj51");
-    stripe.createToken(cardView.card, (error, token) => {
+    this.token = "Fetching token...";
+    this.stripe.createToken(cardView.card, (error, token) => {
       this.token = error ? error.message : this.formatToken(token);
       this.changeDetectionRef.detectChanges();
     });

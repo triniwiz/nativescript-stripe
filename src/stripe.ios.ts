@@ -6,6 +6,12 @@ export class Stripe {
   }
 
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
+    if (!card) {
+      if (typeof cb === 'function') {
+        cb(new Error('Invalid card'), null);
+      }
+      return;
+    }
     const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
     apiClient.createTokenWithCardCompletion(
       card.native,

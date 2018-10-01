@@ -10,6 +10,12 @@ export class Stripe {
   }
 
   public createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
+    if (!card) {
+      if (typeof cb === 'function') {
+        cb(new Error('Invalid card'), null);
+      }
+      return;
+    }
     this._stripe.createToken(
       card.native,
       new com.stripe.android.TokenCallback({
