@@ -1,6 +1,6 @@
 import { EventData, fromObject } from "data/observable";
 import { CreditCardView, Stripe, Token } from "nativescript-stripe";
-import { Button } from "ui/button/button";
+import { Button } from "ui/button";
 import { Page } from "ui/page";
 
 let stripe;
