@@ -1,13 +1,17 @@
 Changelog
 ==============================
 
-## 4.2.0 (2018, October 1)
+## 4.2.0 (2018, October 20)
 ### Additions
 - [(# 24)](https://github.com/triniwiz/nativescript-stripe/issues/24) Add Support for Custom Integration to Angular demo
 
 ### Breaking Changes
 - Now follows recommended approach for registering CreditCardView in Angular
 - `createToken()` now takes `card: CardCommon` as first parameter instead of `card.card: any`.
+
+## 4.1.2 (2018, October 2)
+### Fixes
+- [(#27)](https://github.com/triniwiz/nativescript-stripe/issues/27) Fix support for optional shipping address fields on Android
 
 ## 4.1.1 (2018, October 1)
 ### Additions
