@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 4.1.2 (2018, October 16)
+### Fixes
+- [(#27)](https://github.com/triniwiz/nativescript-stripe/issues/27) Fix support for optional shipping address fields on Android
+
 ## 4.1.1 (2018, October 1)
 ### Additions
 - [(# 23)](https://github.com/triniwiz/nativescript-stripe/issues/23) Add an Angular demo app that demonstrates the Standard integration
