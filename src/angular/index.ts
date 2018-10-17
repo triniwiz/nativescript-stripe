@@ -1,2 +1,1 @@
-import { registerElement } from 'nativescript-angular/element-registry';
-registerElement('CreditCardView', () => require('../').CreditCardView);
+export * from "./nativescript-stripe.module";

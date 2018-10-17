@@ -1,0 +1,9 @@
+<ActionBar title="CreditCardView Demo" class="action-bar">
+  <NavigationButton text=""></NavigationButton>
+</ActionBar>
+
+<StackLayout class="page">
+  <CreditCardView #card></CreditCardView>
+  <Button text="Create Token" (tap)="createToken(card)" class="btn btn-primary"></Button>
+  <Label [text]="token" textWrap="true"></Label>
+</StackLayout>
