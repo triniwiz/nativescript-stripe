@@ -1,7 +1,7 @@
 Changelog
 ==============================
 
-## 4.2.0 (2018, October 20)
+## 5.0.0 (2018, October 17)
 ### Additions
 - [(# 24)](https://github.com/triniwiz/nativescript-stripe/issues/24) Add Support for Custom Integration to Angular demo
 
