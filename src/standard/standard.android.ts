@@ -15,10 +15,14 @@ export class StripeConfig extends StripeConfigCommon {
     com.stripe.android.PaymentConfiguration.init(this.publishableKey);
 
     let optionalFields = [];
-    if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) >= 0) {
+    if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
       optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.ADDRESS_LINE_ONE_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.ADDRESS_LINE_TWO_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CITY_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.STATE_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.POSTAL_CODE_FIELD);
     }
-    if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.Phone) >= 0) {
+    if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.Phone) < 0) {
       optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.PHONE_FIELD);
     }
 

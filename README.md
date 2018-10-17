@@ -86,7 +86,7 @@ TypeScript
 ```ts
 import {Stripe} from 'nativescript-stripe';
 const stripe = new Stripe('yourApiKey');
-stripe.createToken(cc,(error,token)=>{
+stripe.createToken(cc, (error,token)=>{
   if(!error){
     //Do something with your token;
 
@@ -100,7 +100,7 @@ JavaScript
 ```js
 var Stripe = require('nativescript-stripe').Stripe;
 const stripe = new Stripe('yourApiKey');
-stripe.createToken(cc,(error,token)=>{
+stripe.createToken(cc, (error,token)=>{
   if(!error){
     //Do something with your token;
 
