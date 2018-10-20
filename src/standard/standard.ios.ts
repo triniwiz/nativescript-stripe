@@ -161,7 +161,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 
   paymentContextDidChange(paymentContext: STPPaymentContext): void {
     let data = {
-      isReadyToCharge: false,
+      isReadyToCharge: this.parent.isPaymentReady,
       paymentMethod: createPaymentMethod(paymentContext),
       shippingInfo: createShippingMethod(paymentContext)
     };
@@ -169,8 +169,6 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
   }
 
   paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: NSError) => void): void {
-    let shippingDic = STPAddress.shippingInfoForChargeWithAddressShippingMethod(paymentContext.shippingAddress, paymentContext.selectedShippingMethod);
-    let shippingHash = encodeDictionary("shipping", shippingDic);
     StripeConfig.shared().backendAPI.completeCharge(
       paymentResult.source.stripeID,
       paymentContext.paymentAmount,
@@ -220,34 +218,6 @@ function createError(domain: string, code: number, error: string): NSError {
   return new NSError({
     domain: domain, code: code, userInfo: userInfo
   });
-}
-
-function encodeDictionary(key: string, dict: NSDictionary<string, any>): string {
-  let entries = encodeComponents(key, dict);
-  return entries.map(e => `${e[0]}=${e[1]}`).join("&");
-}
-
-function encodeComponents(key: string, value: any): [string, string][] {
-  let result: [string, string][] = [];
-
-  if (value instanceof NSDictionary) {
-    let keys = value.allKeys;
-    for (let i = 0; i < keys.count; i++) {
-      let k = keys[i];
-      result = result.concat(encodeComponents(`${key}[${k}]`, value.objectForKey(k)));
-    }
-  } else if (value instanceof NSArray) {
-    for (let i = 0; i < value.count; i++) {
-      result = result.concat(encodeComponents(`${key}[]`, value[i]));
-    }
-  } else if (typeof value === "number") {
-    result.push([encodeURI(key), "" + value]);
-  } else if (typeof value === "boolean") {
-    result.push([encodeURI(key), value ? "1" : "0"]);
-  } else {
-    result.push([encodeURI(key), encodeURI(value)]);
-  }
-  return result;
 }
 
 function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
