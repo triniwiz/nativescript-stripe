@@ -1,4 +1,4 @@
-<Page xmlns:stripe="nativescript-stripe" navigatedTo="navigatedTo" class="page">
+<Page xmlns:stripe="nativescript-stripe" navigatingTo="navigatingTo" class="page">
   <Page.actionBar><ActionBar title="Details" class="action-bar"/></Page.actionBar>
   <StackLayout class="page p-10">
     <GridLayout rows="auto" columns="auto,*">

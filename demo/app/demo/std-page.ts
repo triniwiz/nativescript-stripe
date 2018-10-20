@@ -1,34 +1,20 @@
-import { EventData, fromObject, Observable } from "data/observable";
+import { EventData } from "data/observable";
 import { StripeAddress, StripePaymentData, StripePaymentListener, StripePaymentSession, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe/standard";
 import { Page } from "ui/page";
+import { StdDemoModel } from "./std-model";
 import { StripeService } from "./stripe.service";
 
-const item = { id: 0, name: "Something to buy", price: 1200 };
-let pageSource: Observable;
 let stripeService: StripeService;
 let paymentSession: StripePaymentSession;
+let model: StdDemoModel;
 
-export function navigatedTo(args: EventData) {
+export function navigatingTo(args: EventData) {
+  stripeService = new StripeService();
+
   let page = <Page>args.object;
-  let context = page.navigationContext;
-  if (context && context["startDemo"]) {
-    pageSource = fromObject({
-      isLoading: true,
-      canBuy: false,
-      paymentInProgress: false,
-      item: item,
-      paymentType: "Select Payment",
-      paymentImage: null,
-      shippingType: "Enter Shipping Info",
-      total: 1200,
-      successMessage: "",
-      errorMessage: ""
-    });
-    stripeService = new StripeService();
-    paymentSession = stripeService.createPaymentSession(page, item.price, new Listener());
-  }
-
-  page.bindingContext = pageSource;
+  model = new StdDemoModel();
+  paymentSession = stripeService.createPaymentSession(page, model.item.price, new Listener());
+  page.bindingContext = model;
 }
 
 export function showPaymentMethods(_args: EventData) {
@@ -45,30 +31,30 @@ export function buy(_args: EventData) {
 
 class Listener implements StripePaymentListener {
   onCommunicatingStateChanged(isCommunicating: boolean): void {
-    pageSource.set("isLoading", isCommunicating);
+    model.isLoading = isCommunicating;
   }
 
   onPaymentDataChanged(data: StripePaymentData) {
     console.log("New data: " + JSON.stringify(data) + ", " + paymentSession.amount);
-    pageSource.set("canBuy", data.isReadyToCharge && !pageSource.get("paymentInProgress"));
+    model.isLoading = paymentSession.loading;
+    model.canBuy = data.isReadyToCharge && !model.paymentInProgress;
     if (data.paymentMethod) {
-      pageSource.set("paymentType", data.paymentMethod.label);
-      pageSource.set("paymentImage", data.paymentMethod.image);
+      model.paymentType = data.paymentMethod.label;
+      model.paymentImage = data.paymentMethod.image;
     }
     if (data.shippingInfo) {
-      pageSource.set("shippingType", `${data.shippingInfo.label} ($${data.shippingInfo.amount / 100})`);
-      pageSource.set("total", item.price + data.shippingInfo.amount);
+      model.shippingType = `${data.shippingInfo.label} ($${data.shippingInfo.amount / 100})`;
+      model.total = model.item.price + data.shippingInfo.amount;
     }
   }
 
   onPaymentSuccess(): void {
-    let item = pageSource.get("item");
-    pageSource.set("successMessage",
-      `Congratulations! You bought a "${item.name}" for $${item.price / 100}.`);
+    model.successMessage =
+      `Congratulations! You bought a "${model.item.name}" for $${model.item.price / 100}.`;
   }
 
   onError(errorCode: number, message: string) {
-    pageSource.set("errorMessage", message);
+    model.errorMessage = `Error(${errorCode}: ${message}`;
   }
 
   provideShippingMethods(address: StripeAddress): StripeShippingMethods {
