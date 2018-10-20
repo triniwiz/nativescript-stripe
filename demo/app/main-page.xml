@@ -1,8 +1,11 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd"
-  xmlns:stripe="nativescript-stripe" loaded="pageLoaded" navigatingTo="navigatingTo" class="page">
-  <StackLayout>
-    <stripe:CreditCardView/>
-    <stripe:CreditCardView/>
-    <stripe:CreditCardView/>
+<Page loaded="pageLoaded" class="page">
+  <Page.actionBar><ActionBar title="Stripe Demo" class="action-bar"/></Page.actionBar>
+
+  <StackLayout class="p-10">
+    <Label text="Standard Integration" class="h2"></Label>
+    <Button text="Demo" tap="stdDemo" class="btn btn-primary btn-active"></Button>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <Label text="Custom Integration" class="h2"></Label>
+    <Button text="CreditCardView" tap="ccViewDemo" class="btn btn-primary btn-active"></Button>
   </StackLayout>
 </Page>
