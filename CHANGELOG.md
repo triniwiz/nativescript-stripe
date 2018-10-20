@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.0.2 (2018, October 20)
+### Additions
+- [(# 25)](https://github.com/triniwiz/nativescript-stripe/issues/25) Add Support for Standard Integration to demo. The demo app now matches the demo-angular app.
+
 ## 5.0.1 (2018, October 20)
 ### Fixes
 - [(#30)](https://github.com/triniwiz/nativescript-stripe/issues/30) Standard Integration on iOS fails to send "payment ready" status

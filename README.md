@@ -112,8 +112,8 @@ stripe.createToken(cc, (error,token)=>{
 
 ## Standard Integration
 
-The `demo-angular` folder contains an Angular demo that uses the Standard Integration.
-It can be used as a starting point, and provides information on how to invoke the
+The `demo` and `demo-angular` folders contain demos that use the Standard Integration.
+They can be used as a starting point, and provide information on how to invoke the
 Standard Integration components.
 
 Set Stripe configuration values:
