@@ -1,4 +1,6 @@
-import { CreditCardViewBase } from './stripe.common';
+import { View } from "ui/core/view";
+
+export declare class CreditCardViewBase extends View { }
 export declare class Stripe {
     constructor(apiKey: string);
     createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void;

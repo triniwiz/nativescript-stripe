@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.0.3 (2018, November 17)
+### Fixes
+- [(# 35)](https://github.com/triniwiz/nativescript-stripe/issues/35) index.d.ts does not properly define CreditCardViewBase.
+
 ## 5.0.2 (2018, October 20)
 ### Additions
 - [(# 25)](https://github.com/triniwiz/nativescript-stripe/issues/25) Add Support for Standard Integration to demo. The demo app now matches the demo-angular app.
