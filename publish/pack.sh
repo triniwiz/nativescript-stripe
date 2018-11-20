@@ -21,14 +21,20 @@ pack() {
     node_modules/.bin/ncp "$SOURCE_DIR" "$TO_SOURCE_DIR"
 
     # copy README & LICENSE to src
-    echo 'Copying README and LICENSE to /src...'
+    echo 'Copying README, CHANGELOG and LICENSE to /src...'
     node_modules/.bin/ncp "$ROOT_DIR"/LICENSE "$TO_SOURCE_DIR"/LICENSE
     node_modules/.bin/ncp "$ROOT_DIR"/README.md "$TO_SOURCE_DIR"/README.md
+    node_modules/.bin/ncp "$ROOT_DIR"/CHANGELOG.md "$TO_SOURCE_DIR"/CHANGELOG.md
 
     # compile package and copy files required by npm
     echo 'Building /src...'
     cd "$TO_SOURCE_DIR"
     node_modules/.bin/tsc
+
+    # remove unwanted files
+    echo 'Removing unwanted files from /src...'
+    node_modules/.bin/rimraf hooks typings references.d.ts
+
     cd ..
 
     echo 'Creating package...'
