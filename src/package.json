@@ -11,6 +11,7 @@
         }
     },
     "scripts": {
+        "setup": "./scripts/setup-keys.sh",
         "tsc": "tsc",
         "build": "npm run tsc && npm run build.native",
         "build.native": "node scripts/build-native.js",
