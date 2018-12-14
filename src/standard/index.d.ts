@@ -79,7 +79,7 @@ export declare class StripePaymentSession {
   presentShipping(): void;
 }
 export declare interface StripePaymentMethod {
-  image: any; // TODO: UIImage marshals to ??? (number on Android)
+  image: any; // a value that can be used as [src] in an Image tag
   label: string;
   templateImage: any;
 }

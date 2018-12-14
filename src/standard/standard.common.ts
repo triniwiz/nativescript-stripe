@@ -62,7 +62,7 @@ export interface StripePaymentListener {
 }
 
 export interface StripePaymentMethod {
-  image: any; // TODO: UIImage marshals to ???
+  image: any; // a value that can be used as [src] in an Image tag
   label: string;
   templateImage: any;
 }
