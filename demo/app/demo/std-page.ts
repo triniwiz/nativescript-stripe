@@ -26,6 +26,8 @@ export function showShipping(_args: EventData) {
 }
 
 export function buy(_args: EventData) {
+  model.paymentInProgress = true;
+  model.canBuy = false;
   stripeService.requestPayment(paymentSession);
 }
 
@@ -49,11 +51,20 @@ class Listener implements StripePaymentListener {
   }
 
   onPaymentSuccess(): void {
+    model.paymentInProgress = false;
+    model.canBuy = true;
     model.successMessage =
       `Congratulations! You bought a "${model.item.name}" for $${model.item.price / 100}.`;
   }
 
+  onUserCancelled(): void {
+    model.paymentInProgress = false;
+    model.canBuy = true;
+  }
+
   onError(errorCode: number, message: string) {
+    model.paymentInProgress = false;
+    model.canBuy = true;
     model.errorMessage = `Error(${errorCode}: ${message}`;
   }
 

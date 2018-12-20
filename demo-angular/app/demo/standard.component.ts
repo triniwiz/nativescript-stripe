@@ -98,7 +98,11 @@ class Listener implements StripePaymentListener {
     this.component.changeDetectionRef.detectChanges();
   }
 
-  onError(errorCode: number, message: string) {
+  onUserCancelled(): void {
+    this.component.changeDetectionRef.detectChanges();
+  }
+
+  onError(_errorCode: number, message: string) {
     this.component.errorMessage = message;
     this.component.changeDetectionRef.detectChanges();
   }

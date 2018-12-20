@@ -133,9 +133,11 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
     onPaymentSessionDataChanged(sessionData: com.stripe.android.PaymentSessionData): void {
       if (parent.paymentInProgress) {
         if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.SUCCESS) {
-          listener.onPaymentSuccess();
+          if (listener.onPaymentSuccess) listener.onPaymentSuccess();
         } else if (sessionData.getPaymentResult().startsWith(com.stripe.android.PaymentResultListener.ERROR)) {
-          listener.onError(100, sessionData.getPaymentResult());
+          if (listener.onError) listener.onError(100, sessionData.getPaymentResult());
+        } else if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.USER_CANCELLED) {
+          if (listener.onUserCancelled) listener.onUserCancelled();
         }
         parent.paymentInProgress = false;
         return;

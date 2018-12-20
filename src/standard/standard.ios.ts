@@ -189,13 +189,13 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     this.parent._paymentInProgress = false;
     switch (status) {
       case STPPaymentStatus.Error:
-        this.listener.onError(error.code, error.localizedDescription);
+        if (this.listener.onError) this.listener.onError(error.code, error.localizedDescription);
         break;
       case STPPaymentStatus.Success:
-        this.listener.onPaymentSuccess();
+        if (this.listener.onPaymentSuccess) this.listener.onPaymentSuccess();
         break;
       case STPPaymentStatus.UserCancellation:
-        // Nothing to do.
+        if (this.listener.onUserCancelled) this.listener.onUserCancelled();
         break;
     }
   }

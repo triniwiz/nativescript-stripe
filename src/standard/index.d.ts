@@ -51,6 +51,7 @@ export declare interface StripePaymentListener {
   onCommunicatingStateChanged(isCommunicating: boolean): void;
   onPaymentDataChanged(data: StripePaymentData): void;
   onPaymentSuccess(): void;
+  onUserCancelled(): void;
   onError(errorCode: number, message: string): void;
   provideShippingMethods(address: StripeAddress): StripeShippingMethods;
 }
