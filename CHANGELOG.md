@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.0.5 (2018, December 20)
+### Fixes
+- [(# 40)](https://github.com/triniwiz/nativescript-stripe/issues/40) Standard Integration: When user cancels, no message is sent to listener.
+
 ## 5.0.4 (2018, November 20)
 ### Fixes
 - Fix publish configuration — add README, CHANGELOG, LICENSE, remove unnecessary files.
