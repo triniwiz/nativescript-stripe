@@ -221,7 +221,14 @@ function createPaymentMethod(customer: com.stripe.android.model.Customer, paymen
   let cs = customer.getSourceById(paymentMethodId);
   if (!cs) return { label: "Error (102)", image: undefined, templateImage: undefined };
   let source = cs.asSource();
+  let card = cs.asCard();
 
+  if (source) return createPaymentMethodFromSource(source);
+  if (card) return createPaymentMethodFromCard(card);
+  return { label: "Error (103)", image: undefined, templateImage: undefined };
+}
+
+function createPaymentMethodFromSource(source: com.stripe.android.model.Source): StripePaymentMethod {
   let label: string;
   let image: any;
   if (source.getType() === com.stripe.android.model.Source.CARD) {
@@ -231,6 +238,16 @@ function createPaymentMethod(customer: com.stripe.android.model.Customer, paymen
   } else {
     label = source.getType();
   }
+  return {
+    label: label,
+    image: image,
+    templateImage: undefined
+  };
+}
+
+function createPaymentMethodFromCard(card: com.stripe.android.model.Card): StripePaymentMethod {
+  let label = `${card.getBrand()} ...${card.getLast4()}`;
+  let image = getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue());
   return {
     label: label,
     image: image,
