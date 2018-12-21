@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Usage:
+# cd publish
+# # To only build the package
+# # Package is placed in: ./package/nativescript-stripe-M.m.p.tgz.
+# ./pack.sh
+# # To build and publish the package
+# ./publish.sh
+
 SOURCE_DIR=../src;
 TO_SOURCE_DIR=src;
 PACK_DIR=package;
