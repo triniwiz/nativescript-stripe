@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.0.6 (2018, December 21)
+### Fixes
+- [(# 39)](https://github.com/triniwiz/nativescript-stripe/issues/39) Standard Integration: Error referencing null 'source' from CustomerSource object.
+
 ## 5.0.5 (2018, December 20)
 ### Fixes
 - [(# 40)](https://github.com/triniwiz/nativescript-stripe/issues/40) Standard Integration: When user cancels, no message is sent to listener.
