@@ -1,6 +1,6 @@
-import { EventData } from "data/observable";
 import { StripeAddress, StripePaymentData, StripePaymentListener, StripePaymentSession, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe/standard";
-import { Page } from "ui/page";
+import { EventData } from "tns-core-modules/data/observable";
+import { Page } from "tns-core-modules/ui/page";
 import { StdDemoModel } from "./std-model";
 import { StripeService } from "./stripe.service";
 

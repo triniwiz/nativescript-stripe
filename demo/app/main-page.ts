@@ -1,5 +1,5 @@
-import { EventData } from "data/observable";
-import { Button } from "ui/button";
+import { EventData } from "tns-core-modules/data/observable";
+import { Button } from "tns-core-modules/ui/button";
 
 export function pageLoaded(args: EventData) {
 }

@@ -1,7 +1,7 @@
-import { EventData, fromObject } from "data/observable";
 import { CreditCardView, Stripe, Token } from "nativescript-stripe";
-import { Button } from "ui/button";
-import { Page } from "ui/page";
+import { EventData, fromObject } from "tns-core-modules/data/observable";
+import { Button } from "tns-core-modules/ui/button";
+import { Page } from "tns-core-modules/ui/page";
 
 let stripe;
 let tokenSource = fromObject({ token: "" });

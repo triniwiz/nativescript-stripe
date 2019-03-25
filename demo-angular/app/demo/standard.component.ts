@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { StripeAddress, StripePaymentData, StripePaymentListener, StripePaymentMethod, StripePaymentSession, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe/standard";
-import { Page } from "ui/page";
+import { Page } from "tns-core-modules/ui/page";
 import { Item } from "./item";
 import { StripeService } from "./stripe.service";
 

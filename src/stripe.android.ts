@@ -1,4 +1,4 @@
-import * as utils from 'utils/utils';
+import * as utils from 'tns-core-modules/utils/utils';
 import { CardBrand, CardCommon, CreditCardViewBase, Token } from './stripe.common';
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;

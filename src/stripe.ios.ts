@@ -1,4 +1,4 @@
-import { ios } from 'utils/utils';
+import { ios } from 'tns-core-modules/utils/utils';
 import { CardBrand, CardCommon, CreditCardViewBase, Token } from './stripe.common';
 export class Stripe {
   constructor(apiKey: string) {

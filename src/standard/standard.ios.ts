@@ -1,4 +1,4 @@
-import { Page } from "ui/page";
+import { Page } from "tns-core-modules/ui/page";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
 export class StripeConfig extends StripeConfigCommon {

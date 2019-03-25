@@ -1,4 +1,4 @@
-import { View } from "ui/core/view";
+import { View } from "tns-core-modules/ui/core/view";
 
 export declare class CreditCardViewBase extends View { }
 export declare class Stripe {
