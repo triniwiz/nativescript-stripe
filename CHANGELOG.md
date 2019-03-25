@@ -1,6 +1,14 @@
 Changelog
 ==============================
 
+## 5.0.8 (2019, March 24)
+### Fixes
+- [(# 46)](https://github.com/triniwiz/nativescript-stripe/issues/46) Remove deprecated "short imports".
+
+## 5.0.7 (2019, February 6)
+### Fixes
+- Android: Change from deprecated 'compile' to 'implements' in include.gradle.
+
 ## 5.0.6 (2018, December 21)
 ### Fixes
 - [(# 39)](https://github.com/triniwiz/nativescript-stripe/issues/39) Standard Integration: Error referencing null 'source' from CustomerSource object.
