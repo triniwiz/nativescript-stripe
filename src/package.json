@@ -2,7 +2,7 @@
   "name": "nativescript-stripe",
   "version": "5.0.8",
   "description": "NativeScript Stripe sdk",
-  "main": "stripe.js",
+  "main": "stripe",
   "typings": "index.d.ts",
   "nativescript": {
     "platforms": {
@@ -20,9 +20,13 @@
     "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|typings)/**\"",
     "plugin.tscwatch": "npm run tsc -- -w",
     "demo.ios": "npm run tsc && cd ../demo && tns run ios --syncAllFiles --emulator",
+    "demo.ios.min": "npm run tsc && cd ../demo && tns run ios --bundle --env.uglify --syncAllFiles --emulator",
+    "demo.ios.ci": "npm run tsc && cd ../demo && tns build ios --bundle --env.uglify --syncAllFiles",
     "demo.android": "npm run tsc && cd ../demo && tns run android --syncAllFiles --emulator",
     "demo.reset": "cd ../demo && npx rimraf -- hooks node_modules platforms package-lock.json",
     "demo-angular.ios": "npm run tsc && cd ../demo-angular && tns run ios --syncAllFiles --emulator",
+    "demo-angular.ios.min": "npm run tsc && cd ../demo-angular && tns run ios --bundle --env.uglify --syncAllFiles --emulator",
+    "demo-angular.ios.ci": "npm run tsc && cd ../demo-angular && tns build ios --bundle --env.uglify --syncAllFiles",
     "demo-angular.android": "npm run tsc && cd ../demo-angular && tns run android --syncAllFiles --emulator",
     "demo-angular.reset": "cd ../demo-angular && npx rimraf -- hooks node_modules platforms package-lock.json",
     "plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-stripe && tns plugin add ../src && cd ../demo-angular && tns plugin remove nativescript-stripe && tns plugin add ../src",

@@ -1,6 +1,6 @@
 {
   "nativescript": {
-    "id": "org.nativescript.demo",
+    "id": "org.nativescript.stripe.demo",
     "tns-ios": {
       "version": "5.2.0"
     },
@@ -9,7 +9,7 @@
     }
   },
   "dependencies": {
-    "nativescript-stripe": "../src",
+    "nativescript-stripe": "file:../src",
     "nativescript-theme-core": "^1.0.4",
     "nativescript-unit-test-runner": "^0.5.1",
     "tns-core-modules": "^5.2.2"
