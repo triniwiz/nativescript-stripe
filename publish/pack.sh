@@ -41,7 +41,7 @@ pack() {
 
     # remove unwanted files
     echo 'Removing unwanted files from /src...'
-    node_modules/.bin/rimraf hooks typings references.d.ts
+    node_modules/.bin/rimraf hooks typings references.d.ts .DS_Store **/.DS_Store
 
     cd ..
 
