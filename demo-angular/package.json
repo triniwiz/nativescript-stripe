@@ -6,10 +6,10 @@
   "nativescript": {
     "id": "org.nativescript.stripe.demoangular",
     "tns-ios": {
-      "version": "5.2.0"
+      "version": "5.3.1"
     },
     "tns-android": {
-      "version": "5.2.1"
+      "version": "5.3.1"
     }
   },
   "dependencies": {
@@ -27,8 +27,9 @@
     "nativescript-theme-core": "~1.0.4",
     "reflect-metadata": "~0.1.12",
     "rxjs": "^6.3.3",
-    "tns-core-modules": "^5.2.2",
-    "zone.js": "^0.8.4"
+    "tns-core-modules": "^5.3.1",
+    "zone.js": "^0.8.4",
+    "typescript": "~3.1.1"
   },
   "devDependencies": {
     "@angular/compiler-cli": "~7.2.0",
@@ -39,8 +40,8 @@
     "lazy": "1.0.11",
     "nativescript-css-loader": "~0.26.1",
     "nativescript-dev-typescript": "^0.9.0",
-    "nativescript-dev-webpack": "^0.20.3",
-    "tns-platform-declarations": "^5.2.2",
+    "nativescript-dev-webpack": "^0.22.0-next-2019-04-12-181144-02",
+    "tns-platform-declarations": "^5.3.1",
     "tslint": "~5.4.3"
   },
   "scripts": {

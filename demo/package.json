@@ -2,17 +2,17 @@
   "nativescript": {
     "id": "org.nativescript.stripe.demo",
     "tns-ios": {
-      "version": "5.2.0"
+      "version": "5.3.1"
     },
     "tns-android": {
-      "version": "5.2.1"
+      "version": "5.3.1"
     }
   },
   "dependencies": {
     "nativescript-stripe": "file:../src",
     "nativescript-theme-core": "^1.0.4",
     "nativescript-unit-test-runner": "^0.5.1",
-    "tns-core-modules": "^5.2.2"
+    "tns-core-modules": "^5.3.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "~5.2.1",
@@ -28,8 +28,8 @@
     "lazy": "1.0.11",
     "nativescript-css-loader": "~0.26.0",
     "nativescript-dev-typescript": "^0.9.0",
-    "nativescript-dev-webpack": "^0.20.3",
-    "tns-platform-declarations": "^5.2.2",
+    "nativescript-dev-webpack": "^0.21.0",
+    "tns-platform-declarations": "^5.3.1",
     "tslint": "~5.4.3"
   },
   "scripts": {
