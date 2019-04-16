@@ -13,7 +13,7 @@ const publishableKey = "";
 // (it looks like https://blazing-sunrise-1234.herokuapp.com ).
 const backendBaseURL = "";
 
-// 3) Optionally, to enable Apple Pay, follow the instructions at https://stripe.com/docs/mobile/apple-pay
+// 3) Optionally, to enable Apple Pay, follow the instructions at https://stripe.com/docs/apple-pay/apps
 // to create an Apple Merchant ID. Paste it below (it looks like merchant.com.yourappname).
 const appleMerchantID = "";
 
