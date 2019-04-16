@@ -1,6 +1,11 @@
 Changelog
 ==============================
 
+## 5.1.0 (2019, April 16)
+### Fixes
+- [(# 47)](https://github.com/triniwiz/nativescript-stripe/issues/47) Fix build breakage by upgrading to latest NS.
+  Now builds and runs correctly with NS 5.3. Requires `nativescript-dev-webpack: 0.22.0-next-2019-04-12-181144-02` or later for Angular projects using webpack.
+
 ## 5.0.8 (2019, March 24)
 ### Fixes
 - [(# 46)](https://github.com/triniwiz/nativescript-stripe/issues/46) Remove deprecated "short imports".
