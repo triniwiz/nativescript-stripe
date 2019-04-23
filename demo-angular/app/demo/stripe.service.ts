@@ -63,7 +63,7 @@ export class StripeService implements StripeBackendAPI {
   }
 
   completeCharge(stripeID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void> {
-    let url = this.backendURL("charge");
+    let url = this.backendURL("capture_payment");
     return httpModule.request({
       url: url,
       method: "POST",
