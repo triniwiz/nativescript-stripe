@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { CreditCardView, Stripe, Token } from "nativescript-stripe";
+import { publishableKey } from "./stripe.service";
 
 @Component({
   selector: "stp-ccview",
@@ -11,7 +12,10 @@ export class CreditCardViewComponent {
   private stripe: Stripe;
 
   constructor(public changeDetectionRef: ChangeDetectorRef) {
-    this.stripe = new Stripe("pk_test_s3dHtM9w6XmgB7ak7AbCSj51");
+    if (-1 !== publishableKey.indexOf("pk_test_yours")) {
+      throw new Error("publishableKey must be changed from placeholder");
+    }
+    this.stripe = new Stripe(publishableKey);
   }
 
   createToken(cardView: CreditCardView): void {

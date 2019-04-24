@@ -2,12 +2,16 @@ import { CreditCardView, Stripe, Token } from "nativescript-stripe";
 import { EventData, fromObject } from "tns-core-modules/data/observable";
 import { Button } from "tns-core-modules/ui/button";
 import { Page } from "tns-core-modules/ui/page";
+import { publishableKey } from "./stripe.service";
 
-let stripe;
+let stripe: Stripe;
 let tokenSource = fromObject({ token: "" });
 
 export function pageLoaded(args: EventData) {
-  stripe = new Stripe("pk_test_OHSX2noWHfjZMZ6uj0dbeSN7");
+  if (-1 !== publishableKey.indexOf("pk_test_yours")) {
+    throw new Error("publishableKey must be changed from placeholder");
+  }
+  stripe = new Stripe(publishableKey);
   tokenSource.set("token", "");
 
   let page = <Page>args.object;
