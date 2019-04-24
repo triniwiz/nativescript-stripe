@@ -69,4 +69,3 @@ install:
     - tns error-reporting disable
 
 before_script:
-    - cd src && ./scripts/setup-keys.sh && cd -
