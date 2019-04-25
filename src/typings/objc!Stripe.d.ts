@@ -1,4 +1,10 @@
 
+// Generated from Stripe 15.0.1
+// Using:
+//   cd demo OR cd demo-angular
+//   TNS_TYPESCRIPT_DECLARATIONS_PATH="$(pwd)/typings" tns build ios
+
+
 declare class STPAPIClient extends NSObject {
 
 	static alloc(): STPAPIClient; // inherited from NSObject
