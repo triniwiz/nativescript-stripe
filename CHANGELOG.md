@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.2.0 (2019, April 26)
+### Fixes
+- [(# 51)](https://github.com/triniwiz/nativescript-stripe/issues/51) Updates Stripe iOS and Android libraries to latest versions (iOS 15 and Android 8.7).
+
 ## 5.1.0 (2019, April 16)
 ### Fixes
 - [(# 47)](https://github.com/triniwiz/nativescript-stripe/issues/47) Fix build breakage by upgrading to latest NS.
