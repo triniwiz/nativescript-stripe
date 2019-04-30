@@ -53,8 +53,8 @@ export class StripeCustomerSession {
   }
 }
 
-class StripeKeyProvider extends NSObject implements STPEphemeralKeyProvider {
-  static ObjCProtocols = [STPEphemeralKeyProvider];
+class StripeKeyProvider extends NSObject implements STPCustomerEphemeralKeyProvider {
+  static ObjCProtocols = [STPCustomerEphemeralKeyProvider];
 
   static new(): StripeKeyProvider {
     return <StripeKeyProvider>super.new();
@@ -100,7 +100,7 @@ export class StripePaymentSession {
   }
 
   get isPaymentReady(): boolean {
-    return this.native.selectedPaymentMethod != null;
+    return this.native.selectedPaymentOption != null;
   }
 
   get paymentInProgress(): boolean {
@@ -137,7 +137,7 @@ export class StripePaymentSession {
 
   presentPaymentMethods(): void {
     this.ensureHostViewController();
-    this.native.presentPaymentMethodsViewController();
+    this.native.presentPaymentOptionsViewController();
   }
 
   presentShipping(): void {
@@ -221,11 +221,11 @@ function createError(domain: string, code: number, error: string): NSError {
 }
 
 function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
-  if (!paymentContext.selectedPaymentMethod) return undefined;
+  if (!paymentContext.selectedPaymentOption) return undefined;
   return {
-    label: paymentContext.selectedPaymentMethod.label,
-    image: paymentContext.selectedPaymentMethod.image,
-    templateImage: paymentContext.selectedPaymentMethod.templateImage
+    label: paymentContext.selectedPaymentOption.label,
+    image: paymentContext.selectedPaymentOption.image,
+    templateImage: paymentContext.selectedPaymentOption.templateImage
   };
 }
 

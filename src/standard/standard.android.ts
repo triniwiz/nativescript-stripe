@@ -80,7 +80,7 @@ export class StripePaymentSession {
     }
     this.native.setCartTotal(amount);
     this.receiver = createShippingBroadcastReceiver(this, listener);
-    android.support.v4.content.LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowActivity.EVENT_SHIPPING_INFO_SUBMITTED));
+    android.support.v4.content.LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
   }
 
   get amount(): number {
@@ -130,7 +130,7 @@ export class StripePaymentSession {
 
 function createPaymentListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
   return new com.stripe.android.PaymentSession.PaymentSessionListener({
-    onPaymentSessionDataChanged(sessionData: com.stripe.android.PaymentSessionData): void {
+    onPaymentSessionDataChanged: function(sessionData: com.stripe.android.PaymentSessionData): void {
       if (parent.paymentInProgress) {
         if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.SUCCESS) {
           if (listener.onPaymentSuccess) listener.onPaymentSuccess();
@@ -158,11 +158,11 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
         }
       }));
     },
-    onCommunicatingStateChanged(isCommunicating: boolean): void {
+    onCommunicatingStateChanged: function(isCommunicating: boolean): void {
       parent.loading = isCommunicating;
       listener.onCommunicatingStateChanged(isCommunicating);
     },
-    onError(code: number, message: string): void {
+    onError: function(code: number, message: string): void {
       listener.onError(code, message);
     }
   });
@@ -176,19 +176,19 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
     }
 
     onReceive(context: android.content.Context, intent: android.content.Intent) {
-      let shippingInformation = intent.getParcelableExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_SHIPPING_INFO_DATA) as any as com.stripe.android.model.ShippingInformation;
+      let shippingInformation = intent.getParcelableExtra(com.stripe.android.view.PaymentFlowExtras.EXTRA_SHIPPING_INFO_DATA) as any as com.stripe.android.model.ShippingInformation;
       let shippingMethods = this.listener.provideShippingMethods(createAddress(shippingInformation));
 
-      let shippingInfoProcessedIntent = new android.content.Intent(com.stripe.android.view.PaymentFlowActivity.EVENT_SHIPPING_INFO_PROCESSED);
+      let shippingInfoProcessedIntent = new android.content.Intent(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_PROCESSED);
       if (!shippingMethods.isValid) {
-        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_IS_SHIPPING_INFO_VALID, false);
-        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_SHIPPING_INFO_ERROR, shippingMethods.validationError);
+        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowExtras.EXTRA_IS_SHIPPING_INFO_VALID, false);
+        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowExtras.EXTRA_SHIPPING_INFO_ERROR, shippingMethods.validationError);
       } else {
-        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_IS_SHIPPING_INFO_VALID, true);
+        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowExtras.EXTRA_IS_SHIPPING_INFO_VALID, true);
         let methods = new java.util.ArrayList<com.stripe.android.model.ShippingMethod>();
         shippingMethods.shippingMethods.forEach(m => methods.add(createAdShippingMethod(m, this.parent.currency)));
-        shippingInfoProcessedIntent.putParcelableArrayListExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_VALID_SHIPPING_METHODS, methods);
-        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowActivity.EXTRA_DEFAULT_SHIPPING_METHOD,
+        shippingInfoProcessedIntent.putParcelableArrayListExtra(com.stripe.android.view.PaymentFlowExtras.EXTRA_VALID_SHIPPING_METHODS, methods);
+        shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowExtras.EXTRA_DEFAULT_SHIPPING_METHOD,
           createAdShippingMethod(shippingMethods.selectedShippingMethod, this.parent.currency) as any as android.os.Parcelable);
       }
       android.support.v4.content.LocalBroadcastManager.getInstance(context).sendBroadcast(shippingInfoProcessedIntent);
