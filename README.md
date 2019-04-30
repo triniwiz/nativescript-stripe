@@ -139,6 +139,36 @@ let paymentSession = new StripePaymentSession(page, customerSession, price, "usd
 
 See [Stripe Docs](https://stripe.com/docs/mobile) for more information.
 
+# Strong Customer Authentication
+PSD2 regulations in Europe will require [Strong Customer Authentication](https://stripe.com/payments/strong-customer-authentication)
+for some credit card purchases. Stripe supports this, though most of the work to make it happen is
+required on the backend server and in the mobile app, outside the `nativescript-stripe` plugin.
+
+To support SCA, follow the instructions for [iOS](https://stripe.com/docs/payments/payment-intents/ios)
+and [Android](https://stripe.com/docs/payments/payment-intents/android) on using `PaymentIntent`s instead
+of tokens when interacting with your backend server. The `nativescript-stripe` plugin has
+cross-platform data structures and method calls that might be helpful. In `index.d.ts` see:
+* `PaymentMethod` and related classes
+* `StripePaymentIntent` and related classes
+* Methods `Stripe.createPaymentMethod`, `Stripe.retrievePaymentIntent`, and `Stripe.confirmPaymentIntent`
+
+## Handling secondary customer input
+SCA requires the customer to enter additional information with some charge cards. Stripe takes care of this
+if you properly handle the redirect from the `StripePaymentIntent` returned from the server.
+
+On iOS, `StripeRedirectSession` can help manage the interaction with the customer.
+
+On Android, it appears that (as of May 1, 2019) the Android SDK regarding SCA is still undergoing heavy
+development and not everything is working as well as it could. For example, the new methods in `Stripe`
+cannot be called on the UI thread in Android (but they can on iOS), and the technique for handling
+secondary customer interaction is difficult. Hopefully these will be addressed soon.
+
+## Status
+Finally, keep in mind that while these SCA support classes and methods have been added to the plugin, they
+have not yet been thoroughly tested. The `demo` and `demo-angular` apps do *not* (yet) support `PaymentIntent`,
+although they have been modified to work with the current Stripe example backend
+(which does fully support `PaymentIntent`). Any help updating the demo apps would be greatly appreciated.
+
 # TODO
 * Android Pay
 * Apple Pay (supported by Standard Integration, not by Custom Integration)
