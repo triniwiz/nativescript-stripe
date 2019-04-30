@@ -37,6 +37,81 @@ export class Stripe {
       }
     );
   }
+
+  createPaymentMethod(card: CardCommon, cb: (error: Error, pm: PaymentMethod) => void): void {
+    if (!card) {
+      if (typeof cb === 'function') {
+        cb(new Error('Invalid card'), null);
+      }
+      return;
+    }
+    const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
+    const cardParams = STPPaymentMethodCardParams.new();
+    cardParams.cvc = card.cvc;
+    cardParams.expMonth = card.expMonth;
+    cardParams.expYear = card.expYear;
+    cardParams.number = card.number;
+    const billing = STPPaymentMethodBillingDetails.new();
+    billing.address.line1 = card.addressLine1;
+    billing.address.line2 = card.addressLine2;
+    billing.address.city = card.addressCity;
+    billing.address.state = card.addressState;
+    billing.address.postalCode = card.addressZip;
+    billing.address.country = card.addressCountry;
+    const params = STPPaymentMethodParams.paramsWithCardBillingDetailsMetadata(cardParams, billing, null);
+    apiClient.createPaymentMethodWithParamsCompletion(
+      params,
+      (pm: STPPaymentMethod, error: NSError) => {
+        if (!error) {
+          if (typeof cb === 'function') {
+            cb(null, PaymentMethod.fromNative(pm));
+          }
+        } else {
+          if (typeof cb === 'function') {
+            cb(new Error(error.localizedDescription), null);
+          }
+        }
+      }
+    );
+  }
+
+  retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+    const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
+    apiClient.retrievePaymentIntentWithClientSecretCompletion(
+      clientSecret,
+      (pi: STPPaymentIntent, error: NSError) => {
+        if (!error) {
+          if (typeof cb === 'function') {
+            cb(null, StripePaymentIntent.fromNative(pi));
+          }
+        } else {
+          if (typeof cb === 'function') {
+            cb(new Error(error.localizedDescription), null);
+          }
+        }
+      }
+    );
+  }
+
+  confirmPaymentIntent(pi: StripePaymentIntent, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+    const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
+    const params = STPPaymentIntentParams.alloc().initWithClientSecret(pi.clientSecret);
+    params.returnURL = returnUrl;
+    apiClient.confirmPaymentIntentWithParamsCompletion(
+      params,
+      (pi: STPPaymentIntent, error: NSError) => {
+        if (!error) {
+          if (typeof cb === 'function') {
+            cb(null, StripePaymentIntent.fromNative(pi));
+          }
+        } else {
+          if (typeof cb === 'function') {
+            cb(new Error(error.localizedDescription), null);
+          }
+        }
+      }
+    );
+  }
 }
 
 export class Card implements CardCommon {

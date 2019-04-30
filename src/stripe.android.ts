@@ -2,14 +2,17 @@ import * as utils from 'tns-core-modules/utils/utils';
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
+  private _apiKey: string;
+
   constructor(apiKey: string) {
+    this._apiKey = apiKey;
     this._stripe = new com.stripe.android.Stripe(
       utils.ad.getApplicationContext(),
       apiKey
     );
   }
 
-  public createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
+  createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
     if (!card) {
       if (typeof cb === 'function') {
         cb(new Error('Invalid card'), null);
@@ -19,7 +22,7 @@ export class Stripe {
     this._stripe.createToken(
       card.native,
       new com.stripe.android.TokenCallback({
-        onSuccess: function(token) {
+        onSuccess: function (token) {
           if (typeof cb === 'function') {
             const newToken: Token = {
               id: token.getId(),
@@ -33,13 +36,78 @@ export class Stripe {
             cb(null, newToken);
           }
         },
-        onError: function(error) {
+        onError: function (error) {
           if (typeof cb === 'function') {
             cb(new Error(error.getLocalizedMessage()), null);
           }
         }
       })
     );
+  }
+
+  createPaymentMethod(card: CardCommon, cb: (error: Error, pm: PaymentMethod) => void): void {
+    if (!card) {
+      if (typeof cb === 'function') {
+        cb(new Error('Invalid card'), null);
+      }
+      return;
+    }
+    const cardParams = new com.stripe.android.model.PaymentMethodCreateParams.Card.Builder()
+      .setCvc(card.cvc)
+      .setExpiryMonth(new java.lang.Integer(card.expMonth))
+      .setExpiryYear(new java.lang.Integer(card.expYear))
+      .setNumber(card.number)
+      .build();
+    const billing = new com.stripe.android.model.PaymentMethod.BillingDetails.Builder()
+      .setAddress(new com.stripe.android.model.Address.Builder()
+        .setLine1(card.addressLine1)
+        .setLine2(card.addressLine2)
+        .setCity(card.addressCity)
+        .setState(card.addressState)
+        .setPostalCode(card.addressZip)
+        .setCountry(card.addressCountry)
+        .build())
+      .build();
+    const params = com.stripe.android.model.PaymentMethodCreateParams.create(cardParams, billing);
+    try {
+      const pm = this._stripe.createPaymentMethodSynchronous(params, this._apiKey);
+      if (typeof cb === 'function') {
+        cb(null, PaymentMethod.fromNative(pm));
+      }
+    } catch (error) {
+      if (typeof cb === 'function') {
+        cb(new Error(error.localizedDescription), null);
+      }
+    }
+  }
+
+  retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+    const params = com.stripe.android.model.PaymentIntentParams.createRetrievePaymentIntentParams(clientSecret);
+    try {
+      const pi = this._stripe.retrievePaymentIntentSynchronous(params, this._apiKey);
+      if (typeof cb === 'function') {
+        cb(null, StripePaymentIntent.fromNative(pi));
+      }
+    } catch (error) {
+      if (typeof cb === 'function') {
+        cb(new Error(error.localizedDescription), null);
+      }
+    }
+  }
+
+  confirmPaymentIntent(pi: StripePaymentIntent, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+    const params = com.stripe.android.model.PaymentIntentParams.createConfirmPaymentIntentWithPaymentMethodId(
+      pi.id, pi.clientSecret, returnUrl);
+    try {
+      const pi = this._stripe.confirmPaymentIntentSynchronous(params, this._apiKey);
+      if (typeof cb === 'function') {
+        cb(null, StripePaymentIntent.fromNative(pi));
+      }
+    } catch (error) {
+      if (typeof cb === 'function') {
+        cb(new Error(error.localizedDescription), null);
+      }
+    }
   }
 }
 
