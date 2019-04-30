@@ -12,7 +12,9 @@
   },
   "scripts": {
     "setup": "../../setup-keys.sh",
-    "tsc": "tsc",
+    "ngc.clean": "find ./ angular/ -name '*.metadata.json' -delete && find ./ angular/ -name '*.ngsummary.json' -delete",
+    "ngc": "npm run ngc.clean && ngc -skipLibCheck --project tsconfig.json",
+    "tsc": "npm run ngc",
     "build": "npm run tsc && npm run build.native",
     "build.native": "node scripts/build-native.js",
     "test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch && cd ../demo-angular && tns build android && tns test android --justlaunch",
@@ -55,6 +57,7 @@
   "devDependencies": {
     "@angular/common": "~7.2.0",
     "@angular/compiler": "~7.2.0",
+    "@angular/compiler-cli": "~7.2.0",
     "@angular/core": "~7.2.0",
     "@angular/platform-browser": "~7.2.0",
     "@angular/router": "~7.2.0",
@@ -69,5 +72,6 @@
     "tslint": "^5.14.0",
     "zone.js": "^0.8.4"
   },
-  "bootstrapper": "nativescript-plugin-seed"
+  "bootstrapper": "nativescript-plugin-seed",
+  "dependencies": {}
 }

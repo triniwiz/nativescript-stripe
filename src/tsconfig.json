@@ -30,5 +30,8 @@
     "exclude": [
         "node_modules"
     ],
-    "compileOnSave": true
+    "compileOnSave": true,
+    "angularCompilerOptions": {
+        "skipTemplateCodegen": true
+    }
 }
