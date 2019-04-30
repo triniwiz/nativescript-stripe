@@ -5,5 +5,7 @@
 <StackLayout class="page">
   <CreditCardView #card></CreditCardView>
   <Button text="Create Token" (tap)="createToken(card)" class="btn btn-primary"></Button>
+  <Button text="Create Payment Method" (tap)="createPaymentMethod(card)" class="btn btn-primary"></Button>
   <Label [text]="token" textWrap="true"></Label>
+  <Label [text]="payment" textWrap="true"></Label>
 </StackLayout>

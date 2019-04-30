@@ -52,23 +52,21 @@ export class Stripe {
       }
       return;
     }
-    const cardParams = new com.stripe.android.model.PaymentMethodCreateParams.Card.Builder()
-      .setCvc(card.cvc)
-      .setExpiryMonth(new java.lang.Integer(card.expMonth))
-      .setExpiryYear(new java.lang.Integer(card.expYear))
-      .setNumber(card.number)
-      .build();
-    const billing = new com.stripe.android.model.PaymentMethod.BillingDetails.Builder()
-      .setAddress(new com.stripe.android.model.Address.Builder()
-        .setLine1(card.addressLine1)
-        .setLine2(card.addressLine2)
-        .setCity(card.addressCity)
-        .setState(card.addressState)
-        .setPostalCode(card.addressZip)
-        .setCountry(card.addressCountry)
-        .build())
-      .build();
-    const params = com.stripe.android.model.PaymentMethodCreateParams.create(cardParams, billing);
+    const cardParams = new com.stripe.android.model.PaymentMethodCreateParams.Card.Builder();
+    if (card.cvc) cardParams.setCvc(card.cvc);
+    if (card.expMonth) cardParams.setExpiryMonth(new java.lang.Integer(card.expMonth));
+    if (card.expYear) cardParams.setExpiryYear(new java.lang.Integer(card.expYear));
+    if (card.number) cardParams.setNumber(card.number);
+    const billing = new com.stripe.android.model.PaymentMethod.BillingDetails.Builder();
+    const addr = new com.stripe.android.model.Address.Builder();
+    if (card.addressLine1) addr.setLine1(card.addressLine1);
+    if (card.addressLine2) addr.setLine2(card.addressLine2);
+    if (card.addressCity) addr.setCity(card.addressCity);
+    if (card.addressState) addr.setState(card.addressState);
+    if (card.addressZip) addr.setPostalCode(card.addressZip);
+    if (card.addressCountry) addr.setCountry(card.addressCountry);
+    billing.setAddress(addr.build());
+    const params = com.stripe.android.model.PaymentMethodCreateParams.create(cardParams.build(), billing.build());
     try {
       const pm = this._stripe.createPaymentMethodSynchronous(params, this._apiKey);
       if (typeof cb === 'function') {
