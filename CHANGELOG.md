@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.3.0 (2019, May 1)
+### Fixes
+- [(# 45)](https://github.com/triniwiz/nativescript-stripe/issues/45) Provide classes and methods to help with Strong Customer Authentication.
+
 ## 5.2.0 (2019, April 26)
 ### Fixes
 - [(# 51)](https://github.com/triniwiz/nativescript-stripe/issues/51) Updates Stripe iOS and Android libraries to latest versions (iOS 15 and Android 8.7).
