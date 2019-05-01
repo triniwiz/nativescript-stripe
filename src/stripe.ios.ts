@@ -1,5 +1,7 @@
+import { View } from 'tns-core-modules/ui/core/view';
 import { ios } from 'tns-core-modules/utils/utils';
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
+
 export class Stripe {
   constructor(apiKey: string) {
     STPPaymentConfiguration.sharedConfiguration().publishableKey = apiKey;
@@ -324,7 +326,7 @@ export class Card implements CardCommon {
 
   get brand(): CardBrand {
     if (!this._brand) this._brand = Card.toCardBrand(STPCardValidator.brandForNumber(this.native.number));
-      return this._brand;
+    return this._brand;
   }
 
   private static toCardBrand(brand: STPCardBrand): CardBrand {
@@ -400,11 +402,11 @@ export class CreditCardView extends CreditCardViewBase {
 
       return valid
         ? new Card(
-            this.nativeView.cardParams.number,
-            this.nativeView.cardParams.expMonth,
-            this.nativeView.cardParams.expYear,
-            this.nativeView.cardParams.cvc
-          )
+          this.nativeView.cardParams.number,
+          this.nativeView.cardParams.expMonth,
+          this.nativeView.cardParams.expYear,
+          this.nativeView.cardParams.cvc
+        )
         : null;
     } catch (ex) {
       return null;
@@ -498,4 +500,28 @@ export class StripePaymentIntentParams {
     n.returnURL = this.returnURL;
     return n;
   }
+}
+
+export class StripeRedirectSession {
+  native: STPRedirectContext;
+  readonly state: StripeRedirectState;
+
+  constructor(paymentIntent: StripePaymentIntent, completion: (clientSecret: string, error: NSError) => void) {
+    this.native = STPRedirectContext.alloc().initWithPaymentIntentCompletion(paymentIntent.native, completion);
+  }
+
+  startRedirectFlow(view: View): void {
+    this.native.startRedirectFlowFromViewController(view.viewController);
+  }
+
+  cancel(): void {
+    this.native.cancel();
+  }
+}
+
+export const enum StripeRedirectState {
+  NotStarted = 0,
+  InProgress = 1,
+  Cancelled = 2,
+  Completed = 3
 }

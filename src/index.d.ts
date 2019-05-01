@@ -152,3 +152,21 @@ export declare class StripePaymentIntentParams {
   receiptEmail: string;
   returnURL: string;  // a URL that opens your app
 }
+
+// Currently supported on iOS only
+export declare class StripeRedirectSession {
+  native: any;
+  readonly state: StripeRedirectState;
+
+  constructor(paymentIntent: StripePaymentIntent, completion: (clientSecret: string, error: Error) => void);
+
+  startRedirectFlow(view: View): void;
+  cancel(): void;
+}
+
+export declare const enum StripeRedirectState {
+  NotStarted = 0,
+  InProgress = 1,
+  Cancelled = 2,
+  Completed = 3
+}
