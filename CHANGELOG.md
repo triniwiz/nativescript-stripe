@@ -2,7 +2,7 @@ Changelog
 ==============================
 
 ## 5.3.0 (2019, May 1)
-### Fixes
+### Improves
 - [(# 45)](https://github.com/triniwiz/nativescript-stripe/issues/45) Provide classes and methods to help with Strong Customer Authentication.
 
 ## 5.2.0 (2019, April 26)
