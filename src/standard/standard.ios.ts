@@ -36,6 +36,7 @@ export class StripeConfig extends StripeConfigCommon {
       config.requiredShippingAddressFields = fields;
     }
     if (this.companyName) config.companyName = this.companyName;
+    config.createCardSources = this.createCardSources;
     return config;
   }
 

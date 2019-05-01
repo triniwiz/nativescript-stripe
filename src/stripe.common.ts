@@ -46,3 +46,37 @@ export interface Token {
   android: any;
   livemode: boolean;
 }
+
+export interface PaymentMethodCommon {
+  readonly native: any;
+  id: string;
+  created: Date;
+  type: "card";
+  billingDetails: object;
+  card: CardCommon;
+  customerId: string;
+  metadata: object;
+}
+
+export interface StripePaymentIntentCommon {
+  readonly native: any;
+  id: string;
+  clientSecret: string;
+  amount: number; // in pennies
+  captureMethod: "manual" | "automatic";
+  created: Date;
+  currency: string;
+  description: string;
+  requiresAction: boolean; // true if status == RequiresAction
+  status: StripePaymentIntentStatus;
+}
+
+export const enum StripePaymentIntentStatus {
+  RequiresPaymentMethod = "requires_payment_method",
+  RequiresConfirmation = "requires_confirmation",
+  RequiresAction = "requires_action",
+  Processing = "processing",
+  Succeeded = "succeeded",
+  RequiresCapture = "requires_capture",
+  Canceled = "canceled"
+}

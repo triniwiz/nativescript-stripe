@@ -26,6 +26,9 @@ export class StripeConfigCommon {
 
   /** Shipping address fields the user must fill out. If empty, shipping will not be requested. Default: none */
   requiredShippingAddressFields: StripeShippingAddressField[] = [];
+
+  /** If true, a credit card added in the UI will be added as a Source to the Customer. */
+  createCardSources = true;
 }
 
 export interface StripeBackendAPI {
