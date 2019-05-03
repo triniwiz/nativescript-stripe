@@ -158,7 +158,7 @@ export declare class StripeRedirectSession {
   native: any;
   readonly state: StripeRedirectState;
 
-  constructor(paymentIntent: StripePaymentIntent, completion: (clientSecret: string, error: Error) => void);
+  constructor(paymentIntent: StripePaymentIntent, cb: (error: Error, clientSecret: string) => void);
 
   startRedirectFlow(view: View): void;
   cancel(): void;

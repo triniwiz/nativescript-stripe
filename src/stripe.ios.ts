@@ -17,26 +17,15 @@ export class Stripe {
     const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
     apiClient.createTokenWithCardCompletion(
       card.native,
-      (token: STPToken, error: NSError) => {
-        if (!error) {
-          if (typeof cb === 'function') {
-            const newToken: Token = {
-              id: token.tokenId,
-              bankAccount: token.bankAccount,
-              card: card, // token.card is incomplete
-              created: new Date(token.created),
-              livemode: token.livemode,
-              android: null,
-              ios: token
-            };
-            cb(null, newToken);
-          }
-        } else {
-          if (typeof cb === 'function') {
-            cb(new Error(error.localizedDescription), null);
-          }
-        }
-      }
+      callback(cb, (token) => <Token>{
+        id: token.tokenId,
+        bankAccount: token.bankAccount,
+        card: card, // token.card is incomplete
+        created: new Date(token.created),
+        livemode: token.livemode,
+        android: null,
+        ios: token
+      })
     );
   }
 
@@ -63,17 +52,7 @@ export class Stripe {
     const params = STPPaymentMethodParams.paramsWithCardBillingDetailsMetadata(cardParams, billing, null);
     apiClient.createPaymentMethodWithParamsCompletion(
       params,
-      (pm: STPPaymentMethod, error: NSError) => {
-        if (!error) {
-          if (typeof cb === 'function') {
-            cb(null, PaymentMethod.fromNative(pm));
-          }
-        } else {
-          if (typeof cb === 'function') {
-            cb(new Error(error.localizedDescription), null);
-          }
-        }
-      }
+      callback(cb, (pm) => PaymentMethod.fromNative(pm))
     );
   }
 
@@ -81,17 +60,7 @@ export class Stripe {
     const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
     apiClient.retrievePaymentIntentWithClientSecretCompletion(
       clientSecret,
-      (pi: STPPaymentIntent, error: NSError) => {
-        if (!error) {
-          if (typeof cb === 'function') {
-            cb(null, StripePaymentIntent.fromNative(pi));
-          }
-        } else {
-          if (typeof cb === 'function') {
-            cb(new Error(error.localizedDescription), null);
-          }
-        }
-      }
+      callback(cb, (pi) => StripePaymentIntent.fromNative(pi))
     );
   }
 
@@ -101,19 +70,26 @@ export class Stripe {
     params.returnURL = returnUrl;
     apiClient.confirmPaymentIntentWithParamsCompletion(
       params,
-      (pi: STPPaymentIntent, error: NSError) => {
-        if (!error) {
-          if (typeof cb === 'function') {
-            cb(null, StripePaymentIntent.fromNative(pi));
-          }
-        } else {
-          if (typeof cb === 'function') {
-            cb(new Error(error.localizedDescription), null);
-          }
-        }
-      }
+      callback(cb, (pi) => StripePaymentIntent.fromNative(pi))
     );
   }
+}
+
+function callback(
+  cb: (error: Error, value: any) => void,
+  cvt: (value: any) => any):
+  (value: any, err: NSError) => void {
+  return (value: any, error: NSError) => {
+    if (!error) {
+      if (typeof cb === 'function') {
+        cb(null, cvt(value));
+      }
+    } else {
+      if (typeof cb === 'function') {
+        cb(new Error(error.localizedDescription), null);
+      }
+    }
+  };
 }
 
 export class Card implements CardCommon {
@@ -506,8 +482,11 @@ export class StripeRedirectSession {
   native: STPRedirectContext;
   readonly state: StripeRedirectState;
 
-  constructor(paymentIntent: StripePaymentIntent, completion: (clientSecret: string, error: NSError) => void) {
-    this.native = STPRedirectContext.alloc().initWithPaymentIntentCompletion(paymentIntent.native, completion);
+  constructor(paymentIntent: StripePaymentIntent, cb: (error: Error, clientSecret: string) => void) {
+    this.native = STPRedirectContext.alloc().initWithPaymentIntentCompletion(
+      paymentIntent.native,
+      callback(cb, (clientSecret) => clientSecret)
+    );
   }
 
   startRedirectFlow(view: View): void {
