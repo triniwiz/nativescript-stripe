@@ -97,7 +97,7 @@ export declare class PaymentMethod implements PaymentMethodCommon {
   customerId: string;
   metadata: object;
 
-  static fromNative(native: STPPaymentMethod): PaymentMethod;
+  static fromNative(native: any): PaymentMethod;
 }
 
 export declare interface StripePaymentIntentCommon {
@@ -128,7 +128,7 @@ export declare class StripePaymentIntent implements StripePaymentIntentCommon {
   requiresAction: boolean; // true if status == RequiresAction
   status: StripePaymentIntentStatus;
 
-  static fromNative(native: STPPaymentIntent): StripePaymentIntent;
+  static fromNative(native: any): StripePaymentIntent;
   static fromApi(json: any): StripePaymentIntent;
 }
 
@@ -158,7 +158,7 @@ export declare class StripeRedirectSession {
   native: any;
   readonly state: StripeRedirectState;
 
-  constructor(paymentIntent: StripePaymentIntent, completion: (clientSecret: string, error: Error) => void);
+  constructor(paymentIntent: StripePaymentIntent, cb: (error: Error, clientSecret: string) => void);
 
   startRedirectFlow(view: View): void;
   cancel(): void;
