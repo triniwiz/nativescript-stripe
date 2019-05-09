@@ -26,8 +26,10 @@ export class StripeConfig extends StripeConfigCommon {
       optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.PHONE_FIELD);
     }
 
+    const shippingRequired = this.requiredShippingAddressFields.length !== 0;
     let config = new com.stripe.android.PaymentSessionConfig.Builder()
-      .setShippingInfoRequired(this.requiredShippingAddressFields.length !== 0)
+      .setShippingInfoRequired(shippingRequired)
+      .setShippingMethodsRequired(shippingRequired)
       .setOptionalShippingInfoFields(optionalFields)
       .build();
     return config;
@@ -200,10 +202,12 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
 function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletionProvider {
   return new com.stripe.android.PaymentCompletionProvider({
     completePayment(data: com.stripe.android.PaymentSessionData, listener: com.stripe.android.PaymentResultListener): void {
+      const shippingMethod = data.getShippingMethod();
+      const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
       StripeConfig.shared().backendAPI.completeCharge(
         data.getSelectedPaymentMethodId(),
-        data.getCartTotal() + data.getShippingMethod().getAmount(),
-        createShippingMethod(data.getShippingMethod()),
+        data.getCartTotal() + shippingCost,
+        createShippingMethod(shippingMethod),
         createAddress(data.getShippingInformation()))
         .then(() => {
           listener.onPaymentResult(com.stripe.android.PaymentResultListener.SUCCESS);
