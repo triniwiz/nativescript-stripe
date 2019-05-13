@@ -250,6 +250,7 @@ function createPKShippingMethod(method: StripeShippingMethod): PKShippingMethod 
 }
 
 function createAddress(address: STPAddress): StripeAddress {
+  if (!address) return undefined;
   return {
     name: address.name,
     line1: address.line1,

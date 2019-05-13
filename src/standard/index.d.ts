@@ -32,12 +32,12 @@ export declare interface StripeBackendAPI {
    *
    * @param sourceID The Stripe Source ID to send to the backend.
    * @param amount  The amount to charge, in pennies.
-   * @param shippingMethod The shipping method to use.
-   * @param shippingAddress The address to ship to.
+   * @param shippingMethod The shipping method to use. Not set if StripeConfig.shared().requiredShippingAddressFields.length is 0
+   * @param shippingAddress The address to ship to. Not set if StripeConfig.shared().requiredShippingAddressFields.length is 0
    * @returns a Promise that resolves on success and rejects on failure.
    *     Any error should be reported as a string that can be displayed to the user.
    */
-  completeCharge(sourceID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void>;
+  completeCharge(sourceID: string, amount: number, shippingMethod?: StripeShippingMethod, shippingAddress?: StripeAddress): Promise<void>;
 }
 /**
  * Called during event processing when status changes. On Angular apps, be sure to
