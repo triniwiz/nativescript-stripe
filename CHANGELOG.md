@@ -1,6 +1,11 @@
 Changelog
 ==============================
 
+## 5.3.2 (2019, May 13)
+### Fixes
+- [(# 63)](https://github.com/triniwiz/nativescript-stripe/issues/63) Properly handle no shipping method or address
+- [(# 56)](https://github.com/triniwiz/nativescript-stripe/issues/56) Update Stripe to iOS 15 and Android 8.7; some support for Strong Customer Authentication
+
 ## 5.3.0 (2019, May 1)
 ### Improves
 - [(# 45)](https://github.com/triniwiz/nativescript-stripe/issues/45) Provide classes and methods to help with Strong Customer Authentication.
