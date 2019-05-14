@@ -1,5 +1,8 @@
 Process for publishing a new release:
 
+Note: The `git` and `npm` commands are shown here using command line but can also be
+performed in VS Code.
+
 Sync local copy to latest source:
 ```
 git checkout master
@@ -12,20 +15,12 @@ cd src
 npm run ngc.clean
 ```
 
-Bump version in `package.json`:
+Update version in `package.json` and `CHANGELOG.md` then commit with commit message:
+`chore(): ver bump`. Sync to `github`.
 ```
 cd src
-npm version patch|minor|major -m "chore(): ver bump"
-```
-
-Update `CHANGELOG.md` as necessary and add it to the commit:
-```
-git add package.json
-git add ../CHANGELOG.md
-```
-
-Sync to `git`:
-```
+npm version patch|minor|major
+git commit -a -m "chore(): ver bump"
 git push
 ```
 
