@@ -30,4 +30,3 @@ Publish the release to `npm`:
 ```
 
 Create a new github release at https://github.com/triniwiz/nativescript-stripe/releases.
-Upload `./package/nativescript-stripe.<version>.tgz` to the release.
