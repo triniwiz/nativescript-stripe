@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.4.0 (2019, June 12)
+### Fixes
+- [(# 70)](https://github.com/triniwiz/nativescript-stripe/issues/70) Support prefilled shipping address in StripePaymentSession
+
 ## 5.3.3 (2019, May 13)
 ### Fixes
 - [(# 63)](https://github.com/triniwiz/nativescript-stripe/issues/63) Properly handle no shipping method or address

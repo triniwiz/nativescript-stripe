@@ -90,15 +90,15 @@ export interface StripeShippingMethods {
 }
 
 export interface StripeAddress {
-  name: string;
-  line1: string;
-  line2: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  phone: string;
-  email: string;
+  name?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
 }
 
 export const enum StripeBillingAddressFields {

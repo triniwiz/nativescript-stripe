@@ -65,7 +65,8 @@ export declare class StripePaymentSession {
     customerSession: StripeCustomerSession,
     amount: number,
     currency: string,
-    listener: StripePaymentListener);
+    listener: StripePaymentListener,
+    prefilledAddress?: StripeAddress);
   /** Is the native component loading? */
   readonly loading: boolean;
   /** Has user entered enough info that a charge can be made? */
@@ -100,15 +101,15 @@ export declare interface StripePaymentData {
   shippingInfo: StripeShippingMethod;
 }
 export declare interface StripeAddress {
-  name: string;
-  line1: string;
-  line2: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  phone: string;
-  email: string;
+  name?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
 }
 export declare interface StripeShippingMethods {
   /** Is shipping to the address valid? */

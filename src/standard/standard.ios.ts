@@ -80,13 +80,27 @@ export class StripePaymentSession {
     customerSession: StripeCustomerSession,
     amount: number,
     currency: string,
-    listener?: StripePaymentListener) {
+    listener?: StripePaymentListener,
+    prefilledAddress?: StripeAddress) {
     this.native = STPPaymentContext.alloc()
       .initWithCustomerContextConfigurationTheme(
         customerSession.native,
         StripeConfig.shared().native,
         STPTheme.defaultTheme());
     this.native.prefilledInformation = STPUserInformation.alloc().init();
+    if (prefilledAddress) {
+      const addr = STPAddress.alloc().init();
+      addr.name = prefilledAddress.name;
+      addr.line1 = prefilledAddress.line1;
+      addr.line2 = prefilledAddress.line2;
+      addr.city = prefilledAddress.city;
+      addr.state = prefilledAddress.state;
+      addr.country = prefilledAddress.country;
+      addr.postalCode = prefilledAddress.postalCode;
+      addr.phone = prefilledAddress.phone;
+      addr.email = prefilledAddress.email;
+      this.native.prefilledInformation.shippingAddress = addr;
+    }
     this.native.paymentAmount = amount;
     this.native.paymentCurrency = currency;
     if (listener) {
