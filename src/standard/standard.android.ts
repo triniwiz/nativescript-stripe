@@ -71,13 +71,39 @@ export class StripePaymentSession {
   paymentInProgress: boolean;
   private receiver: android.content.BroadcastReceiver;
 
-  constructor(private page: Page,
+  constructor(_page: Page,
     public customerSession: StripeCustomerSession,
     amount: number,
     public currency: string,
-    listener: StripePaymentListener) {
+    listener: StripePaymentListener,
+    prefilledAddress?: StripeAddress) {
+    let config = StripeConfig.shared().native;
+    if (prefilledAddress) {
+      const info = new com.stripe.android.model.ShippingInformation(
+        new com.stripe.android.model.Address.Builder()
+          .setLine1(prefilledAddress.line1)
+          .setLine2(prefilledAddress.line2)
+          .setCity(prefilledAddress.city)
+          .setState(prefilledAddress.state)
+          .setCountry(prefilledAddress.country)
+          .setPostalCode(prefilledAddress.postalCode)
+          .build(),
+        prefilledAddress.name,
+        prefilledAddress.phone
+      );
+      config = new com.stripe.android.PaymentSessionConfig.Builder()
+        .setOptionalShippingInfoFields(
+          config.getOptionalShippingInfoFields() ?
+          config.getOptionalShippingInfoFields().toArray() : [])
+        .setShippingInfoRequired(config.isShippingInfoRequired())
+        .setShippingMethodsRequired(config.isShippingMethodRequired())
+        .setHiddenShippingInfoFields(config.getHiddenShippingInfoFields() ?
+          config.getHiddenShippingInfoFields().toArray() : [])
+        .setPrepopulatedShippingInfo(info)
+        .build();
+    }
     this.native = new com.stripe.android.PaymentSession(this.patchActivity());
-    if (!this.native.init(createPaymentListener(this, listener), StripeConfig.shared().native)) {
+    if (!this.native.init(createPaymentListener(this, listener), config)) {
       throw new Error("CustomerSession not initialized");
     }
     this.native.setCartTotal(amount);
@@ -132,7 +158,7 @@ export class StripePaymentSession {
 
 function createPaymentListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
   return new com.stripe.android.PaymentSession.PaymentSessionListener({
-    onPaymentSessionDataChanged: function(sessionData: com.stripe.android.PaymentSessionData): void {
+    onPaymentSessionDataChanged: function (sessionData: com.stripe.android.PaymentSessionData): void {
       if (parent.paymentInProgress) {
         if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.SUCCESS) {
           if (listener.onPaymentSuccess) listener.onPaymentSuccess();
@@ -160,11 +186,11 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
         }
       }));
     },
-    onCommunicatingStateChanged: function(isCommunicating: boolean): void {
+    onCommunicatingStateChanged: function (isCommunicating: boolean): void {
       parent.loading = isCommunicating;
       listener.onCommunicatingStateChanged(isCommunicating);
     },
-    onError: function(code: number, message: string): void {
+    onError: function (code: number, message: string): void {
       listener.onError(code, message);
     }
   });
