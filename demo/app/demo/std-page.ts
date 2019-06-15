@@ -48,6 +48,22 @@ class Listener implements StripePaymentListener {
       model.shippingType = `${data.shippingInfo.label} ($${data.shippingInfo.amount / 100})`;
       model.total = model.item.price + data.shippingInfo.amount;
     }
+    model.debugInfo = "";
+    if (data.paymentMethod) {
+      model.debugInfo += `Type= ${data.paymentMethod.type}; ID= ${data.paymentMethod.stripeID}\n`;
+    }
+    if (data.shippingAddress) {
+      const addr = data.shippingAddress;
+      model.debugInfo += [
+        `${data.shippingInfo.label} to:`,
+        addr.name,
+        addr.line1,
+        addr.line2,
+        `${addr.city}, ${addr.state} ${addr.country} ${addr.postalCode}`,
+        addr.phone,
+        addr.email
+      ].join("\n");
+    }
   }
 
   onPaymentSuccess(): void {

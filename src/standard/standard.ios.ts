@@ -135,6 +135,10 @@ export class StripePaymentSession {
     return createShippingMethod(this.native);
   }
 
+  get shippingAddress(): StripeAddress {
+    return createAddress(this.native.shippingAddress);
+  }
+
   /**
    * Makes sure the hostViewController is set.
    * For reasons TBD, setting hostViewController in an ngOnInit() results
@@ -176,9 +180,10 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 
   paymentContextDidChange(paymentContext: STPPaymentContext): void {
     let data = {
-      isReadyToCharge: this.parent.isPaymentReady,
+      isReadyToCharge: paymentContext.selectedPaymentOption != null,
       paymentMethod: createPaymentMethod(paymentContext),
-      shippingInfo: createShippingMethod(paymentContext)
+      shippingInfo: createShippingMethod(paymentContext),
+      shippingAddress: createAddress(paymentContext.shippingAddress)
     };
     this.listener.onPaymentDataChanged(data);
   }
@@ -237,10 +242,25 @@ function createError(domain: string, code: number, error: string): NSError {
 
 function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMethod {
   if (!paymentContext.selectedPaymentOption) return undefined;
+  const pmt = paymentContext.selectedPaymentOption;
+  let type: "ApplePay" | "Card";
+  let stripeId: string;
+  if (pmt.isKindOfClass(STPApplePayPaymentOption)) {
+    type = "ApplePay";
+    stripeId = undefined;
+  } else if (pmt.isKindOfClass(STPPaymentMethod) && (<STPPaymentMethod><unknown>pmt).type === STPPaymentMethodType.Card) {
+    type = "Card";
+    stripeId = (<STPPaymentMethod><unknown>pmt).stripeId;
+  } else if (pmt.isKindOfClass(STPSource) && (<STPSource><unknown>pmt).type === STPSourceType.Card) {
+    type = "Card";
+    stripeId = (<STPSource><unknown>pmt).stripeID;
+  }
   return {
-    label: paymentContext.selectedPaymentOption.label,
-    image: paymentContext.selectedPaymentOption.image,
-    templateImage: paymentContext.selectedPaymentOption.templateImage
+    label: pmt.label,
+    image: pmt.image,
+    templateImage: pmt.templateImage,
+    type: type,
+    stripeID: stripeId
   };
 }
 

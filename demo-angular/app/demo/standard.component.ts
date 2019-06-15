@@ -16,6 +16,7 @@ export class StandardComponent implements OnInit {
   private paymentSession: StripePaymentSession;
   paymentMethod: StripePaymentMethod;
   shippingInfo: StripeShippingMethod;
+  shippingAddress: StripeAddress;
 
   constructor(
     private page: Page,
@@ -65,6 +66,26 @@ export class StandardComponent implements OnInit {
       "Enter Shipping Info";
   }
 
+  get debugInfo(): string {
+    let info = "";
+    if (this.paymentMethod) {
+      info += `Type= ${this.paymentMethod.type}; ID= ${this.paymentMethod.stripeID}\n`;
+    }
+    if (this.shippingAddress) {
+      const addr = this.shippingAddress;
+      info += [
+        `${this.shippingInfo.label} to:`,
+        addr.name,
+        addr.line1,
+        addr.line2,
+        `${addr.city}, ${addr.state} ${addr.country} ${addr.postalCode}`,
+        addr.phone,
+        addr.email
+      ].join("\n");
+    }
+    return info;
+  }
+
   showPaymentMethods() {
     this.stripeService.showPaymentMethods(this.paymentSession);
   }
@@ -89,6 +110,7 @@ class Listener implements StripePaymentListener {
   onPaymentDataChanged(data: StripePaymentData) {
     this.component.paymentMethod = data.paymentMethod;
     this.component.shippingInfo = data.shippingInfo;
+    this.component.shippingAddress = data.shippingAddress;
     this.component.changeDetectionRef.detectChanges();
   }
 

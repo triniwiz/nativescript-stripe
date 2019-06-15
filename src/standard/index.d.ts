@@ -76,6 +76,7 @@ export declare class StripePaymentSession {
   readonly amount: number;
   readonly selectedPaymentMethod: StripePaymentMethod;
   readonly selectedShippingMethod: StripeShippingMethod;
+  readonly shippingAddress: StripeAddress;
   requestPayment(): void;
   presentPaymentMethods(): void;
   presentShipping(): void;
@@ -84,6 +85,10 @@ export declare interface StripePaymentMethod {
   image: any; // a value that can be used as [src] in an Image tag
   label: string;
   templateImage: any;
+  /** The method's type (undefined if unsupported type) */
+  type?: "Card" | "ApplePay";
+  /** Stripe's ID for the selected payment method (undefined if ApplePay) */
+  stripeID?: string;
 }
 export declare interface StripeShippingMethod {
   /** Cost of shipping in pennies. */
@@ -99,6 +104,8 @@ export declare interface StripePaymentData {
   paymentMethod: StripePaymentMethod;
   /** The selected shipping method, if any. */
   shippingInfo: StripeShippingMethod;
+  /** The selected shipping address, if any. */
+  shippingAddress: StripeAddress;
 }
 export declare interface StripeAddress {
   name?: string;
