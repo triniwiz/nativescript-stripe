@@ -1,8 +1,12 @@
 Changelog
 ==============================
 
+## 5.4.1 (2019, June 14)
+### Implements
+- [(# 71)](https://github.com/triniwiz/nativescript-stripe/issues/71) Provide more info to Listener callback
+
 ## 5.4.0 (2019, June 12)
-### Fixes
+### Implements
 - [(# 70)](https://github.com/triniwiz/nativescript-stripe/issues/70) Support prefilled shipping address in StripePaymentSession
 
 ## 5.3.3 (2019, May 13)
