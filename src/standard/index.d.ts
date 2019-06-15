@@ -89,6 +89,8 @@ export declare interface StripePaymentMethod {
   type?: "Card" | "ApplePay";
   /** Stripe's ID for the selected payment method (undefined if ApplePay) */
   stripeID?: string;
+  /** Brand of the payment card (undefined if not a card) */
+  brand?: string;
 }
 export declare interface StripeShippingMethod {
   /** Cost of shipping in pennies. */

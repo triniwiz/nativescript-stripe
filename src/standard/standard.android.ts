@@ -95,7 +95,7 @@ export class StripePaymentSession {
       config = new com.stripe.android.PaymentSessionConfig.Builder()
         .setOptionalShippingInfoFields(
           config.getOptionalShippingInfoFields() ?
-          config.getOptionalShippingInfoFields().toArray() : [])
+            config.getOptionalShippingInfoFields().toArray() : [])
         .setShippingInfoRequired(config.isShippingInfoRequired())
         .setShippingMethodsRequired(config.isShippingMethodRequired())
         .setHiddenShippingInfoFields(config.getHiddenShippingInfoFields() ?
@@ -262,40 +262,34 @@ function createPaymentMethod(customer: com.stripe.android.model.Customer, paymen
 }
 
 function createPaymentMethodFromSource(source: com.stripe.android.model.Source): StripePaymentMethod {
-  let label: string;
-  let image: any;
-  let type: "Card";
-  let id: string;
-  if (source.getType() === com.stripe.android.model.Source.CARD) {
-    let card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
-    label = `${card.getBrand()} ...${card.getLast4()}`;
-    image = getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue());
-    type = "Card";
-    id = source.getId();
-  } else {
-    label = source.getType();
-    id = source.getId();
+  if (source.getType() !== com.stripe.android.model.Source.CARD) {
+    return {
+      label: source.getType(),
+      stripeID: source.getId(),
+      type: undefined,
+      image: undefined,
+      templateImage: undefined
+    };
   }
+  const card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
   return {
-    label: label,
-    image: image,
+    label: `${card.getBrand()} ...${card.getLast4()}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue()),
     templateImage: undefined,
-    type: type,
-    stripeID: id
+    type: "Card",
+    stripeID: source.getId(),
+    brand: card.getBrand()
   };
 }
 
 function createPaymentMethodFromCard(card: com.stripe.android.model.Card): StripePaymentMethod {
-  let label = `${card.getBrand()} ...${card.getLast4()}`;
-  let image = getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue());
-  let type: "Card" = "Card";
-  let id = card.getId();
   return {
-    label: label,
-    image: image,
+    label: `${card.getBrand()} ...${card.getLast4()}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue()),
     templateImage: undefined,
-    type: type,
-    stripeID: id
+    type: "Card",
+    stripeID: card.getId(),
+    brand: card.getBrand()
   };
 }
 

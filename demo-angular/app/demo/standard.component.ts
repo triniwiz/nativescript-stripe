@@ -69,7 +69,7 @@ export class StandardComponent implements OnInit {
   get debugInfo(): string {
     let info = "";
     if (this.paymentMethod) {
-      info += `Type= ${this.paymentMethod.type}; ID= ${this.paymentMethod.stripeID}\n`;
+      info += `Type= ${this.paymentMethod.type}; Brand= ${this.paymentMethod.brand}; ID= ${this.paymentMethod.stripeID}\n`;
     }
     if (this.shippingAddress) {
       const addr = this.shippingAddress;

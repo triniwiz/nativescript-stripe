@@ -245,22 +245,33 @@ function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMe
   const pmt = paymentContext.selectedPaymentOption;
   let type: "ApplePay" | "Card";
   let stripeId: string;
+  let brand: string;
   if (pmt.isKindOfClass(STPApplePayPaymentOption)) {
     type = "ApplePay";
     stripeId = undefined;
-  } else if (pmt.isKindOfClass(STPPaymentMethod) && (<STPPaymentMethod><unknown>pmt).type === STPPaymentMethodType.Card) {
-    type = "Card";
-    stripeId = (<STPPaymentMethod><unknown>pmt).stripeId;
-  } else if (pmt.isKindOfClass(STPSource) && (<STPSource><unknown>pmt).type === STPSourceType.Card) {
-    type = "Card";
-    stripeId = (<STPSource><unknown>pmt).stripeID;
+    brand = undefined;
+  } else if (pmt.isKindOfClass(STPPaymentMethod)) {
+    const pm = <STPPaymentMethod><unknown>pmt;
+    if (pm.type === STPPaymentMethodType.Card) {
+      type = "Card";
+      stripeId = pm.stripeId;
+      brand = STPCard.stringFromBrand(pm.card.brand);
+    }
+  } else if (pmt.isKindOfClass(STPSource)) {
+    const src = <STPSource><unknown>pmt;
+    if (src.type === STPSourceType.Card) {
+      type = "Card";
+      stripeId = src.stripeID;
+      brand = STPCard.stringFromBrand(src.cardDetails.brand);
+    }
   }
   return {
     label: pmt.label,
     image: pmt.image,
     templateImage: pmt.templateImage,
     type: type,
-    stripeID: stripeId
+    stripeID: stripeId,
+    brand: brand
   };
 }
 

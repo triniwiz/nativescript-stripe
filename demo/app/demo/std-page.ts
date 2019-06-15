@@ -50,7 +50,7 @@ class Listener implements StripePaymentListener {
     }
     model.debugInfo = "";
     if (data.paymentMethod) {
-      model.debugInfo += `Type= ${data.paymentMethod.type}; ID= ${data.paymentMethod.stripeID}\n`;
+      model.debugInfo += `Type= ${data.paymentMethod.type}; Brand= ${data.paymentMethod.brand}; ID= ${data.paymentMethod.stripeID}\n`;
     }
     if (data.shippingAddress) {
       const addr = data.shippingAddress;
