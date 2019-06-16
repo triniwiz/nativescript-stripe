@@ -69,6 +69,12 @@ export interface StripePaymentMethod {
   image: any; // a value that can be used as [src] in an Image tag
   label: string;
   templateImage: any;
+  /** The method's type (undefined if unsupported type) */
+  type?: "Card" | "ApplePay";
+  /** Stripe's ID for the selected payment method (undefined if ApplePay) */
+  stripeID?: string;
+  /** Brand of the payment card (undefined if not a card) */
+  brand?: string;
 }
 
 export interface StripeShippingMethod {
@@ -123,4 +129,6 @@ export interface StripePaymentData {
   paymentMethod: StripePaymentMethod;
   /** The selected shipping method, if any. */
   shippingInfo: StripeShippingMethod;
+  /** The selected shipping address, if any. */
+  shippingAddress: StripeAddress;
 }

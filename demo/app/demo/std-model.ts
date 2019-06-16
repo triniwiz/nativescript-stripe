@@ -12,4 +12,5 @@ export class StdDemoModel extends Observable {
   @ObservableProperty() total = 1200;
   @ObservableProperty() successMessage = "";
   @ObservableProperty() errorMessage = "";
+  @ObservableProperty() debugInfo = "";
 }

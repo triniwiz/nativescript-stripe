@@ -67,6 +67,7 @@ export class StripePaymentSession {
   native: com.stripe.android.PaymentSession;
   selectedPaymentMethod: StripePaymentMethod;
   selectedShippingMethod: StripeShippingMethod;
+  shippingAddress: StripeAddress;
   loading: boolean;
   paymentInProgress: boolean;
   private receiver: android.content.BroadcastReceiver;
@@ -94,7 +95,7 @@ export class StripePaymentSession {
       config = new com.stripe.android.PaymentSessionConfig.Builder()
         .setOptionalShippingInfoFields(
           config.getOptionalShippingInfoFields() ?
-          config.getOptionalShippingInfoFields().toArray() : [])
+            config.getOptionalShippingInfoFields().toArray() : [])
         .setShippingInfoRequired(config.isShippingInfoRequired())
         .setShippingMethodsRequired(config.isShippingMethodRequired())
         .setHiddenShippingInfoFields(config.getHiddenShippingInfoFields() ?
@@ -174,10 +175,12 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
         onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
           parent.selectedPaymentMethod = createPaymentMethod(customer, sessionData.getSelectedPaymentMethodId());
           parent.selectedShippingMethod = createShippingMethod(sessionData.getShippingMethod());
+          parent.shippingAddress = createAddress(sessionData.getShippingInformation());
           let paymentData = {
             isReadyToCharge: sessionData.isPaymentReadyToCharge(),
             paymentMethod: parent.selectedPaymentMethod,
-            shippingInfo: parent.selectedShippingMethod
+            shippingInfo: parent.selectedShippingMethod,
+            shippingAddress: parent.shippingAddress
           };
           listener.onPaymentDataChanged(paymentData);
         },
@@ -259,29 +262,34 @@ function createPaymentMethod(customer: com.stripe.android.model.Customer, paymen
 }
 
 function createPaymentMethodFromSource(source: com.stripe.android.model.Source): StripePaymentMethod {
-  let label: string;
-  let image: any;
-  if (source.getType() === com.stripe.android.model.Source.CARD) {
-    let card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
-    label = `${card.getBrand()} ...${card.getLast4()}`;
-    image = getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue());
-  } else {
-    label = source.getType();
+  if (source.getType() !== com.stripe.android.model.Source.CARD) {
+    return {
+      label: source.getType(),
+      stripeID: source.getId(),
+      type: undefined,
+      image: undefined,
+      templateImage: undefined
+    };
   }
+  const card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
   return {
-    label: label,
-    image: image,
-    templateImage: undefined
+    label: `${card.getBrand()} ...${card.getLast4()}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue()),
+    templateImage: undefined,
+    type: "Card",
+    stripeID: source.getId(),
+    brand: card.getBrand()
   };
 }
 
 function createPaymentMethodFromCard(card: com.stripe.android.model.Card): StripePaymentMethod {
-  let label = `${card.getBrand()} ...${card.getLast4()}`;
-  let image = getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue());
   return {
-    label: label,
-    image: image,
-    templateImage: undefined
+    label: `${card.getBrand()} ...${card.getLast4()}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue()),
+    templateImage: undefined,
+    type: "Card",
+    stripeID: card.getId(),
+    brand: card.getBrand()
   };
 }
 
@@ -310,7 +318,8 @@ function createShippingMethod(shipping: com.stripe.android.model.ShippingMethod)
 
 function createAddress(info: com.stripe.android.model.ShippingInformation): StripeAddress {
   if (!info) return undefined;
-  let address = info.getAddress();
+  const address = info.getAddress();
+  if (!address) return undefined;
   return {
     name: info.getName(),
     line1: address.getLine1(),

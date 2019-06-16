@@ -30,4 +30,7 @@
   <Button text="Buy" [isEnabled]="canBuy" class="btn btn-primary btn-active" (tap)="buy()"></Button>
   <ActivityIndicator [busy]="paymentInProgress" [visibility]="paymentInProgress ? 'visible' : 'collapse'"></ActivityIndicator>
   <Label [text]="successMessage" class="text-primary" textWrap="true"></Label>
+  <StackLayout class="hr-light m-10"></StackLayout>
+  <Label text="Debug Info"></Label>
+  <Label [text]="debugInfo" class="body" textWrap="true"></Label>
 </StackLayout>
