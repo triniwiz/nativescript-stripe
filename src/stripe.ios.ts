@@ -1,5 +1,4 @@
 import { View } from 'tns-core-modules/ui/core/view';
-import { ios } from 'tns-core-modules/utils/utils';
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 
 export class Stripe {
@@ -14,7 +13,7 @@ export class Stripe {
       }
       return;
     }
-    const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
+    const apiClient = STPAPIClient.sharedClient();
     apiClient.createTokenWithCardCompletion(
       card.native,
       callback(cb, (token) => <Token>{
@@ -36,7 +35,7 @@ export class Stripe {
       }
       return;
     }
-    const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
+    const apiClient = STPAPIClient.sharedClient();
     const cardParams = STPPaymentMethodCardParams.new();
     if (card.cvc) cardParams.cvc = card.cvc;
     if (card.expMonth) cardParams.expMonth = card.expMonth;
@@ -57,7 +56,7 @@ export class Stripe {
   }
 
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
+    const apiClient = STPAPIClient.sharedClient();
     apiClient.retrievePaymentIntentWithClientSecretCompletion(
       clientSecret,
       callback(cb, (pi) => StripePaymentIntent.fromNative(pi))
@@ -65,7 +64,7 @@ export class Stripe {
   }
 
   confirmPaymentIntent(pi: StripePaymentIntent, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    const apiClient = ios.getter(STPAPIClient, STPAPIClient.sharedClient);
+    const apiClient = STPAPIClient.sharedClient();
     const params = STPPaymentIntentParams.alloc().initWithClientSecret(pi.clientSecret);
     params.returnURL = returnUrl;
     apiClient.confirmPaymentIntentWithParamsCompletion(
