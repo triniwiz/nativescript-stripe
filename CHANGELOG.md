@@ -1,6 +1,10 @@
 Changelog
 ==============================
 
+## 5.4.2 (2019, June 28)
+### Implements
+- [(# 75)](https://github.com/triniwiz/nativescript-stripe/issues/75) Remove calls to deprecated utils.ios.getter.
+
 ## 5.4.1 (2019, June 14)
 ### Implements
 - [(# 71)](https://github.com/triniwiz/nativescript-stripe/issues/71) Provide more info to Listener callback
