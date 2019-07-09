@@ -9,12 +9,6 @@ git checkout master
 git pull
 ```
 
-Clean any old artifacts:
-```
-cd src
-npm run ngc.clean
-```
-
 Update version in `package.json` and `CHANGELOG.md` then commit with commit message:
 `chore(): ver bump`. Sync to `github`.
 ```
