@@ -3,7 +3,7 @@ matrix:
     - stage: "Lint"
       language: node_js
       os: linux
-      node_js: "8"
+      node_js: "10"
       script: cd src && npm run ci.tslint && cd ../demo && npm run ci.tslint && cd ../demo-angular && npm run ci.tslint
     - stage: "WebPack and Build"
       os: osx
@@ -11,7 +11,7 @@ matrix:
         - WebPack="iOS"
       osx_image: xcode9.3
       language: node_js
-      node_js: "8"
+      node_js: "10"
       jdk: oraclejdk8
       before_install:
         - travis_wait pod repo update --silent
@@ -24,7 +24,7 @@ matrix:
       env:
         - WebPack="Android"
       jdk: oraclejdk8
-      before_install: nvm install 8
+      before_install: nvm install 10
       script:
         - cd src && npm i
         - cd ../demo && npm i && npm run build.plugin && tns build android --bundle --env.uglify --env.snapshot
@@ -34,7 +34,7 @@ matrix:
         - BuildAndroid="27"
       os: linux
       jdk: oraclejdk8
-      before_install: nvm install 8
+      before_install: nvm install 10
       script:
         - cd src && npm i && npm run tsc && cd ../demo && tns build android && cd ../demo-angular && tns build android
     - os: osx
@@ -43,7 +43,7 @@ matrix:
         - Xcode="9.3"
       osx_image: xcode9.3
       language: node_js
-      node_js: "8"
+      node_js: "10"
       jdk: oraclejdk8
       before_install:
         - travis_wait pod repo update --silent
