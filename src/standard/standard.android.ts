@@ -367,12 +367,3 @@ function createAdShippingMethod(method: StripeShippingMethod, currency: string):
     currency
   );
 }
-
-declare let global: any;
-function getLocalBroadcastManagerPackage() {
-  return useAndroidX() ? global.androidx.localbroadcastmanager.content : global.android.support.v4.content;
-}
-
-function useAndroidX() {
-  return global.androidx && global.androidx.appcompat;
-}
