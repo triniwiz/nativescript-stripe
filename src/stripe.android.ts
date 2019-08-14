@@ -264,17 +264,17 @@ export class Card implements CardCommon {
 }
 
 export class CreditCardView extends CreditCardViewBase {
-  private _android: com.stripe.android.view.CardInputWidget;
+  private _widget: com.stripe.android.view.CardInputWidget;
   get android(): com.stripe.android.view.CardInputWidget {
-    return this._android;
+    return this._widget;
   }
   public createNativeView(): com.stripe.android.view.CardInputWidget {
-    this._android = new com.stripe.android.view.CardInputWidget(this._context);
-    return this._android;
+    this._widget = new com.stripe.android.view.CardInputWidget(this._context);
+    return this._widget;
   }
 
   get card(): Card {
-    const card = this._android.getCard();
+    const card = this._widget.getCard();
     if (card) {
       return new Card(
         card.getNumber(),
