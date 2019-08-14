@@ -921,7 +921,7 @@ declare module com {
         public static PAYMENT_SESSION_DATA_KEY: string;
         public static PAYMENT_SESSION_CONFIG: string;
         public constructor(param0: globalAndroid.app.Activity);
-        public constructor(param0: globalAndroid.support.v4.app.Fragment);
+        public constructor(param0: androidx.fragment.app.Fragment);
         public presentPaymentMethodSelection(param0: boolean): void;
         public init(param0: com.stripe.android.PaymentSession.PaymentSessionListener, param1: com.stripe.android.PaymentSessionConfig): boolean;
         public presentPaymentMethodSelection(param0: string): void;
@@ -1097,7 +1097,7 @@ declare module com {
         public static setAppInfo(param0: com.stripe.android.AppInfo): void;
         public createSource(param0: com.stripe.android.model.SourceParams, param1: com.stripe.android.SourceCallback, param2: string, param3: java.util.concurrent.Executor): void;
         public createPiiTokenSynchronous(param0: string, param1: string): com.stripe.android.model.Token;
-        public confirmSetupIntent(param0: globalAndroid.support.v4.app.Fragment, param1: com.stripe.android.model.ConfirmSetupIntentParams): void;
+        public confirmSetupIntent(param0: androidx.fragment.app.Fragment, param1: com.stripe.android.model.ConfirmSetupIntentParams): void;
         public createCvcUpdateToken(param0: string, param1: string, param2: java.util.concurrent.Executor, param3: com.stripe.android.TokenCallback): void;
         public confirmPaymentIntentSynchronous(param0: com.stripe.android.model.ConfirmPaymentIntentParams, param1: string): com.stripe.android.model.PaymentIntent;
         public createPiiToken(param0: string, param1: com.stripe.android.TokenCallback): void;
@@ -1116,31 +1116,31 @@ declare module com {
         public confirmPaymentIntentSynchronous(param0: com.stripe.android.model.ConfirmPaymentIntentParams): com.stripe.android.model.PaymentIntent;
         public createPaymentMethod(param0: com.stripe.android.model.PaymentMethodCreateParams, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.PaymentMethod>): void;
         public confirmPayment(param0: globalAndroid.app.Activity, param1: com.stripe.android.model.ConfirmPaymentIntentParams): void;
-        public authenticateSetup(param0: globalAndroid.support.v4.app.Fragment, param1: string, param2: string): void;
+        public authenticateSetup(param0: androidx.fragment.app.Fragment, param1: string, param2: string): void;
         public createToken(param0: com.stripe.android.model.Card, param1: com.stripe.android.TokenCallback): void;
         public retrieveSourceSynchronous(param0: string, param1: string): com.stripe.android.model.Source;
         public createToken(param0: com.stripe.android.model.Card, param1: java.util.concurrent.Executor, param2: com.stripe.android.TokenCallback): void;
-        public confirmPayment(param0: globalAndroid.support.v4.app.Fragment, param1: com.stripe.android.model.ConfirmPaymentIntentParams, param2: string): void;
+        public confirmPayment(param0: androidx.fragment.app.Fragment, param1: com.stripe.android.model.ConfirmPaymentIntentParams, param2: string): void;
         public createBankAccountToken(param0: com.stripe.android.model.BankAccount, param1: com.stripe.android.TokenCallback): void;
         public constructor(param0: globalAndroid.content.Context, param1: string);
-        public confirmSetupIntent(param0: globalAndroid.support.v4.app.Fragment, param1: com.stripe.android.model.ConfirmSetupIntentParams, param2: string): void;
+        public confirmSetupIntent(param0: androidx.fragment.app.Fragment, param1: com.stripe.android.model.ConfirmSetupIntentParams, param2: string): void;
         public authenticatePayment(param0: globalAndroid.app.Activity, param1: string): void;
         public createAccountTokenSynchronous(param0: com.stripe.android.model.AccountParams, param1: string): com.stripe.android.model.Token;
         public confirmSetupIntent(param0: globalAndroid.app.Activity, param1: com.stripe.android.model.ConfirmSetupIntentParams, param2: string): void;
         public createBankAccountTokenSynchronous(param0: com.stripe.android.model.BankAccount, param1: string): com.stripe.android.model.Token;
         public retrievePaymentIntentSynchronous(param0: string, param1: string): com.stripe.android.model.PaymentIntent;
-        public confirmPayment(param0: globalAndroid.support.v4.app.Fragment, param1: com.stripe.android.model.ConfirmPaymentIntentParams): void;
+        public confirmPayment(param0: androidx.fragment.app.Fragment, param1: com.stripe.android.model.ConfirmPaymentIntentParams): void;
         public authenticateSetup(param0: globalAndroid.app.Activity, param1: string, param2: string): void;
-        public authenticateSetup(param0: globalAndroid.support.v4.app.Fragment, param1: string): void;
+        public authenticateSetup(param0: androidx.fragment.app.Fragment, param1: string): void;
         public createPaymentMethod(param0: com.stripe.android.model.PaymentMethodCreateParams, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.PaymentMethod>, param2: string, param3: java.util.concurrent.Executor): void;
         public authenticateSetup(param0: globalAndroid.app.Activity, param1: string): void;
         public createTokenSynchronous(param0: com.stripe.android.model.Card, param1: string): com.stripe.android.model.Token;
         public createToken(param0: com.stripe.android.model.Card, param1: string, param2: com.stripe.android.TokenCallback): void;
         public constructor(param0: globalAndroid.content.Context);
         public createSource(param0: com.stripe.android.model.SourceParams, param1: com.stripe.android.SourceCallback): void;
-        public authenticatePayment(param0: globalAndroid.support.v4.app.Fragment, param1: string): void;
+        public authenticatePayment(param0: androidx.fragment.app.Fragment, param1: string): void;
         public onSetupResult(param0: number, param1: globalAndroid.content.Intent, param2: com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>): boolean;
-        public authenticatePayment(param0: globalAndroid.support.v4.app.Fragment, param1: string, param2: string): void;
+        public authenticatePayment(param0: androidx.fragment.app.Fragment, param1: string, param2: string): void;
         public createCvcUpdateToken(param0: string, param1: com.stripe.android.TokenCallback): void;
         public retrieveSourceSynchronous(param0: string, param1: string, param2: string): com.stripe.android.model.Source;
         /** @deprecated */
@@ -3385,7 +3385,7 @@ declare module com {
           public static class: java.lang.Class<com.stripe.android.view.ActivityStarter<any>>;
           public constructor(param0: globalAndroid.app.Activity, param1: java.lang.Class<T>);
           public startForResult(param0: number): void;
-          public constructor(param0: globalAndroid.support.v4.app.Fragment, param1: java.lang.Class<T>);
+          public constructor(param0: androidx.fragment.app.Fragment, param1: java.lang.Class<T>);
           public startForResult(param0: number, param1: globalAndroid.os.Bundle): void;
           public newIntent(): globalAndroid.content.Intent;
         }
@@ -3456,7 +3456,7 @@ declare module com {
           export class Host {
             public static class: java.lang.Class<com.stripe.android.view.AuthActivityStarter.Host>;
             public getActivity(): globalAndroid.app.Activity;
-            public static create(param0: globalAndroid.support.v4.app.Fragment): com.stripe.android.view.AuthActivityStarter.Host;
+            public static create(param0: androidx.fragment.app.Fragment): com.stripe.android.view.AuthActivityStarter.Host;
             public startActivityForResult(param0: java.lang.Class, param1: globalAndroid.os.Bundle, param2: number): void;
             public static create(param0: globalAndroid.app.Activity): com.stripe.android.view.AuthActivityStarter.Host;
           }
@@ -3860,7 +3860,7 @@ declare module com {
           export class PaymentAuthWebViewClient {
             public static class: java.lang.Class<com.stripe.android.view.PaymentAuthWebView.PaymentAuthWebViewClient>;
             public onPageCommitVisible(param0: globalAndroid.webkit.WebView, param1: string): void;
-            public shouldOverrideUrlLoading(param0: globalAndroid.webkit.WebView, param1: globalAndroid.webkit.WebResourceRequest): boolean;
+            public shouldOverrideUrlLoading(param0: globalAndroid.webkit.WebView, param1: androidx.webkit.WebResourceRequest): boolean;
             public onPageFinished(param0: globalAndroid.webkit.WebView, param1: string): void;
             public shouldOverrideUrlLoading(param0: globalAndroid.webkit.WebView, param1: string): boolean;
           }
@@ -3998,8 +3998,8 @@ declare module com {
         export class PaymentMethodsActivityStarter extends com.stripe.android.view.ActivityStarter<com.stripe.android.view.PaymentMethodsActivity> {
           public static class: java.lang.Class<com.stripe.android.view.PaymentMethodsActivityStarter>;
           public constructor(param0: globalAndroid.app.Activity, param1: java.lang.Class<any>);
-          public constructor(param0: globalAndroid.support.v4.app.Fragment, param1: java.lang.Class<any>);
-          public constructor(param0: globalAndroid.support.v4.app.Fragment);
+          public constructor(param0: androidx.fragment.app.Fragment, param1: java.lang.Class<any>);
+          public constructor(param0: androidx.fragment.app.Fragment);
           public constructor(param0: globalAndroid.app.Activity);
         }
       }
