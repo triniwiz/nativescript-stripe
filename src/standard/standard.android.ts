@@ -2,6 +2,15 @@ import { android as androidApp } from "tns-core-modules/application";
 import { Page } from "tns-core-modules/ui/page";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
+declare let global: any;
+function getLocalBroadcastManagerPackage() {
+  return useAndroidX() ? global.androidx.localbroadcastmanager.content : global.android.support.v4.content;
+}
+
+function useAndroidX() {
+  return global.androidx && global.androidx.appcompat;
+}
+
 export class StripeConfig extends StripeConfigCommon {
   private _native: com.stripe.android.PaymentSessionConfig;
   get native(): com.stripe.android.PaymentSessionConfig {
