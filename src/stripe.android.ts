@@ -108,9 +108,7 @@ export class Stripe {
 }
 
 export class Card implements CardCommon {
-  // native: com.stripe.android.model.Card;
-
-  private _cardBuilder: com.stripe.android.model.Card.Builder
+  private _cardBuilder: com.stripe.android.model.Card.Builder;
   private _brand: CardBrand;
   private _last4: string;
 
@@ -132,7 +130,7 @@ export class Card implements CardCommon {
 
   public static fromNative(card: com.stripe.android.model.Card): Card {
     const newCard = new Card(null, null, null, null);
-    newCard._cardBuilder = card.toBuilder()
+    newCard._cardBuilder = card.toBuilder();
     return newCard;
   }
 
@@ -140,13 +138,12 @@ export class Card implements CardCommon {
     const newCard = new Card(null, null, null, null);
     newCard._last4 = pm.card.last4;
     newCard._brand = <CardBrand>pm.card.brand;
-    newCard._cardBuilder = new com.stripe.android.model.Card.Builder(null, pm.card.expiryMonth, pm.card.expiryYear, null)
-      .country(pm.card.country);
+    newCard._cardBuilder = new com.stripe.android.model.Card.Builder(null, pm.card.expiryMonth, pm.card.expiryYear, null).country(pm.card.country);
 
     return newCard;
   }
   get native(): com.stripe.android.model.Card {
-    return this._cardBuilder.build()
+    return this._cardBuilder.build();
   }
 
   validateNumber(): boolean {
@@ -366,11 +363,11 @@ export class StripePaymentIntentParams {
 
   get native(): com.stripe.android.model.ConfirmPaymentIntentParams {
     if (this.sourceId) {
-      return com.stripe.android.model.ConfirmPaymentIntentParams.createWithSourceId(this.sourceId, this.clientSecret, this.returnURL)
+      return com.stripe.android.model.ConfirmPaymentIntentParams.createWithSourceId(this.sourceId, this.clientSecret, this.returnURL);
     } else if (this.paymentMethodId) {
-      return com.stripe.android.model.ConfirmPaymentIntentParams.createWithPaymentMethodId(this.paymentMethodId, this.clientSecret, this.returnURL)
+      return com.stripe.android.model.ConfirmPaymentIntentParams.createWithPaymentMethodId(this.paymentMethodId, this.clientSecret, this.returnURL);
     } else {
-      return com.stripe.android.model.ConfirmPaymentIntentParams.create(this.clientSecret)
+      return com.stripe.android.model.ConfirmPaymentIntentParams.create(this.clientSecret);
     }
   }
 }

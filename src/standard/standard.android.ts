@@ -59,7 +59,7 @@ export class StripeCustomerSession {
   }
 
   private _getContext(): android.content.Context {
-    return androidApp.context
+    return androidApp.context;
   }
 }
 
