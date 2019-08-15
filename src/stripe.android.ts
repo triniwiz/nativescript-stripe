@@ -68,10 +68,16 @@ export class Stripe {
     billing.setAddress(addr.build());
     const params = com.stripe.android.model.PaymentMethodCreateParams.create(cardParams.build(), billing.build());
     try {
-      const pm = this._stripe.createPaymentMethodSynchronous(params, this._apiKey);
-      if (typeof cb === 'function') {
-        cb(null, PaymentMethod.fromNative(pm));
-      }
+      const apiResultCallback = new com.stripe.android.ApiResultCallback<com.stripe.android.model.PaymentMethod>({
+        onSuccess: (result: any) => {
+          cb(null, PaymentMethod.fromNative(result))
+        },
+        onError: (error: any) => {
+          cb(new Error(error.localizedDescription), null)
+        }
+      })
+      
+      this._stripe.createPaymentMethod(params, apiResultCallback, this._apiKey, null)
     } catch (error) {
       if (typeof cb === 'function') {
         cb(new Error(error.localizedDescription), null);

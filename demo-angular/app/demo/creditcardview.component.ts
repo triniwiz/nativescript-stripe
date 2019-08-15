@@ -29,10 +29,6 @@ export class CreditCardViewComponent {
   }
 
   createPaymentMethod(cardView: CreditCardView): void {
-    if (isAndroid) {
-      this.payment = "On Android this call cannot yet be called from UI thread";
-      return;
-    }
     this.payment = "Fetching payment method...";
     this.stripe.createPaymentMethod(cardView.card, (error, pm) => {
       this.payment = error ? error.message : this.formatPaymentMethod(pm);
