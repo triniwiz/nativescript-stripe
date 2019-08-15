@@ -155,7 +155,7 @@ export class StripePaymentSession {
         this.listener.onPaymentSuccess()
         this.native.onCompleted()
       }).catch(e => {
-        this.listener.onError(100, errorMessage);
+        this.listener.onError(100, e);
         this.paymentInProgress = false
       })
   }

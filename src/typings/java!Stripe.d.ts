@@ -3445,7 +3445,7 @@ declare module com {
             public static class: java.lang.Class<com.stripe.android.view.AuthActivityStarter.Host>;
             public getActivity(): globalAndroid.app.Activity;
             public static create(param0: androidx.fragment.app.Fragment): com.stripe.android.view.AuthActivityStarter.Host;
-            public startActivityForResult(param0: java.lang.Class, param1: globalAndroid.os.Bundle, param2: number): void;
+            public startActivityForResult(param0: java.lang.Class<any>, param1: globalAndroid.os.Bundle, param2: number): void;
             public static create(param0: globalAndroid.app.Activity): com.stripe.android.view.AuthActivityStarter.Host;
           }
         }
@@ -3848,7 +3848,6 @@ declare module com {
           export class PaymentAuthWebViewClient {
             public static class: java.lang.Class<com.stripe.android.view.PaymentAuthWebView.PaymentAuthWebViewClient>;
             public onPageCommitVisible(param0: globalAndroid.webkit.WebView, param1: string): void;
-            public shouldOverrideUrlLoading(param0: globalAndroid.webkit.WebView, param1: androidx.webkit.WebResourceRequest): boolean;
             public onPageFinished(param0: globalAndroid.webkit.WebView, param1: string): void;
             public shouldOverrideUrlLoading(param0: globalAndroid.webkit.WebView, param1: string): boolean;
           }
