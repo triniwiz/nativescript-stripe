@@ -54,6 +54,7 @@ export class StripeCustomerSession {
   native: com.stripe.android.CustomerSession;
 
   constructor() {
+    com.stripe.android.PaymentConfiguration.init(StripeConfig.shared().publishableKey)
     com.stripe.android.CustomerSession.initCustomerSession(this._getContext(), createKeyProvider());
     this.native = com.stripe.android.CustomerSession.getInstance();
   }
@@ -85,7 +86,8 @@ export class StripePaymentSession {
   paymentInProgress: boolean;
   private receiver: android.content.BroadcastReceiver;
 
-  constructor(_page: Page,
+  constructor(
+   _page: Page,
     public customerSession: StripeCustomerSession,
     amount: number,
     public currency: string,
