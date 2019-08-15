@@ -50,6 +50,7 @@ export class StripeConfig extends StripeConfigCommon {
   }
 }
 
+
 export class StripeCustomerSession {
   native: com.stripe.android.CustomerSession;
 
@@ -87,11 +88,11 @@ export class StripePaymentSession {
   private receiver: android.content.BroadcastReceiver;
 
   constructor(
-   _page: Page,
+    _page: Page,
     public customerSession: StripeCustomerSession,
     amount: number,
     public currency: string,
-    listener: StripePaymentListener,
+    public listener: StripePaymentListener,
     prefilledAddress?: StripeAddress) {
     let config = StripeConfig.shared().native;
     if (prefilledAddress) {
@@ -119,7 +120,9 @@ export class StripePaymentSession {
         .build();
     }
     this.native = new com.stripe.android.PaymentSession(this.patchActivity());
-    if (!this.native.init(createPaymentListener(this, listener), config)) {
+
+
+    if (!this.native.init(createPaymentSessionListener(this, listener), config)) {
       throw new Error("CustomerSession not initialized");
     }
     this.native.setCartTotal(amount);
@@ -139,7 +142,22 @@ export class StripePaymentSession {
   requestPayment() {
     this.paymentInProgress = true;
     // TODO: fix request payment
-    // this.native.completePayment(createPaymentCompletionProvider());
+    const data = this.native.getPaymentSessionData()
+    const shippingMethod = data.getShippingMethod();
+    const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
+    StripeConfig.shared().backendAPI.completeCharge(
+      data.getPaymentMethod().id,
+      data.getCartTotal() + shippingCost,
+      createShippingMethod(shippingMethod),
+      createAddress(data.getShippingInformation()))
+      .then(() => {
+        this.paymentInProgress = false
+        this.listener.onPaymentSuccess()
+        this.native.onCompleted()
+      }).catch(e => {
+        this.listener.onError(100, errorMessage);
+        this.paymentInProgress = false
+      })
   }
 
   presentPaymentMethods(): void {
@@ -173,30 +191,14 @@ export class StripePaymentSession {
   }
 }
 
-function createPaymentListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
+function createPaymentSessionListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
   return new com.stripe.android.PaymentSession.PaymentSessionListener({
-    onPaymentSessionDataChanged: function (sessionData: com.stripe.android.PaymentSessionData): void {
-
-
-      // TODO: Update payment Listener
-      // if (parent.paymentInProgress) {
-
-
-      //   if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.SUCCESS) {
-      //     if (listener.onPaymentSuccess) listener.onPaymentSuccess();
-      //   } else if (sessionData.getPaymentResult().startsWith(com.stripe.android.PaymentResultListener.ERROR)) {
-      //     if (listener.onError) listener.onError(100, sessionData.getPaymentResult());
-      //   } else if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.USER_CANCELLED) {
-      //     if (listener.onUserCancelled) listener.onUserCancelled();
-      //   }
-      //   parent.paymentInProgress = false;
-      //   return;
-      // }
-
+    onPaymentSessionDataChanged: (sessionData: com.stripe.android.PaymentSessionData): void  => {
+      if (parent.paymentInProgress) return;
 
       parent.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
         onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
-          parent.selectedPaymentMethod = createPaymentMethod(customer, sessionData.getPaymentMethod().id);
+          parent.selectedPaymentMethod = createPaymentMethod(customer, sessionData.getPaymentMethod());
           parent.selectedShippingMethod = createShippingMethod(sessionData.getShippingMethod());
           parent.shippingAddress = createAddress(sessionData.getShippingInformation());
           let paymentData = {
@@ -211,16 +213,12 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
           listener.onError(errorCode, errorMessage);
         }
       }));
-
-
-
-
     },
-    onCommunicatingStateChanged: function (isCommunicating: boolean): void {
+    onCommunicatingStateChanged: (isCommunicating: boolean): void => {
       parent.loading = isCommunicating;
       listener.onCommunicatingStateChanged(isCommunicating);
     },
-    onError: function (code: number, message: string): void {
+    onError: (code: number, message: string): void => {
       listener.onError(code, message);
     }
   });
@@ -255,36 +253,19 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
   return new InternalReceiver(parent, listener);
 }
 
-// function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletionProvider {
-//   return new com.stripe.android.PaymentCompletionProvider({
-//     completePayment(data: com.stripe.android.PaymentSessionData, listener: com.stripe.android.PaymentResultListener): void {
-//       const shippingMethod = data.getShippingMethod();
-//       const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-//       StripeConfig.shared().backendAPI.completeCharge(
-//         data.getPaymentMethod().id,
-//         data.getCartTotal() + shippingCost,
-//         createShippingMethod(shippingMethod),
-//         createAddress(data.getShippingInformation()))
-//         .then(() => {
-//           listener.onPaymentResult(com.stripe.android.PaymentResultListener.SUCCESS);
-//         }).catch(e => {
-//           listener.onPaymentResult(com.stripe.android.PaymentResultListener.ERROR +
-//             ": " + e);
-//         });
-//     }
-//   });
-// }
-
-function createPaymentMethod(customer: com.stripe.android.model.Customer, paymentMethodId: string): StripePaymentMethod {
-  if (!paymentMethodId) return undefined;
+function createPaymentMethod(customer: com.stripe.android.model.Customer, paymentMethod: com.stripe.android.model.PaymentMethod): StripePaymentMethod {
+  if (!paymentMethod) return undefined;
   if (!customer) return { label: "Error (101)", image: undefined, templateImage: undefined };
-  let cs = customer.getSourceById(paymentMethodId);
+  
+  let cs = customer.getSourceById(paymentMethod.id);
   if (!cs) return { label: "Error (102)", image: undefined, templateImage: undefined };
+  
   let source = cs.asSource();
-  let card = cs.asCard();
-
   if (source) return createPaymentMethodFromSource(source);
+
+  let card = cs.asCard();
   if (card) return createPaymentMethodFromCard(card);
+  
   return { label: "Error (103)", image: undefined, templateImage: undefined };
 }
 
@@ -298,6 +279,7 @@ function createPaymentMethodFromSource(source: com.stripe.android.model.Source):
       templateImage: undefined
     };
   }
+
   const card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
   return {
     label: `${card.getBrand()} ...${card.getLast4()}`,
