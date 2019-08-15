@@ -8,6 +8,9 @@
 //   java -jar build/libs/dts-generator.jar -input classes.jar
 //   cp out/android.d.ts <path to src>/typings/java\!Stripe.d.ts
 
+// Process same way with stripe3ds2 library
+// https://bintray.com/bintray/jcenter/com.stripe%3Astripe-3ds2-android/1.1.6#files/com%2Fstripe%2Fstripe-3ds2-android%2F1.1.6
+
 declare module com {
   export module stripe {
     export module android {
@@ -3350,21 +3353,6 @@ declare module com {
   export module stripe {
     export module android {
       export module utils {
-        export class ClassUtils {
-          public static class: java.lang.Class<com.stripe.android.utils.ClassUtils>;
-          public static findField(param0: java.lang.Class, param1: java.util.Collection<string>): java.lang.reflect.Field;
-          public static findMethod(param0: java.lang.Class, param1: java.util.Collection<string>): java.lang.reflect.Method;
-          public static getInternalObject(param0: java.lang.Class, param1: java.util.Set<string>, param2: any): any;
-        }
-      }
-    }
-  }
-}
-
-declare module com {
-  export module stripe {
-    export module android {
-      export module utils {
         export class ObjectUtils {
           public static class: java.lang.Class<com.stripe.android.utils.ObjectUtils>;
           public static hash(param0: native.Array<any>): number;
@@ -4312,3 +4300,1476 @@ declare module com {
 //com.stripe.android.view.ActivityStarter:1
 //com.stripe.android.view.AddPaymentMethodActivity.ActivityPaymentMethodCallback:1
 //com.stripe.android.view.AuthActivityStarter:1
+
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module exceptions {
+          export class InvalidInputException {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.exceptions.InvalidInputException>;
+            public constructor(param0: java.lang.RuntimeException);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module exceptions {
+          export class SDKAlreadyInitializedException {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.exceptions.SDKAlreadyInitializedException>;
+            public constructor(param0: java.lang.RuntimeException);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module exceptions {
+          export class SDKNotInitializedException {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.exceptions.SDKNotInitializedException>;
+            public constructor(param0: java.lang.RuntimeException);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module exceptions {
+          export class SDKRuntimeException {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.exceptions.SDKRuntimeException>;
+            public static create(param0: java.lang.Exception): com.stripe.android.stripe3ds2.exceptions.SDKRuntimeException;
+            public constructor(param0: java.lang.RuntimeException);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export class ConfigParameters {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ConfigParameters>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.init.ConfigParameters interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              addParam(param0: string, param1: string, param2: string): void;
+              getParamValue(param0: string, param1: string): string;
+              removeParam(param0: string, param1: string): string;
+            });
+            public constructor();
+            public addParam(param0: string, param1: string, param2: string): void;
+            public removeParam(param0: string, param1: string): string;
+            public getParamValue(param0: string, param1: string): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export class StripeConfigParameters extends com.stripe.android.stripe3ds2.init.ConfigParameters {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.StripeConfigParameters>;
+            public constructor();
+            public addParam(param0: string, param1: string, param2: string): void;
+            public removeParam(param0: string, param1: string): string;
+            public getParamValue(param0: string, param1: string): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export class Warning {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.Warning>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.init.Warning interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              getID(): string;
+              getMessage(): string;
+              getSeverity(): com.stripe.android.stripe3ds2.init.Warning.Severity;
+            });
+            public constructor();
+            public getMessage(): string;
+            public getID(): string;
+            public getSeverity(): com.stripe.android.stripe3ds2.init.Warning.Severity;
+          }
+          export module Warning {
+            export class Severity {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.Warning.Severity>;
+              public static LOW: com.stripe.android.stripe3ds2.init.Warning.Severity;
+              public static MEDIUM: com.stripe.android.stripe3ds2.init.Warning.Severity;
+              public static HIGH: com.stripe.android.stripe3ds2.init.Warning.Severity;
+              public static values(): native.Array<com.stripe.android.stripe3ds2.init.Warning.Severity>;
+              public static valueOf(param0: string): com.stripe.android.stripe3ds2.init.Warning.Severity;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export abstract class BaseCustomization extends com.stripe.android.stripe3ds2.init.ui.Customization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.BaseCustomization>;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public getTextColor(): string;
+              public getTextFontSize(): number;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class ButtonCustomization extends com.stripe.android.stripe3ds2.init.ui.Customization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.ButtonCustomization>;
+              /**
+               * Constructs a new instance of the com.stripe.android.stripe3ds2.init.ui.ButtonCustomization interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+               */
+              public constructor(implementation: {
+                setBackgroundColor(param0: string): void;
+                setCornerRadius(param0: number): void;
+                getBackgroundColor(): string;
+                getCornerRadius(): number;
+                setTextFontName(param0: string): void;
+                setTextColor(param0: string): void;
+                setTextFontSize(param0: number): void;
+                getTextFontName(): string;
+                getTextColor(): string;
+                getTextFontSize(): number;
+              });
+              public constructor();
+              public getBackgroundColor(): string;
+              public setBackgroundColor(param0: string): void;
+              public getCornerRadius(): number;
+              public setCornerRadius(param0: number): void;
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public getTextColor(): string;
+              public getTextFontSize(): number;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class Customization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.Customization>;
+              /**
+               * Constructs a new instance of the com.stripe.android.stripe3ds2.init.ui.Customization interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+               */
+              public constructor(implementation: {
+                setTextFontName(param0: string): void;
+                setTextColor(param0: string): void;
+                setTextFontSize(param0: number): void;
+                getTextFontName(): string;
+                getTextColor(): string;
+                getTextFontSize(): number;
+              });
+              public constructor();
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public getTextColor(): string;
+              public getTextFontSize(): number;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class LabelCustomization extends com.stripe.android.stripe3ds2.init.ui.Customization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.LabelCustomization>;
+              /**
+               * Constructs a new instance of the com.stripe.android.stripe3ds2.init.ui.LabelCustomization interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+               */
+              public constructor(implementation: {
+                setHeadingTextColor(param0: string): void;
+                setHeadingTextFontName(param0: string): void;
+                setHeadingTextFontSize(param0: number): void;
+                getHeadingTextColor(): string;
+                getHeadingTextFontName(): string;
+                getHeadingTextFontSize(): number;
+                setTextFontName(param0: string): void;
+                setTextColor(param0: string): void;
+                setTextFontSize(param0: number): void;
+                getTextFontName(): string;
+                getTextColor(): string;
+                getTextFontSize(): number;
+              });
+              public constructor();
+              public setHeadingTextColor(param0: string): void;
+              public getHeadingTextFontSize(): number;
+              public getHeadingTextColor(): string;
+              public setTextFontName(param0: string): void;
+              public getHeadingTextFontName(): string;
+              public getTextFontName(): string;
+              public setHeadingTextFontSize(param0: number): void;
+              public getTextColor(): string;
+              public setHeadingTextFontName(param0: string): void;
+              public getTextFontSize(): number;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class StripeButtonCustomization extends com.stripe.android.stripe3ds2.init.ui.BaseCustomization implements com.stripe.android.stripe3ds2.init.ui.ButtonCustomization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.StripeButtonCustomization>;
+              public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.init.ui.StripeButtonCustomization>;
+              public constructor();
+              public getBackgroundColor(): string;
+              public setBackgroundColor(param0: string): void;
+              public setCornerRadius(param0: number): void;
+              public hashCode(): number;
+              public getTextColor(): string;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+              public getCornerRadius(): number;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public describeContents(): number;
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public equals(param0: any): boolean;
+              public getTextFontSize(): number;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class StripeLabelCustomization extends com.stripe.android.stripe3ds2.init.ui.BaseCustomization implements com.stripe.android.stripe3ds2.init.ui.LabelCustomization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.StripeLabelCustomization>;
+              public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.init.ui.StripeLabelCustomization>;
+              public constructor();
+              public setHeadingTextColor(param0: string): void;
+              public getHeadingTextFontSize(): number;
+              public hashCode(): number;
+              public getHeadingTextFontName(): string;
+              public setHeadingTextFontSize(param0: number): void;
+              public getTextColor(): string;
+              public setHeadingTextFontName(param0: string): void;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public getHeadingTextColor(): string;
+              public describeContents(): number;
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public equals(param0: any): boolean;
+              public getTextFontSize(): number;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class StripeTextBoxCustomization extends com.stripe.android.stripe3ds2.init.ui.BaseCustomization implements com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.StripeTextBoxCustomization>;
+              public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.init.ui.StripeTextBoxCustomization>;
+              public constructor();
+              public getBorderWidth(): number;
+              public setCornerRadius(param0: number): void;
+              public hashCode(): number;
+              public getBorderColor(): string;
+              public getTextColor(): string;
+              public setBorderColor(param0: string): void;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+              public getCornerRadius(): number;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public describeContents(): number;
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public equals(param0: any): boolean;
+              public setBorderWidth(param0: number): void;
+              public getTextFontSize(): number;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class StripeToolbarCustomization extends com.stripe.android.stripe3ds2.init.ui.BaseCustomization implements com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.StripeToolbarCustomization>;
+              public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.init.ui.StripeToolbarCustomization>;
+              public constructor();
+              public getBackgroundColor(): string;
+              public setBackgroundColor(param0: string): void;
+              public setHeaderText(param0: string): void;
+              public hashCode(): number;
+              public getTextColor(): string;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public setButtonText(param0: string): void;
+              public describeContents(): number;
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public getHeaderText(): string;
+              public getButtonText(): string;
+              public equals(param0: any): boolean;
+              public getTextFontSize(): number;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class StripeUiCustomization extends com.stripe.android.stripe3ds2.init.ui.UiCustomization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.StripeUiCustomization>;
+              public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.init.ui.StripeUiCustomization>;
+              public constructor();
+              public hashCode(): number;
+              public setLabelCustomization(param0: com.stripe.android.stripe3ds2.init.ui.LabelCustomization): void;
+              public getLabelCustomization(): com.stripe.android.stripe3ds2.init.ui.LabelCustomization;
+              public setButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ButtonCustomization, param1: string): void;
+              public getButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType): com.stripe.android.stripe3ds2.init.ui.ButtonCustomization;
+              public getButtonCustomization(param0: string): com.stripe.android.stripe3ds2.init.ui.ButtonCustomization;
+              public setTextBoxCustomization(param0: com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization): void;
+              public static createWithAppTheme(param0: globalAndroid.app.Activity): com.stripe.android.stripe3ds2.init.ui.StripeUiCustomization;
+              public setToolbarCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization): void;
+              public setButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ButtonCustomization, param1: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType): void;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public describeContents(): number;
+              public getToolbarCustomization(): com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization;
+              public getTextBoxCustomization(): com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization;
+              public equals(param0: any): boolean;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class TextBoxCustomization extends com.stripe.android.stripe3ds2.init.ui.Customization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization>;
+              /**
+               * Constructs a new instance of the com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+               */
+              public constructor(implementation: {
+                setBorderWidth(param0: number): void;
+                getBorderWidth(): number;
+                setBorderColor(param0: string): void;
+                getBorderColor(): string;
+                setCornerRadius(param0: number): void;
+                getCornerRadius(): number;
+                setTextFontName(param0: string): void;
+                setTextColor(param0: string): void;
+                setTextFontSize(param0: number): void;
+                getTextFontName(): string;
+                getTextColor(): string;
+                getTextFontSize(): number;
+              });
+              public constructor();
+              public getBorderWidth(): number;
+              public getCornerRadius(): number;
+              public setCornerRadius(param0: number): void;
+              public setTextFontName(param0: string): void;
+              public getBorderColor(): string;
+              public getTextFontName(): string;
+              public getTextColor(): string;
+              public setBorderWidth(param0: number): void;
+              public setBorderColor(param0: string): void;
+              public getTextFontSize(): number;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class ToolbarCustomization extends com.stripe.android.stripe3ds2.init.ui.Customization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization>;
+              /**
+               * Constructs a new instance of the com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+               */
+              public constructor(implementation: {
+                setBackgroundColor(param0: string): void;
+                setHeaderText(param0: string): void;
+                setButtonText(param0: string): void;
+                getBackgroundColor(): string;
+                getHeaderText(): string;
+                getButtonText(): string;
+                setTextFontName(param0: string): void;
+                setTextColor(param0: string): void;
+                setTextFontSize(param0: number): void;
+                getTextFontName(): string;
+                getTextColor(): string;
+                getTextFontSize(): number;
+              });
+              public constructor();
+              public getBackgroundColor(): string;
+              public setBackgroundColor(param0: string): void;
+              public setHeaderText(param0: string): void;
+              public setButtonText(param0: string): void;
+              public setTextFontName(param0: string): void;
+              public getTextFontName(): string;
+              public getHeaderText(): string;
+              public getButtonText(): string;
+              public getTextColor(): string;
+              public getTextFontSize(): number;
+              public setTextColor(param0: string): void;
+              public setTextFontSize(param0: number): void;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module init {
+          export module ui {
+            export class UiCustomization {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.UiCustomization>;
+              /**
+               * Constructs a new instance of the com.stripe.android.stripe3ds2.init.ui.UiCustomization interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+               */
+              public constructor(implementation: {
+                setButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ButtonCustomization, param1: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType): void;
+                setButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ButtonCustomization, param1: string): void;
+                setToolbarCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization): void;
+                setLabelCustomization(param0: com.stripe.android.stripe3ds2.init.ui.LabelCustomization): void;
+                setTextBoxCustomization(param0: com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization): void;
+                getButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType): com.stripe.android.stripe3ds2.init.ui.ButtonCustomization;
+                getButtonCustomization(param0: string): com.stripe.android.stripe3ds2.init.ui.ButtonCustomization;
+                getToolbarCustomization(): com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization;
+                getLabelCustomization(): com.stripe.android.stripe3ds2.init.ui.LabelCustomization;
+                getTextBoxCustomization(): com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization;
+              });
+              public constructor();
+              public setToolbarCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization): void;
+              public setButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ButtonCustomization, param1: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType): void;
+              public setLabelCustomization(param0: com.stripe.android.stripe3ds2.init.ui.LabelCustomization): void;
+              public getLabelCustomization(): com.stripe.android.stripe3ds2.init.ui.LabelCustomization;
+              public setButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.ButtonCustomization, param1: string): void;
+              public getButtonCustomization(param0: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType): com.stripe.android.stripe3ds2.init.ui.ButtonCustomization;
+              public getButtonCustomization(param0: string): com.stripe.android.stripe3ds2.init.ui.ButtonCustomization;
+              public getToolbarCustomization(): com.stripe.android.stripe3ds2.init.ui.ToolbarCustomization;
+              public getTextBoxCustomization(): com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization;
+              public setTextBoxCustomization(param0: com.stripe.android.stripe3ds2.init.ui.TextBoxCustomization): void;
+            }
+            export module UiCustomization {
+              export class ButtonType {
+                public static class: java.lang.Class<com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType>;
+                public static SUBMIT: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType;
+                public static CONTINUE: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType;
+                public static NEXT: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType;
+                public static CANCEL: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType;
+                public static RESEND: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType;
+                public static SELECT: com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType;
+                public static valueOf(param0: string): com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType;
+                public static values(): native.Array<com.stripe.android.stripe3ds2.init.ui.UiCustomization.ButtonType>;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module service {
+          export class StripeThreeDs2Service extends com.stripe.android.stripe3ds2.service.ThreeDS2Service {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.service.StripeThreeDs2Service>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.service.StripeThreeDs2Service interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              createTransaction(param0: string, param1: string, param2: boolean, param3: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+              createTransaction(param0: string, param1: string, param2: boolean, param3: string, param4: java.util.List<java.security.cert.X509Certificate>, param5: java.security.PublicKey, param6: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+              initialize(param0: globalAndroid.content.Context, param1: com.stripe.android.stripe3ds2.init.ConfigParameters, param2: string, param3: com.stripe.android.stripe3ds2.init.ui.UiCustomization): void;
+              createTransaction(param0: string, param1: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+              cleanup(param0: globalAndroid.content.Context): void;
+              getSDKVersion(): string;
+              getWarnings(): java.util.List<com.stripe.android.stripe3ds2.init.Warning>;
+            });
+            public constructor();
+            public cleanup(param0: globalAndroid.content.Context): void;
+            public createTransaction(param0: string, param1: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+            public createTransaction(param0: string, param1: string, param2: boolean, param3: string, param4: java.util.List<java.security.cert.X509Certificate>, param5: java.security.PublicKey, param6: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+            public getWarnings(): java.util.List<com.stripe.android.stripe3ds2.init.Warning>;
+            public createTransaction(param0: string, param1: string, param2: boolean, param3: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+            public getSDKVersion(): string;
+            public initialize(param0: globalAndroid.content.Context, param1: com.stripe.android.stripe3ds2.init.ConfigParameters, param2: string, param3: com.stripe.android.stripe3ds2.init.ui.UiCustomization): void;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module service {
+          export class StripeThreeDs2ServiceImpl extends com.stripe.android.stripe3ds2.service.StripeThreeDs2Service {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.service.StripeThreeDs2ServiceImpl>;
+            public cleanup(param0: globalAndroid.content.Context): void;
+            public constructor(param0: globalAndroid.content.Context);
+            public createTransaction(param0: string, param1: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+            public createTransaction(param0: string, param1: string, param2: boolean, param3: string, param4: java.util.List<java.security.cert.X509Certificate>, param5: java.security.PublicKey, param6: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+            public getWarnings(): java.util.List<com.stripe.android.stripe3ds2.init.Warning>;
+            public constructor(param0: globalAndroid.content.Context, param1: javax.net.ssl.SSLSocketFactory);
+            public createTransaction(param0: string, param1: string, param2: boolean, param3: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+            public getSDKVersion(): string;
+            public initialize(param0: globalAndroid.content.Context, param1: com.stripe.android.stripe3ds2.init.ConfigParameters, param2: string, param3: com.stripe.android.stripe3ds2.init.ui.UiCustomization): void;
+            public constructor(param0: globalAndroid.content.Context, param1: string, param2: javax.net.ssl.SSLSocketFactory);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module service {
+          export class ThreeDS2Service {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.service.ThreeDS2Service>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.service.ThreeDS2Service interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              initialize(param0: globalAndroid.content.Context, param1: com.stripe.android.stripe3ds2.init.ConfigParameters, param2: string, param3: com.stripe.android.stripe3ds2.init.ui.UiCustomization): void;
+              createTransaction(param0: string, param1: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+              cleanup(param0: globalAndroid.content.Context): void;
+              getSDKVersion(): string;
+              getWarnings(): java.util.List<com.stripe.android.stripe3ds2.init.Warning>;
+            });
+            public constructor();
+            public cleanup(param0: globalAndroid.content.Context): void;
+            public createTransaction(param0: string, param1: string): com.stripe.android.stripe3ds2.transaction.Transaction;
+            public getWarnings(): java.util.List<com.stripe.android.stripe3ds2.init.Warning>;
+            public getSDKVersion(): string;
+            public initialize(param0: globalAndroid.content.Context, param1: com.stripe.android.stripe3ds2.init.ConfigParameters, param2: string, param3: com.stripe.android.stripe3ds2.init.ui.UiCustomization): void;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class AuthenticationRequestParameters {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.AuthenticationRequestParameters>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.AuthenticationRequestParameters interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              getDeviceData(): string;
+              getSDKTransactionID(): string;
+              getSDKAppID(): string;
+              getSDKReferenceNumber(): string;
+              getSDKEphemeralPublicKey(): string;
+              getMessageVersion(): string;
+            });
+            public constructor();
+            public getMessageVersion(): string;
+            public getSDKEphemeralPublicKey(): string;
+            public getSDKReferenceNumber(): string;
+            public getDeviceData(): string;
+            public getSDKTransactionID(): string;
+            public getSDKAppID(): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class ChallengeParameters {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.ChallengeParameters>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.ChallengeParameters interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              set3DSServerTransactionID(param0: string): void;
+              setAcsTransactionID(param0: string): void;
+              setAcsRefNumber(param0: string): void;
+              setAcsSignedContent(param0: string): void;
+              get3DSServerTransactionID(): string;
+              getAcsTransactionID(): string;
+              getAcsRefNumber(): string;
+              getAcsSignedContent(): string;
+            });
+            public constructor();
+            public setAcsRefNumber(param0: string): void;
+            public get3DSServerTransactionID(): string;
+            public getAcsRefNumber(): string;
+            public setAcsTransactionID(param0: string): void;
+            public set3DSServerTransactionID(param0: string): void;
+            public getAcsSignedContent(): string;
+            public setAcsSignedContent(param0: string): void;
+            public getAcsTransactionID(): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class ChallengeStatusReceiver {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.ChallengeStatusReceiver>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.ChallengeStatusReceiver interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              completed(param0: com.stripe.android.stripe3ds2.transaction.CompletionEvent, param1: string): void;
+              cancelled(param0: string): void;
+              timedout(param0: string): void;
+              protocolError(param0: com.stripe.android.stripe3ds2.transaction.ProtocolErrorEvent): void;
+              runtimeError(param0: com.stripe.android.stripe3ds2.transaction.RuntimeErrorEvent): void;
+            });
+            public constructor();
+            public runtimeError(param0: com.stripe.android.stripe3ds2.transaction.RuntimeErrorEvent): void;
+            public protocolError(param0: com.stripe.android.stripe3ds2.transaction.ProtocolErrorEvent): void;
+            public cancelled(param0: string): void;
+            public completed(param0: com.stripe.android.stripe3ds2.transaction.CompletionEvent, param1: string): void;
+            public timedout(param0: string): void;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class CompletionEvent {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.CompletionEvent>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.CompletionEvent interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              getSDKTransactionID(): string;
+              getTransactionStatus(): string;
+            });
+            public constructor();
+            public getTransactionStatus(): string;
+            public getSDKTransactionID(): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class ErrorMessage {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.ErrorMessage>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.ErrorMessage interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              getTransactionID(): string;
+              getErrorCode(): string;
+              getErrorDescription(): string;
+              getErrorDetails(): string;
+            });
+            public constructor();
+            public getErrorDescription(): string;
+            public getTransactionID(): string;
+            public getErrorDetails(): string;
+            public getErrorCode(): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class MessageVersionRegistry {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.MessageVersionRegistry>;
+            public constructor();
+            public getCurrent(): string;
+            public isSupported(param0: string): boolean;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class ProtocolErrorEvent {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.ProtocolErrorEvent>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.ProtocolErrorEvent interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              getSDKTransactionID(): string;
+              getErrorMessage(): com.stripe.android.stripe3ds2.transaction.ErrorMessage;
+            });
+            public constructor();
+            public getSDKTransactionID(): string;
+            public getErrorMessage(): com.stripe.android.stripe3ds2.transaction.ErrorMessage;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class RuntimeErrorEvent {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.RuntimeErrorEvent>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.RuntimeErrorEvent interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              getErrorCode(): string;
+              getErrorMessage(): string;
+            });
+            public constructor();
+            public getErrorMessage(): string;
+            public getErrorCode(): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class StripeChallengeParameters extends com.stripe.android.stripe3ds2.transaction.ChallengeParameters {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.StripeChallengeParameters>;
+            public constructor();
+            public setAcsRefNumber(param0: string): void;
+            public get3DSServerTransactionID(): string;
+            public getAcsRefNumber(): string;
+            public setAcsTransactionID(param0: string): void;
+            public set3DSServerTransactionID(param0: string): void;
+            public getAcsSignedContent(): string;
+            public setAcsSignedContent(param0: string): void;
+            public getAcsTransactionID(): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class StripeChallengeStatusReceiver extends com.stripe.android.stripe3ds2.transaction.ChallengeStatusReceiver {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.StripeChallengeStatusReceiver>;
+            public runtimeError(param0: com.stripe.android.stripe3ds2.transaction.RuntimeErrorEvent): void;
+            public constructor();
+            public protocolError(param0: com.stripe.android.stripe3ds2.transaction.ProtocolErrorEvent): void;
+            public cancelled(param0: string): void;
+            public completed(param0: com.stripe.android.stripe3ds2.transaction.CompletionEvent, param1: string): void;
+            public timedout(param0: string): void;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transaction {
+          export class Transaction {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transaction.Transaction>;
+            /**
+             * Constructs a new instance of the com.stripe.android.stripe3ds2.transaction.Transaction interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+             */
+            public constructor(implementation: {
+              getAuthenticationRequestParameters(): com.stripe.android.stripe3ds2.transaction.AuthenticationRequestParameters;
+              doChallenge(param0: globalAndroid.app.Activity, param1: com.stripe.android.stripe3ds2.transaction.ChallengeParameters, param2: com.stripe.android.stripe3ds2.transaction.ChallengeStatusReceiver, param3: number): void;
+              getProgressView(param0: globalAndroid.app.Activity): globalAndroid.app.ProgressDialog;
+              close(): void;
+              getInitialChallengeUiType(): string;
+            });
+            public constructor();
+            public getAuthenticationRequestParameters(): com.stripe.android.stripe3ds2.transaction.AuthenticationRequestParameters;
+            public getProgressView(param0: globalAndroid.app.Activity): globalAndroid.app.ProgressDialog;
+            public close(): void;
+            public doChallenge(param0: globalAndroid.app.Activity, param1: com.stripe.android.stripe3ds2.transaction.ChallengeParameters, param2: com.stripe.android.stripe3ds2.transaction.ChallengeStatusReceiver, param3: number): void;
+            public getInitialChallengeUiType(): string;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transactions {
+          export class ChallengeResponseData {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData>;
+            public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData>;
+            public serverTransId: string;
+            public acsTransId: string;
+            public acsHtml: string;
+            public acsHtmlRefresh: string;
+            public uiType: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b;
+            public isChallengeCompleted: boolean;
+            public challengeInfoHeader: string;
+            public challengeInfoLabel: string;
+            public challengeInfoText: string;
+            public challengeAdditionalInfoText: string;
+            public shouldShowChallengeInfoTextIndicator: boolean;
+            public challengeSelectOptions: java.util.List<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.ChallengeSelectOption>;
+            public expandInfoLabel: string;
+            public expandInfoText: string;
+            public issuerImage: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.Image;
+            public messageExtensions: java.util.List<com.stripe.android.stripe3ds2.transactions.MessageExtension>;
+            public messageVersion: string;
+            public oobAppUrl: string;
+            public oobAppLabel: string;
+            public oobContinueLabel: string;
+            public paymentSystemImage: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.Image;
+            public resendInformationLabel: string;
+            public sdkTransId: string;
+            public submitAuthenticationLabel: string;
+            public whitelistingInfoText: string;
+            public whyInfoLabel: string;
+            public whyInfoText: string;
+            public transStatus: string;
+            public toJson(): org.json.JSONObject;
+            public describeContents(): number;
+            public static fromJson(param0: org.json.JSONObject): com.stripe.android.stripe3ds2.transactions.ChallengeResponseData;
+            public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+            public hashCode(): number;
+            public equals(param0: any): boolean;
+          }
+          export module ChallengeResponseData {
+            export class ChallengeSelectOption {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.ChallengeSelectOption>;
+              public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.ChallengeSelectOption>;
+              public name: string;
+              public text: string;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public hashCode(): number;
+              public constructor(param0: string, param1: string);
+              public describeContents(): number;
+              public equals(param0: any): boolean;
+            }
+            export class Image {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.Image>;
+              public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.Image>;
+              public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+              public hashCode(): number;
+              public describeContents(): number;
+              public constructor(param0: string, param1: string, param2: string);
+              public equals(param0: any): boolean;
+              public getHighestFidelityImageUrl(): string;
+              public getUrlForDensity(param0: number): string;
+            }
+            export class a {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.a>;
+              public constructor();
+            }
+            export class b {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b>;
+              public static a: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b;
+              public static b: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b;
+              public static c: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b;
+              public static d: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b;
+              public static e: com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b;
+              public f: string;
+              public g: com.ults.listeners.ChallengeType;
+              public static valueOf(param0: string): com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b;
+              public static values(): native.Array<com.stripe.android.stripe3ds2.transactions.ChallengeResponseData.b>;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module transactions {
+          export class MessageExtension {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.transactions.MessageExtension>;
+            public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.stripe3ds2.transactions.MessageExtension>;
+            public describeContents(): number;
+            public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+            public hashCode(): number;
+            public equals(param0: any): boolean;
+          }
+          export module MessageExtension {
+            export class a {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.transactions.MessageExtension.a>;
+              public constructor();
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class BrandZoneView {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.BrandZoneView>;
+            public constructor(param0: globalAndroid.content.Context);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet, param2: number);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class ChallengeActivity implements com.ults.listeners.SdkChallengeInterface, com.ults.listeners.challenges.MultiSelectChallenge, com.ults.listeners.challenges.SingleSelectChallenge, com.ults.listeners.challenges.TextChallenge, com.ults.listeners.challenges.WebChallenge {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ChallengeActivity>;
+            public selectObject(param0: number): void;
+            public constructor();
+            public getCurrentChallenge(): com.ults.listeners.BaseSdkChallenge;
+            public typeTextChallengeValue(param0: string): void;
+            public getCheckboxesOrdered(): native.Array<any>;
+            public onResume(): void;
+            public onTrimMemory(param0: number): void;
+            public onLowMemory(): void;
+            public onBackPressed(): void;
+            public onPause(): void;
+            public clickSubmitButton(): void;
+            public getChallengeType(): com.ults.listeners.ChallengeType;
+            public onDestroy(): void;
+            public clickCancelButton(): void;
+            public onCreate(param0: globalAndroid.os.Bundle): void;
+            public expandTextsBeforeScreenshot(): void;
+            public getWebView(): any;
+            public onSaveInstanceState(param0: globalAndroid.os.Bundle): void;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class ChallengeProgressDialogActivity {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ChallengeProgressDialogActivity>;
+            public static EXTRA_DIRECTORY_SERVER_NAME: string;
+            public static EXTRA_CANCELABLE: string;
+            public constructor();
+            public onCreate(param0: globalAndroid.os.Bundle): void;
+            public static show(param0: globalAndroid.content.Context, param1: string): void;
+            public static show(param0: globalAndroid.content.Context, param1: string, param2: boolean): void;
+            public onStop(): void;
+            public onBackPressed(): void;
+          }
+          export module ChallengeProgressDialogActivity {
+            export class a {
+              public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ChallengeProgressDialogActivity.a>;
+              public onReceive(param0: globalAndroid.content.Context, param1: globalAndroid.content.Intent): void;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class ChallengeZoneView {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ChallengeZoneView>;
+            public constructor(param0: globalAndroid.content.Context);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet, param2: number);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class InformationZoneView {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.InformationZoneView>;
+            public constructor(param0: globalAndroid.content.Context);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet, param2: number);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class ThreeDS2Button {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ThreeDS2Button>;
+            public constructor(param0: globalAndroid.content.Context);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet, param2: number);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class ThreeDS2HeaderTextView extends com.stripe.android.stripe3ds2.views.ThreeDS2TextView {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ThreeDS2HeaderTextView>;
+            public constructor(param0: globalAndroid.content.Context);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet, param2: number);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class ThreeDS2TextView {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ThreeDS2TextView>;
+            public constructor(param0: globalAndroid.content.Context);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet, param2: number);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet);
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module stripe {
+    export module android {
+      export module stripe3ds2 {
+        export module views {
+          export class ThreeDS2WebView {
+            public static class: java.lang.Class<com.stripe.android.stripe3ds2.views.ThreeDS2WebView>;
+            public constructor(param0: globalAndroid.content.Context);
+            public getSettings(): globalAndroid.webkit.WebSettings;
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet, param2: number);
+            public constructor(param0: globalAndroid.content.Context, param1: globalAndroid.util.AttributeSet);
+            public setWebViewClient(param0: globalAndroid.webkit.WebViewClient): void;
+          }
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export class BaseSdkChallenge {
+        public static class: java.lang.Class<com.ults.listeners.BaseSdkChallenge>;
+        /**
+         * Constructs a new instance of the com.ults.listeners.BaseSdkChallenge interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+         */
+        public constructor(implementation: {
+          clickSubmitButton(): void;
+          clickCancelButton(): void;
+          getChallengeType(): com.ults.listeners.ChallengeType;
+          expandTextsBeforeScreenshot(): void;
+        });
+        public constructor();
+        public clickSubmitButton(): void;
+        public clickCancelButton(): void;
+        public getChallengeType(): com.ults.listeners.ChallengeType;
+        public expandTextsBeforeScreenshot(): void;
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export class ChallengeType {
+        public static class: java.lang.Class<com.ults.listeners.ChallengeType>;
+        public static SINGLE_TEXT_INPUT: com.ults.listeners.ChallengeType;
+        public static SINGLE_SELECT: com.ults.listeners.ChallengeType;
+        public static MULTI_SELECT: com.ults.listeners.ChallengeType;
+        public static OUT_OF_BAND: com.ults.listeners.ChallengeType;
+        public static HTML_UI: com.ults.listeners.ChallengeType;
+        public static values(): native.Array<com.ults.listeners.ChallengeType>;
+        public static valueOf(param0: string): com.ults.listeners.ChallengeType;
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export class SdkChallengeInterface {
+        public static class: java.lang.Class<com.ults.listeners.SdkChallengeInterface>;
+        /**
+         * Constructs a new instance of the com.ults.listeners.SdkChallengeInterface interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+         */
+        public constructor(implementation: {
+          getCurrentChallenge(): com.ults.listeners.BaseSdkChallenge;
+        });
+        public constructor();
+        public static UL_HANDLE_CHALLENGE_ACTION: string;
+        public getCurrentChallenge(): com.ults.listeners.BaseSdkChallenge;
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export module challenges {
+        export class MultiSelectChallenge extends com.ults.listeners.BaseSdkChallenge {
+          public static class: java.lang.Class<com.ults.listeners.challenges.MultiSelectChallenge>;
+          /**
+           * Constructs a new instance of the com.ults.listeners.challenges.MultiSelectChallenge interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+           */
+          public constructor(implementation: {
+            getCheckboxesOrdered(): native.Array<any>;
+            clickSubmitButton(): void;
+            clickCancelButton(): void;
+            getChallengeType(): com.ults.listeners.ChallengeType;
+            expandTextsBeforeScreenshot(): void;
+          });
+          public constructor();
+          public clickSubmitButton(): void;
+          public getCheckboxesOrdered(): native.Array<any>;
+          public expandTextsBeforeScreenshot(): void;
+          public clickCancelButton(): void;
+          public getChallengeType(): com.ults.listeners.ChallengeType;
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export module challenges {
+        export class OutOfBandChallenge extends com.ults.listeners.BaseSdkChallenge {
+          public static class: java.lang.Class<com.ults.listeners.challenges.OutOfBandChallenge>;
+          /**
+           * Constructs a new instance of the com.ults.listeners.challenges.OutOfBandChallenge interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+           */
+          public constructor(implementation: {
+            clickSubmitButton(): void;
+            clickCancelButton(): void;
+            getChallengeType(): com.ults.listeners.ChallengeType;
+            expandTextsBeforeScreenshot(): void;
+          });
+          public constructor();
+          public clickSubmitButton(): void;
+          public expandTextsBeforeScreenshot(): void;
+          public clickCancelButton(): void;
+          public getChallengeType(): com.ults.listeners.ChallengeType;
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export module challenges {
+        export class SingleSelectChallenge extends com.ults.listeners.BaseSdkChallenge {
+          public static class: java.lang.Class<com.ults.listeners.challenges.SingleSelectChallenge>;
+          /**
+           * Constructs a new instance of the com.ults.listeners.challenges.SingleSelectChallenge interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+           */
+          public constructor(implementation: {
+            selectObject(param0: number): void;
+            clickSubmitButton(): void;
+            clickCancelButton(): void;
+            getChallengeType(): com.ults.listeners.ChallengeType;
+            expandTextsBeforeScreenshot(): void;
+          });
+          public constructor();
+          public clickSubmitButton(): void;
+          public expandTextsBeforeScreenshot(): void;
+          public clickCancelButton(): void;
+          public selectObject(param0: number): void;
+          public getChallengeType(): com.ults.listeners.ChallengeType;
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export module challenges {
+        export class TextChallenge extends com.ults.listeners.BaseSdkChallenge {
+          public static class: java.lang.Class<com.ults.listeners.challenges.TextChallenge>;
+          /**
+           * Constructs a new instance of the com.ults.listeners.challenges.TextChallenge interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+           */
+          public constructor(implementation: {
+            typeTextChallengeValue(param0: string): void;
+            clickSubmitButton(): void;
+            clickCancelButton(): void;
+            getChallengeType(): com.ults.listeners.ChallengeType;
+            expandTextsBeforeScreenshot(): void;
+          });
+          public constructor();
+          public typeTextChallengeValue(param0: string): void;
+          public clickSubmitButton(): void;
+          public expandTextsBeforeScreenshot(): void;
+          public clickCancelButton(): void;
+          public getChallengeType(): com.ults.listeners.ChallengeType;
+        }
+      }
+    }
+  }
+}
+
+declare module com {
+  export module ults {
+    export module listeners {
+      export module challenges {
+        export class WebChallenge extends com.ults.listeners.BaseSdkChallenge {
+          public static class: java.lang.Class<com.ults.listeners.challenges.WebChallenge>;
+          /**
+           * Constructs a new instance of the com.ults.listeners.challenges.WebChallenge interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+           */
+          public constructor(implementation: {
+            getWebView(): any;
+            clickSubmitButton(): void;
+            clickCancelButton(): void;
+            getChallengeType(): com.ults.listeners.ChallengeType;
+            expandTextsBeforeScreenshot(): void;
+          });
+          public constructor();
+          public clickSubmitButton(): void;
+          public expandTextsBeforeScreenshot(): void;
+          public clickCancelButton(): void;
+          public getChallengeType(): com.ults.listeners.ChallengeType;
+          public getWebView(): any;
+        }
+      }
+    }
+  }
+}
+
+//Generics information:
