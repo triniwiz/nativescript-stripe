@@ -79,22 +79,6 @@ export class StripeService implements StripeBackendAPI {
     });
   }
 
-  private encodeShipping(method: StripeShippingMethod, address: StripeAddress): string {
-    function entry(label: string, value: string): string {
-      return value ? encodeURI(label) + "=" + encodeURI(value) : "";
-    }
-    return entry("shipping[carrier]", method.label) +
-      entry("&shipping[name]", address.name) +
-      entry("&shipping[address][line1]", address.line1) +
-      entry("&shipping[address][line2]", address.line2) +
-      entry("&shipping[address][city]", address.city) +
-      entry("&shipping[address][state]", address.state) +
-      entry("&shipping[address][country]", address.country) +
-      entry("&shipping[address][postal_code]", address.postalCode) +
-      entry("&phone", address.phone) +
-      entry("&email", address.email);
-  }
-
   createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
     return new StripePaymentSession(page, this.customerSession, price, "usd", listener);
   }
@@ -109,5 +93,26 @@ export class StripeService implements StripeBackendAPI {
 
   requestPayment(paymentSession: StripePaymentSession) {
     paymentSession.requestPayment();
+  }
+
+  /*
+   *  Private
+   */
+
+  
+  private encodeShipping(method: StripeShippingMethod, address: StripeAddress): string {
+    function entry(label: string, value: string): string {
+      return value ? encodeURI(label) + "=" + encodeURI(value) : "";
+    }
+    return entry("shipping[carrier]", method.label) +
+      entry("&shipping[name]", address.name) +
+      entry("&shipping[address][line1]", address.line1) +
+      entry("&shipping[address][line2]", address.line2) +
+      entry("&shipping[address][city]", address.city) +
+      entry("&shipping[address][state]", address.state) +
+      entry("&shipping[address][country]", address.country) +
+      entry("&shipping[address][postal_code]", address.postalCode) +
+      entry("&phone", address.phone) +
+      entry("&email", address.email);
   }
 }
