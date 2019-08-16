@@ -13,16 +13,23 @@ function useAndroidX() {
 
 export class StripeConfig extends StripeConfigCommon {
   private _native: com.stripe.android.PaymentSessionConfig;
+  private _paymentConfigurationInitiated: boolean = false
   get native(): com.stripe.android.PaymentSessionConfig {
     // getter gives client a chance to set properties before using.
     if (!this._native) this._native = this.toNative();
     return this._native;
   }
 
-  private toNative(): com.stripe.android.PaymentSessionConfig {
+  initPaymentConfiguration(): void {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
+    if (this._paymentConfigurationInitiated) return
     com.stripe.android.PaymentConfiguration.init(this.publishableKey);
+    this._paymentConfigurationInitiated = true
+  }
 
+  private toNative(): com.stripe.android.PaymentSessionConfig {
+    this.initPaymentConfiguration()
+    
     let optionalFields = [];
     if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
       optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_ONE_FIELD);
@@ -55,7 +62,7 @@ export class StripeCustomerSession {
   native: com.stripe.android.CustomerSession;
 
   constructor() {
-    com.stripe.android.PaymentConfiguration.init(StripeConfig.shared().publishableKey)
+    StripeConfig.shared().initPaymentConfiguration()
     com.stripe.android.CustomerSession.initCustomerSession(this._getContext(), createKeyProvider());
     this.native = com.stripe.android.CustomerSession.getInstance();
   }
