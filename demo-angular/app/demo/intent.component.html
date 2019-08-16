@@ -1,0 +1,13 @@
+<ActionBar title="Intent Demo" class="action-bar"></ActionBar>
+
+<StackLayout class="page">
+  <CreditCardView #card></CreditCardView>
+
+
+  <Button text="Create Intent" (tap)="confirmPaymentIntent(card)" class="btn
+  btn-primary"></Button>
+  
+
+  <Label [text]="setupIntent" textWrap="true"></Label>
+  <Label [text]="status" textWrap="true" class="text-center"></Label>
+</StackLayout>
