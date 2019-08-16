@@ -63,12 +63,10 @@ export class Stripe {
     );
   }
 
-  confirmPaymentIntent(pi: StripePaymentIntent, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+  confirmPaymentIntent(params: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
     const apiClient = STPAPIClient.sharedClient();
-    const params = STPPaymentIntentParams.alloc().initWithClientSecret(pi.clientSecret);
-    params.returnURL = returnUrl;
     apiClient.confirmPaymentIntentWithParamsCompletion(
-      params,
+      params.native,
       callback(cb, (pi) => StripePaymentIntent.fromNative(pi))
     );
   }

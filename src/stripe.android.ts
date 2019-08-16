@@ -87,28 +87,19 @@ export class Stripe {
 
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
     try {
-      const pi = this._stripe.retrievePaymentIntentSynchronous(clientSecret, this._apiKey);
-      if (typeof cb === 'function') {
-        cb(null, StripePaymentIntent.fromNative(pi));
-      }
+      const pi = this._stripe.retrievePaymentIntentSynchronous(clientSecret);
+      cb(null, StripePaymentIntent.fromNative(pi));
     } catch (error) {
-      if (typeof cb === 'function') {
-        cb(new Error(error.localizedDescription), null);
-      }
+      cb(new Error(error.localizedDescription), null);
     }
   }
 
-  confirmPaymentIntent(pi: StripePaymentIntent, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    const params = com.stripe.android.model.ConfirmPaymentIntentParams.createWithPaymentMethodId(pi.id, pi.clientSecret, returnUrl);
+  confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
     try {
-      const pi = this._stripe.confirmPaymentIntentSynchronous(params, this._apiKey);
-      if (typeof cb === 'function') {
-        cb(null, StripePaymentIntent.fromNative(pi));
-      }
+      const pi = this._stripe.confirmPaymentIntentSynchronous(piParams.native, this._apiKey);
+       cb(null, StripePaymentIntent.fromNative(pi));
     } catch (error) {
-      if (typeof cb === 'function') {
-        cb(new Error(error.localizedDescription), null);
-      }
+       cb(new Error(error.localizedDescription), null);
     }
   }
 }
@@ -356,16 +347,9 @@ export class StripePaymentIntent implements StripePaymentIntentCommon {
 
 export class StripePaymentIntentParams {
   clientSecret: any;
-  paymentMethodParams: any;
   paymentMethodId: string;
-  sourceParams: any;
   sourceId: string;
   returnURL: string;  // a URL that opens your app
-
-  // const n = new com.stripe.android.model.PaymentIntentParams();
-  //   n.setPaymentMethodCreateParams(this.paymentMethodParams);
-  //   n.setSourceParams(this.sourceParams);
-  //   return n;
 
   get native(): com.stripe.android.model.ConfirmPaymentIntentParams {
     if (this.sourceId) {
