@@ -369,8 +369,14 @@ export class CreditCardView extends CreditCardViewBase {
 
   get card(): Card {
     try {
+      const stpCardParams = STPCardParams.alloc();
+      stpCardParams.cvc = this.nativeView.cardParams.cvc;
+      stpCardParams.number = this.nativeView.cardParams.number;
+      stpCardParams.expMonth = this.nativeView.cardParams.expMonth;
+      stpCardParams.expYear = this.nativeView.cardParams.expYear;
+
       const valid =
-        STPCardValidator.validationStateForCard(this.nativeView.cardParams) ===
+        STPCardValidator.validationStateForCard(stpCardParams) ===
         STPCardValidationState.Valid;
 
       return valid
