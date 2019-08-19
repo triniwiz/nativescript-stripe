@@ -3,11 +3,11 @@
 <StackLayout class="page">
   <CreditCardView #card></CreditCardView>
 
-
-  <Button text="Create Intent" (tap)="confirmPaymentIntent(card)" class="btn
+  <Button text="Save Credit Card" (tap)="registerCard(card)" class="btn
   btn-primary"></Button>
   
-
-  <Label [text]="setupIntent" textWrap="true"></Label>
+  <Button text="Confirm Intent Payment (12$)" (tap)="confirmPayment(card)" class="btn
+  btn-primary"></Button>
+  
   <Label [text]="status" textWrap="true" class="text-center"></Label>
 </StackLayout>

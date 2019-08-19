@@ -12,9 +12,7 @@ import { alert } from "tns-core-modules/ui/dialogs"
 })
 export class IntentComponent {
   payment: string;
-  setupIntent: string
   status: string
-  private _setupIntent
   private stripe: Stripe;
 
   constructor(private stripeService: StripeService, public changeDetectionRef: ChangeDetectorRef) {
@@ -22,39 +20,56 @@ export class IntentComponent {
       throw new Error("publishableKey must be changed from placeholder");
     }
     this.stripe = new Stripe(publishableKey);
-    this._createSetupIntent()
   }
 
-  confirmPaymentIntent(cardView: CreditCardView) {
-    this._setStatus("Create Payment Method")
-    this.stripe.createPaymentMethod(cardView.card, (error, pm) => {
-      if (error) return this._displayError(error)
+  registerCard(cardView: CreditCardView) {
+    this._setStatus("Create Setup Intent...")
+    this.stripeService.createSetupIntent().then((intent) => {
 
-      this._setStatus("Create Payment Intent")
-      this.stripeService.createPaymentIntent(1200, "usd").then(p => {
-
-        this._setStatus("Retrieve Payment Intent")
-        this.stripe.retrievePaymentIntent(p.secret, (error, paymentIntent) => {
-          if (error) return this._displayError(error)
-
-          const piParams = new StripePaymentIntentParams()
-          piParams.paymentMethodId = pm.id
-          piParams.clientSecret = p.secret
-          
-          this._setStatus("Confirm Payment Intent")
-          this.stripe.confirmPaymentIntent(piParams, (error, pm) => {
-            if (error) return this._displayError(error)
-
-            this._setStatus(`Payment Status: ${pm.status}`)
-          });
+      this._setStatus("Create Payment Method...")
+      this.stripe.createPaymentMethod(cardView.card, (error, pm) => {
+        this._setStatus("Confirm Setup Intent...")
+        this.stripe.confirmSetupIntent(pm.id, intent.secret, (error, setupIntent) => {
+          if (error) this._displayError(error)
+          this._setStatus(`Setup Intent Status => ${setupIntent.status}`)
         })
       })
+    })
+  }
+
+  confirmPayment(cardView: CreditCardView) {
+    this._setStatus("Create Payment Method...")
+    this.stripe.createPaymentMethod(cardView.card, (error, pm) => {
+      if (error) return this._displayError(error)
+      this._createPaymentIntent(pm.id)
     });
   }
 
   /*
    * Private
    */
+
+  private _createPaymentIntent(paymentMethodId: string) {
+    this._setStatus("Create Payment Intent...")
+    this.stripeService.createPaymentIntent(1200, "usd").then(p => {
+
+      const piParams = new StripePaymentIntentParams()
+      piParams.paymentMethodId = paymentMethodId
+      piParams.clientSecret = p.secret
+      
+      this._setStatus("Confirm Payment Intent...")
+      this.stripe.confirmPaymentIntent(piParams, (error, pintent) => {
+        if (error) return this._displayError(error)
+
+        if (pintent.requiresAction) {
+          // Need to register card with intent (cf: registerCard)
+        } 
+
+        this._setStatus(`Payment Status: ${pintent.status}`)
+      });
+    })
+  }
+
 
   private _setStatus(message) {
     this.status = message
@@ -65,14 +80,6 @@ export class IntentComponent {
     alert({
       message,
       okButtonText: "OK"
-    })
-  }
-
-  private _createSetupIntent(): void {
-    this.setupIntent = "Setup Intent...";
-    this.stripeService.createSetupIntent().then((intent) => {
-      this.setupIntent = JSON.stringify(intent)
-      this._setupIntent = intent
-    })
+    }).then(() => this._setStatus(null))
   }
 }

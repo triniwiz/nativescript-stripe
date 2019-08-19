@@ -1,4 +1,5 @@
 import * as utils from 'tns-core-modules/utils/utils';
+import { android as androidApp } from "tns-core-modules/application";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
@@ -94,10 +95,49 @@ export class Stripe {
     }
   }
 
+  confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
+    try {
+      const activity = androidApp.foregroundActivity;
+
+      const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>({
+        onSuccess: (result: com.stripe.android.SetupIntentResult) => {
+          const setupIntent = result.getIntent();
+          cb(null, StripeSetupIntent.fromNative(setupIntent))
+        },
+        onError: (error: any) => {
+          cb(new Error(error.localizedDescription), null)
+        }
+      });
+
+      activity.onActivityResult = (requestCode, resultCode, data) => {
+        this._stripe.onSetupResult(requestCode, data, resultCb);
+      };
+      
+      this._stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
+    } catch (error) {
+      cb(new Error(error.localizedDescription), null);
+    }
+  }
+
   confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
     try {
-      const pi = this._stripe.confirmPaymentIntentSynchronous(piParams.native, this._apiKey);
-       cb(null, StripePaymentIntent.fromNative(pi));
+      const activity = androidApp.foregroundActivity;
+
+      const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>({
+        onSuccess: (result: com.stripe.android.PaymentIntentResult) => {
+          const setupIntent = result.getIntent();
+          cb(null, StripePaymentIntent.fromNative(setupIntent))
+        },
+        onError: (error: any) => {
+          cb(new Error(error.localizedDescription), null)
+        }
+      });
+
+      activity.onActivityResult = (requestCode, resultCode, data) => {
+        this._stripe.onPaymentResult(requestCode, data, resultCb);
+      };
+      
+      this._stripe.confirmPayment(activity, piParams.native);
     } catch (error) {
        cb(new Error(error.localizedDescription), null);
     }
@@ -360,4 +400,26 @@ export class StripePaymentIntentParams {
       return com.stripe.android.model.ConfirmPaymentIntentParams.create(this.clientSecret);
     }
   }
+}
+
+export class StripeSetupIntentParams {
+  native: com.stripe.android.model.ConfirmSetupIntentParams
+
+  constructor(paymentMethodId: string, clientSecret: string) {
+    this.native = com.stripe.android.model.ConfirmSetupIntentParams.create(paymentMethodId, clientSecret)
+  }
+}
+
+export class StripeSetupIntent {
+  native: com.stripe.android.model.SetupIntent;
+
+  static fromNative(native: com.stripe.android.model.SetupIntent): StripeSetupIntent {
+    const si = new StripeSetupIntent();
+    si.native = native;
+    return si;
+  }
+
+  get status(): com.stripe.android.model.StripeIntent.Status { return this.native.getStatus(); }
+  get paymentMethodId(): string { return this.native.getPaymentMethodId(); }
+  get isSuccess() : boolean { return this.status === com.stripe.android.model.StripeIntent.Status.Succeeded }
 }
