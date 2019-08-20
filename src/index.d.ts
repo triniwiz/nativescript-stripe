@@ -4,7 +4,7 @@ export declare class Stripe {
   constructor(apiKey: string);
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void;
   createPaymentMethod(card: CardCommon, cb: (error: Error, pm: PaymentMethod) => void): void;
-
+  confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
   confirmPaymentIntent(pi: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void;
 }

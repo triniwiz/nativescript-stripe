@@ -1,5 +1,9 @@
 import { View } from 'tns-core-modules/ui/core/view';
+import { topmost } from "tns-core-modules/ui/frame";
+import { ios as iosApp } from "tns-core-modules/application";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
+import { ios as iosUtils } from "tns-core-modules/utils/utils"
+
 
 export class Stripe {
   constructor(apiKey: string) {
@@ -49,6 +53,7 @@ export class Stripe {
     if (card.addressZip) billing.address.postalCode = card.addressZip;
     if (card.addressCountry) billing.address.country = card.addressCountry;
     const params = STPPaymentMethodParams.paramsWithCardBillingDetailsMetadata(cardParams, billing, null);
+
     apiClient.createPaymentMethodWithParamsCompletion(
       params,
       callback(cb, (pm) => PaymentMethod.fromNative(pm))
@@ -64,30 +69,73 @@ export class Stripe {
   }
 
   confirmPaymentIntent(params: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    const apiClient = STPAPIClient.sharedClient();
-    apiClient.confirmPaymentIntentWithParamsCompletion(
+    const authContext = STPPaymentContext.new()
+    authContext.authenticationPresentingViewController = () => {
+       return topmost().currentPage.ios
+    }
+
+    const paymentHandler = STPPaymentHandler.sharedHandler()
+    paymentHandler.confirmPaymentWithAuthenticationContextCompletion(
       params.native,
-      callback(cb, (pi) => StripePaymentIntent.fromNative(pi))
-    );
+      authContext,
+      (status: STPPaymentHandlerActionStatus, pi: STPPaymentIntent, error: NSError) => {
+        console.log("RESPONSE....")
+        console.log(status)
+        console.log(pi)
+
+        if (error) {
+          cb(new Error(error.toLocaleString()), null)
+        } else {
+          cb(null, StripePaymentIntent.fromNative(pi))
+        }
+      }
+
+    )
+    
   }
+
+  confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
+    const authContext = STPPaymentContext.new()
+    authContext.authenticationPresentingViewController = () => {
+       return iosApp.window.rootViewController
+    }
+
+    const paymentHandler = STPPaymentHandler.sharedHandler()
+    paymentHandler.confirmSetupIntentWithAuthenticationContextCompletion(
+      new StripeSetupIntentParams(paymentMethodId, clientSecret).native,
+      authContext,
+      (status: STPPaymentHandlerActionStatus, si: STPSetupIntent, error: NSError) => {
+        console.log("RESPONSE....")
+        console.log(status)
+        console.log(si)
+
+        if (error) {
+          cb(new Error(error.toLocaleString()), null)
+        } else {
+          cb(null, StripeSetupIntent.fromNative(si))
+        }
+      }
+    )
+  }
+
 }
 
 function callback(
   cb: (error: Error, value: any) => void,
-  cvt: (value: any) => any):
-  (value: any, err: NSError) => void {
-  return (value: any, error: NSError) => {
-    if (!error) {
-      if (typeof cb === 'function') {
-        cb(null, cvt(value));
-      }
-    } else {
-      if (typeof cb === 'function') {
-        cb(new Error(error.localizedDescription), null);
-      }
+  cvt: (value: any) => any): 
+    (value: any, err: NSError) => void {
+      return (value: any, error: NSError) => {
+        if (!error) {
+          if (typeof cb === 'function') {
+            cb(null, cvt(value));
+          }
+        } else {
+          if (typeof cb === 'function') {
+            cb(new Error(error.localizedDescription), null);
+          }
+        }
+      };
     }
-  };
-}
 
 export class Card implements CardCommon {
   native: STPCardParams;
@@ -479,6 +527,30 @@ export class StripePaymentIntentParams {
     n.returnURL = this.returnURL;
     return n;
   }
+}
+
+export class StripeSetupIntentParams {
+  native: STPSetupIntentConfirmParams
+
+  constructor(paymentMethodId: string, clientSecret: string) {
+    this.native = STPSetupIntentConfirmParams.alloc()
+    this.native.paymentMethodID = paymentMethodId
+    this.native.clientSecret = clientSecret
+  }
+}
+
+export class StripeSetupIntent {
+  native: STPSetupIntent;
+
+  static fromNative(native: STPSetupIntent): StripeSetupIntent {
+    const si = new StripeSetupIntent();
+    si.native = native;
+    return si;
+  }
+
+  get status(): STPSetupIntentStatus { return this.native.status; }
+  get paymentMethodId(): string { return this.native.paymentMethodID; }
+  get isSuccess() : boolean { return this.status === STPSetupIntentStatus.Succeeded }
 }
 
 export class StripeRedirectSession {
