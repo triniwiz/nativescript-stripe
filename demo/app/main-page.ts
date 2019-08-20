@@ -1,6 +1,6 @@
 import { EventData } from "tns-core-modules/data/observable";
 import { Button } from "tns-core-modules/ui/button";
-import { topmost } from "tns-core-modules/ui/frame"
+import { topmost } from "tns-core-modules/ui/frame";
 
 export function pageLoaded(args: EventData) {
 }
