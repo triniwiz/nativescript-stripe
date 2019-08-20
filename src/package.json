@@ -29,6 +29,7 @@
     "demo-angular.ios": "npm run tsc && cd ../demo-angular && tns run ios --emulator",
     "demo-angular.ios.min": "npm run tsc && cd ../demo-angular && tns run ios --env.uglify --emulator",
     "demo-angular.ios.ci": "npm run tsc && cd ../demo-angular && tns build ios --env.uglify",
+    "debug.demo-angular.ios": "npm run tsc && cd ../demo-angular && tns debug ios --emulator",
     "debug.demo-angular.android": "npm run tsc && cd ../demo-angular && tns debug android --emulator",
     "demo-angular.android": "npm run tsc && cd ../demo-angular && tns run android --emulator",
     "demo-angular.reset": "cd ../demo-angular && npx rimraf -- hooks node_modules platforms package-lock.json",
