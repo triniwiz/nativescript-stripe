@@ -538,9 +538,28 @@ export class StripeSetupIntent {
     return si;
   }
 
-  get status(): STPSetupIntentStatus { return this.native.status; }
+  get id(): string { return this.native.stripeID; }
   get paymentMethodId(): string { return this.native.paymentMethodID; }
-  get isSuccess() : boolean { return this.status === STPSetupIntentStatus.Succeeded }
+  get isSuccess() : boolean { return this.status === StripePaymentIntentStatus.Succeeded }
+  get status(): StripePaymentIntentStatus {
+    switch (this.native.status) {
+      case STPPaymentIntentStatus.Canceled:
+        return StripePaymentIntentStatus.Canceled;
+      case STPPaymentIntentStatus.Processing:
+        return StripePaymentIntentStatus.Processing;
+      case STPPaymentIntentStatus.RequiresAction:
+        return StripePaymentIntentStatus.RequiresAction;
+      case STPPaymentIntentStatus.RequiresCapture:
+        return StripePaymentIntentStatus.RequiresCapture;
+      case STPPaymentIntentStatus.RequiresConfirmation:
+        return StripePaymentIntentStatus.RequiresConfirmation;
+      case STPPaymentIntentStatus.RequiresPaymentMethod:
+        return StripePaymentIntentStatus.RequiresPaymentMethod;
+      case STPPaymentIntentStatus.Succeeded:
+        return StripePaymentIntentStatus.Succeeded;
+    }
+    return null;
+  }
 }
 
 export class StripeRedirectSession {
