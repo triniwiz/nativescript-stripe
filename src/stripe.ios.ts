@@ -4,7 +4,6 @@ import { ios as iosApp } from "tns-core-modules/application";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 import { ios as iosUtils } from "tns-core-modules/utils/utils"
 
-
 export class Stripe {
   constructor(apiKey: string) {
     STPPaymentConfiguration.sharedConfiguration().publishableKey = apiKey;
@@ -69,46 +68,24 @@ export class Stripe {
   }
 
   confirmPaymentIntent(params: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    const authContext = STPPaymentContext.new()
-    authContext.authenticationPresentingViewController = () => {
-       return topmost().currentPage.ios
-    }
-
-    const paymentHandler = STPPaymentHandler.sharedHandler()
-    paymentHandler.confirmPaymentWithAuthenticationContextCompletion(
+    STPPaymentHandler.sharedHandler().confirmPaymentWithAuthenticationContextCompletion(
       params.native,
-      authContext,
+      this._getAuthentificationContext(),
       (status: STPPaymentHandlerActionStatus, pi: STPPaymentIntent, error: NSError) => {
-        console.log("RESPONSE....")
-        console.log(status)
-        console.log(pi)
-
         if (error) {
           cb(new Error(error.toLocaleString()), null)
         } else {
           cb(null, StripePaymentIntent.fromNative(pi))
         }
       }
-
     )
-    
   }
 
   confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
-    const authContext = STPPaymentContext.new()
-    authContext.authenticationPresentingViewController = () => {
-       return iosApp.window.rootViewController
-    }
-
-    const paymentHandler = STPPaymentHandler.sharedHandler()
-    paymentHandler.confirmSetupIntentWithAuthenticationContextCompletion(
+    STPPaymentHandler.sharedHandler().confirmSetupIntentWithAuthenticationContextCompletion(
       new StripeSetupIntentParams(paymentMethodId, clientSecret).native,
-      authContext,
+      this._getAuthentificationContext(),
       (status: STPPaymentHandlerActionStatus, si: STPSetupIntent, error: NSError) => {
-        console.log("RESPONSE....")
-        console.log(status)
-        console.log(si)
-
         if (error) {
           cb(new Error(error.toLocaleString()), null)
         } else {
@@ -118,6 +95,19 @@ export class Stripe {
     )
   }
 
+  /*
+   *. Private
+   */
+
+  private _getAuthentificationContext(): STPPaymentContext {
+    const authContext = STPPaymentContext.alloc()
+    authContext.hostViewController = topmost().currentPage.ios
+    authContext.authenticationPresentingViewController = () => {
+       return authContext.hostViewController
+    }
+
+    return authContext
+  }
 }
 
 function callback(
