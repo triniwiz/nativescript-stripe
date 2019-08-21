@@ -60,11 +60,6 @@ export class IntentComponent {
       this._setStatus("Confirm Payment Intent...")
       this.stripe.confirmPaymentIntent(piParams, (error, pintent) => {
         if (error) return this._displayError(error)
-
-        if (pintent.requiresAction) {
-          // Need to register card with intent (cf: registerCard)
-        } 
-
         this._setStatus(`Payment Status: ${pintent.status}`)
       });
     })

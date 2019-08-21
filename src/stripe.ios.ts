@@ -121,7 +121,7 @@ function callback(
           }
         } else {
           if (typeof cb === 'function') {
-            cb(new Error(error.localizedDescription), null);
+            cb(new Error(error.toLocaleString()), null);
           }
         }
       };
@@ -449,36 +449,11 @@ export class PaymentMethod implements PaymentMethodCommon {
   get metadata(): object { return this.native.metadata; }
 }
 
-export class StripePaymentIntent implements StripePaymentIntentCommon {
-  native: STPPaymentIntent;
+class StripeIntent {
+  native: STPSetupIntent | STPPaymentIntent;
 
-  static fromNative(native: STPPaymentIntent): StripePaymentIntent {
-    const pi = new StripePaymentIntent();
-    pi.native = native;
-    return pi;
-  }
-
-  static fromApi(json: any): StripePaymentIntent {
-    const native = STPPaymentIntent.decodedObjectFromAPIResponse(json);
-    return StripePaymentIntent.fromNative(native);
-  }
-
-  get id(): string { return this.native.stripeId; }
-  get clientSecret(): string { return this.native.clientSecret; }
-  get amount(): number { return this.native.amount; }
   get created(): Date { return new Date(this.native.created); }
-  get currency(): string { return this.native.currency; }
-  get description(): string { return this.native.description; }
-  get requiresAction(): boolean { return this.native.status === STPPaymentIntentStatus.RequiresAction; }
-  get captureMethod(): "manual" | "automatic" {
-    switch (this.native.captureMethod) {
-      case STPPaymentIntentCaptureMethod.Automatic:
-        return "automatic";
-      case STPPaymentIntentCaptureMethod.Manual:
-        return "manual";
-    }
-    return null;
-  }
+  get clientSecret(): string { return this.native.clientSecret; }
   get status(): StripePaymentIntentStatus {
     switch (this.native.status) {
       case STPPaymentIntentStatus.Canceled:
@@ -495,6 +470,37 @@ export class StripePaymentIntent implements StripePaymentIntentCommon {
         return StripePaymentIntentStatus.RequiresPaymentMethod;
       case STPPaymentIntentStatus.Succeeded:
         return StripePaymentIntentStatus.Succeeded;
+    }
+    return null;
+  }
+  get requiresAction(): boolean { return this.native.status === STPPaymentIntentStatus.RequiresAction; }
+  get isSuccess() : boolean { return this.status === StripePaymentIntentStatus.Succeeded }
+  get description(): string { return this.native.description; }
+}
+
+export class StripePaymentIntent extends StripeIntent implements StripePaymentIntentCommon {
+  native: STPPaymentIntent;
+
+  static fromNative(native: STPPaymentIntent): StripePaymentIntent {
+    const pi = new StripePaymentIntent();
+    pi.native = native;
+    return pi;
+  }
+
+  static fromApi(json: any): StripePaymentIntent {
+    const native = STPPaymentIntent.decodedObjectFromAPIResponse(json);
+    return StripePaymentIntent.fromNative(native);
+  }
+
+  get id(): string { return this.native.stripeId; }
+  get amount(): number { return this.native.amount; }
+  get currency(): string { return this.native.currency; }
+  get captureMethod(): "manual" | "automatic" {
+    switch (this.native.captureMethod) {
+      case STPPaymentIntentCaptureMethod.Automatic:
+        return "automatic";
+      case STPPaymentIntentCaptureMethod.Manual:
+        return "manual";
     }
     return null;
   }
@@ -519,17 +525,7 @@ export class StripePaymentIntentParams {
   }
 }
 
-export class StripeSetupIntentParams {
-  native: STPSetupIntentConfirmParams
-
-  constructor(paymentMethodId: string, clientSecret: string) {
-    this.native = STPSetupIntentConfirmParams.alloc()
-    this.native.paymentMethodID = paymentMethodId
-    this.native.clientSecret = clientSecret
-  }
-}
-
-export class StripeSetupIntent {
+export class StripeSetupIntent extends StripeIntent {
   native: STPSetupIntent;
 
   static fromNative(native: STPSetupIntent): StripeSetupIntent {
@@ -540,25 +536,15 @@ export class StripeSetupIntent {
 
   get id(): string { return this.native.stripeID; }
   get paymentMethodId(): string { return this.native.paymentMethodID; }
-  get isSuccess() : boolean { return this.status === StripePaymentIntentStatus.Succeeded }
-  get status(): StripePaymentIntentStatus {
-    switch (this.native.status) {
-      case STPPaymentIntentStatus.Canceled:
-        return StripePaymentIntentStatus.Canceled;
-      case STPPaymentIntentStatus.Processing:
-        return StripePaymentIntentStatus.Processing;
-      case STPPaymentIntentStatus.RequiresAction:
-        return StripePaymentIntentStatus.RequiresAction;
-      case STPPaymentIntentStatus.RequiresCapture:
-        return StripePaymentIntentStatus.RequiresCapture;
-      case STPPaymentIntentStatus.RequiresConfirmation:
-        return StripePaymentIntentStatus.RequiresConfirmation;
-      case STPPaymentIntentStatus.RequiresPaymentMethod:
-        return StripePaymentIntentStatus.RequiresPaymentMethod;
-      case STPPaymentIntentStatus.Succeeded:
-        return StripePaymentIntentStatus.Succeeded;
-    }
-    return null;
+}
+
+export class StripeSetupIntentParams {
+  native: STPSetupIntentConfirmParams
+
+  constructor(paymentMethodId: string, clientSecret: string) {
+    this.native = STPSetupIntentConfirmParams.alloc()
+    this.native.paymentMethodID = paymentMethodId
+    this.native.clientSecret = clientSecret
   }
 }
 
