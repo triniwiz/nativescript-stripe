@@ -24,3 +24,5 @@ demo-angular/*.d.ts
 publish/src
 publish/package
 *.metadata.json
+
+!**/webpack.config.js

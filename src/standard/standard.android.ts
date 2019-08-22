@@ -2,6 +2,15 @@ import { android as androidApp } from "tns-core-modules/application";
 import { Page } from "tns-core-modules/ui/page";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
+declare let global: any;
+function getLocalBroadcastManagerPackage() {
+  return useAndroidX() ? global.androidx.localbroadcastmanager.content : global.android.support.v4.content;
+}
+
+function useAndroidX() {
+  return global.androidx && global.androidx.appcompat;
+}
+
 export class StripeConfig extends StripeConfigCommon {
   private _native: com.stripe.android.PaymentSessionConfig;
   get native(): com.stripe.android.PaymentSessionConfig {
@@ -109,7 +118,7 @@ export class StripePaymentSession {
     }
     this.native.setCartTotal(amount);
     this.receiver = createShippingBroadcastReceiver(this, listener);
-    android.support.v4.content.LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
+    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
   }
 
   get amount(): number {
@@ -151,7 +160,7 @@ export class StripePaymentSession {
     activity.onDestroy = function () {
       // if (oldDestroyCallback) oldDestroyCallback();
       session.native.onDestroy();
-      android.support.v4.content.LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
+      getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
     };
     return activity;
   }
@@ -222,7 +231,7 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
         shippingInfoProcessedIntent.putExtra(com.stripe.android.view.PaymentFlowExtras.EXTRA_DEFAULT_SHIPPING_METHOD,
           createAdShippingMethod(shippingMethods.selectedShippingMethod, this.parent.currency) as any as android.os.Parcelable);
       }
-      android.support.v4.content.LocalBroadcastManager.getInstance(context).sendBroadcast(shippingInfoProcessedIntent);
+      getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(context).sendBroadcast(shippingInfoProcessedIntent);
     }
   }
   return new InternalReceiver(parent, listener);

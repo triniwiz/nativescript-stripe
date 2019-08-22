@@ -1,6 +1,13 @@
 Changelog
 ==============================
 
+## 5.5.0 (2019, August 20)
+### Updates
+- Nativescript 6 compatibility
+
+### Warning
+- Consider freezing your version to 5.4.2 if using {N} < 6.0 (not tested)
+
 ## 5.4.2 (2019, June 28)
 ### Implements
 - [(# 75)](https://github.com/triniwiz/nativescript-stripe/issues/75) Remove calls to deprecated utils.ios.getter.
