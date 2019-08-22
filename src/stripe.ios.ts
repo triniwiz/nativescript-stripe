@@ -2,7 +2,6 @@ import { View } from 'tns-core-modules/ui/core/view';
 import { topmost } from "tns-core-modules/ui/frame";
 import { ios as iosApp } from "tns-core-modules/application";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
-import { ios as iosUtils } from "tns-core-modules/utils/utils"
 
 export class Stripe {
   constructor(apiKey: string) {
@@ -73,12 +72,12 @@ export class Stripe {
       this._getAuthentificationContext(),
       (status: STPPaymentHandlerActionStatus, pi: STPPaymentIntent, error: NSError) => {
         if (error) {
-          cb(new Error(error.toLocaleString()), null)
+          cb(new Error(error.toLocaleString()), null);
         } else {
-          cb(null, StripePaymentIntent.fromNative(pi))
+          cb(null, StripePaymentIntent.fromNative(pi));
         }
       }
-    )
+    );
   }
 
   confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
@@ -87,12 +86,12 @@ export class Stripe {
       this._getAuthentificationContext(),
       (status: STPPaymentHandlerActionStatus, si: STPSetupIntent, error: NSError) => {
         if (error) {
-          cb(new Error(error.toLocaleString()), null)
+          cb(new Error(error.toLocaleString()), null);
         } else {
-          cb(null, StripeSetupIntent.fromNative(si))
+          cb(null, StripeSetupIntent.fromNative(si));
         }
       }
-    )
+    );
   }
 
   /*
@@ -100,13 +99,13 @@ export class Stripe {
    */
 
   private _getAuthentificationContext(): STPPaymentContext {
-    const authContext = STPPaymentContext.alloc()
-    authContext.hostViewController = topmost().currentPage.ios
+    const authContext = STPPaymentContext.alloc();
+    authContext.hostViewController = topmost().currentPage.ios;
     authContext.authenticationPresentingViewController = () => {
-       return authContext.hostViewController
+       return authContext.hostViewController;
     }
 
-    return authContext
+    return authContext;
   }
 }
 
@@ -474,7 +473,7 @@ class StripeIntent {
     return null;
   }
   get requiresAction(): boolean { return this.native.status === STPPaymentIntentStatus.RequiresAction; }
-  get isSuccess() : boolean { return this.status === StripePaymentIntentStatus.Succeeded }
+  get isSuccess(): boolean { return this.status === StripePaymentIntentStatus.Succeeded; }
   get description(): string { return this.native.description; }
 }
 
@@ -539,12 +538,12 @@ export class StripeSetupIntent extends StripeIntent {
 }
 
 export class StripeSetupIntentParams {
-  native: STPSetupIntentConfirmParams
+  native: STPSetupIntentConfirmParams;
 
   constructor(paymentMethodId: string, clientSecret: string) {
-    this.native = STPSetupIntentConfirmParams.alloc()
-    this.native.paymentMethodID = paymentMethodId
-    this.native.clientSecret = clientSecret
+    this.native = STPSetupIntentConfirmParams.alloc();
+    this.native.paymentMethodID = paymentMethodId;
+    this.native.clientSecret = clientSecret;
   }
 }
 

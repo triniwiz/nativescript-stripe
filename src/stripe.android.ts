@@ -71,14 +71,14 @@ export class Stripe {
     try {
       const apiResultCallback = new com.stripe.android.ApiResultCallback<com.stripe.android.model.PaymentMethod>({
         onSuccess: (result: any) => {
-          cb(null, PaymentMethod.fromNative(result))
+          cb(null, PaymentMethod.fromNative(result));
         },
         onError: (error: any) => {
-          cb(new Error(error.localizedDescription), null)
+          cb(new Error(error.localizedDescription), null);
         }
-      })
+      });
       
-      this._stripe.createPaymentMethod(params, apiResultCallback, this._apiKey, null)
+      this._stripe.createPaymentMethod(params, apiResultCallback, this._apiKey, null);
     } catch (error) {
       if (typeof cb === 'function') {
         cb(new Error(error.localizedDescription), null);
@@ -102,10 +102,10 @@ export class Stripe {
       const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>({
         onSuccess: (result: com.stripe.android.SetupIntentResult) => {
           const setupIntent = result.getIntent();
-          cb(null, StripeSetupIntent.fromNative(setupIntent))
+          cb(null, StripeSetupIntent.fromNative(setupIntent));
         },
         onError: (error: any) => {
-          cb(new Error(error.localizedDescription), null)
+          cb(new Error(error.localizedDescription), null);
         }
       });
 
@@ -126,10 +126,10 @@ export class Stripe {
       const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>({
         onSuccess: (result: com.stripe.android.PaymentIntentResult) => {
           const setupIntent = result.getIntent();
-          cb(null, StripePaymentIntent.fromNative(setupIntent))
+          cb(null, StripePaymentIntent.fromNative(setupIntent));
         },
         onError: (error: any) => {
-          cb(new Error(error.localizedDescription), null)
+          cb(new Error(error.localizedDescription), null);
         }
       });
 
@@ -403,10 +403,10 @@ export class StripePaymentIntentParams {
 }
 
 export class StripeSetupIntentParams {
-  native: com.stripe.android.model.ConfirmSetupIntentParams
+  native: com.stripe.android.model.ConfirmSetupIntentParams;
 
   constructor(paymentMethodId: string, clientSecret: string) {
-    this.native = com.stripe.android.model.ConfirmSetupIntentParams.create(paymentMethodId, clientSecret)
+    this.native = com.stripe.android.model.ConfirmSetupIntentParams.create(paymentMethodId, clientSecret);
   }
 }
 
@@ -421,5 +421,5 @@ export class StripeSetupIntent {
 
   get status(): com.stripe.android.model.StripeIntent.Status { return this.native.getStatus(); }
   get paymentMethodId(): string { return this.native.getPaymentMethodId(); }
-  get isSuccess() : boolean { return this.status === com.stripe.android.model.StripeIntent.Status.Succeeded }
+  get isSuccess() : boolean { return this.status === com.stripe.android.model.StripeIntent.Status.Succeeded; }
 }

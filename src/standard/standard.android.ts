@@ -13,7 +13,7 @@ function useAndroidX() {
 
 export class StripeConfig extends StripeConfigCommon {
   private _native: com.stripe.android.PaymentSessionConfig;
-  private _paymentConfigurationInitiated: boolean = false
+  private _paymentConfigurationInitiated: boolean = false;
   get native(): com.stripe.android.PaymentSessionConfig {
     // getter gives client a chance to set properties before using.
     if (!this._native) this._native = this.toNative();
@@ -22,13 +22,13 @@ export class StripeConfig extends StripeConfigCommon {
 
   initPaymentConfiguration(): void {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
-    if (this._paymentConfigurationInitiated) return
+    if (this._paymentConfigurationInitiated) return;
     com.stripe.android.PaymentConfiguration.init(this.publishableKey);
-    this._paymentConfigurationInitiated = true
+    this._paymentConfigurationInitiated = true;
   }
 
   private toNative(): com.stripe.android.PaymentSessionConfig {
-    this.initPaymentConfiguration()
+    this.initPaymentConfiguration();
     
     let optionalFields = [];
     if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
@@ -62,7 +62,7 @@ export class StripeCustomerSession {
   native: com.stripe.android.CustomerSession;
 
   constructor() {
-    StripeConfig.shared().initPaymentConfiguration()
+    StripeConfig.shared().initPaymentConfiguration();
     com.stripe.android.CustomerSession.initCustomerSession(this._getContext(), createKeyProvider());
     this.native = com.stripe.android.CustomerSession.getInstance();
   }
@@ -148,7 +148,7 @@ export class StripePaymentSession {
 
   requestPayment() {
     this.paymentInProgress = true;
-    const data = this.native.getPaymentSessionData()
+    const data = this.native.getPaymentSessionData();
     const shippingMethod = data.getShippingMethod();
     const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
     StripeConfig.shared().backendAPI.completeCharge(
@@ -157,12 +157,12 @@ export class StripePaymentSession {
       createShippingMethod(shippingMethod),
       createAddress(data.getShippingInformation()))
       .then(() => {
-        this.paymentInProgress = false
-        this.listener.onPaymentSuccess()
-        this.native.onCompleted()
+        this.paymentInProgress = false;
+        this.listener.onPaymentSuccess();
+        this.native.onCompleted();
       }).catch(e => {
         this.listener.onError(100, e);
-        this.paymentInProgress = false
+        this.paymentInProgress = false;
       })
   }
 
