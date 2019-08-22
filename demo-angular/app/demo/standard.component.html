@@ -39,8 +39,12 @@
   
   <ActivityIndicator [busy]="paymentInProgress" [visibility]="paymentInProgress ? 'visible' : 'collapse'"></ActivityIndicator>
 
-  <Label [text]="successMessage" class="text-primary" textWrap="true"></Label>
-  <StackLayout class="hr-light m-10"></StackLayout>
-  <Label text="Debug Info"></Label>
-  <Label [text]="debugInfo" class="body" textWrap="true"></Label>
+  <GridLayout>
+    <StackLayout>
+      <Label [text]="successMessage" class="text-primary" textWrap="true"></Label>
+      <StackLayout class="hr-light m-10"></StackLayout>
+      <Label text="Debug Info"></Label>
+      <Label [text]="debugInfo" class="body" textWrap="true"></Label>
+    </StackLayout>
+  </GridLayout>
 </StackLayout>
