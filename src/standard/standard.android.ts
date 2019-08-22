@@ -148,7 +148,6 @@ export class StripePaymentSession {
 
   requestPayment() {
     this.paymentInProgress = true;
-    // TODO: fix request payment
     const data = this.native.getPaymentSessionData()
     const shippingMethod = data.getShippingMethod();
     const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
@@ -205,7 +204,7 @@ function createPaymentSessionListener(parent: StripePaymentSession, listener: St
 
       parent.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
         onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
-          parent.selectedPaymentMethod = createPaymentMethod(customer, sessionData.getPaymentMethod());
+          parent.selectedPaymentMethod = createPaymentMethod(sessionData.getPaymentMethod());
           parent.selectedShippingMethod = createShippingMethod(sessionData.getShippingMethod());
           parent.shippingAddress = createAddress(sessionData.getShippingInformation());
           let paymentData = {
@@ -260,52 +259,20 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
   return new InternalReceiver(parent, listener);
 }
 
-function createPaymentMethod(customer: com.stripe.android.model.Customer, paymentMethod: com.stripe.android.model.PaymentMethod): StripePaymentMethod {
+function createPaymentMethod(paymentMethod: com.stripe.android.model.PaymentMethod): StripePaymentMethod {
   if (!paymentMethod) return undefined;
-  if (!customer) return { label: "Error (101)", image: undefined, templateImage: undefined };
-  
-  let cs = customer.getSourceById(paymentMethod.id);
-  if (!cs) return { label: "Error (102)", image: undefined, templateImage: undefined };
-  
-  let source = cs.asSource();
-  if (source) return createPaymentMethodFromSource(source);
-
-  let card = cs.asCard();
-  if (card) return createPaymentMethodFromCard(card);
-  
+  if (paymentMethod.card) return createPaymentMethodFromCard(paymentMethod.card, paymentMethod.id);
   return { label: "Error (103)", image: undefined, templateImage: undefined };
 }
 
-function createPaymentMethodFromSource(source: com.stripe.android.model.Source): StripePaymentMethod {
-  if (source.getType() !== com.stripe.android.model.Source.SourceType.CARD) {
-    return {
-      label: source.getType(),
-      stripeID: source.getId(),
-      type: undefined,
-      image: undefined,
-      templateImage: undefined
-    };
-  }
-
-  const card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
+function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMethod.Card, stripeID: string): StripePaymentMethod {
   return {
-    label: `${card.getBrand()} ...${card.getLast4()}`,
-    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(card.getBrand())),
+    label: `${card.brand} ...${card.last4}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(card.brand)),
     templateImage: undefined,
     type: "Card",
-    stripeID: source.getId(),
-    brand: card.getBrand()
-  };
-}
-
-function createPaymentMethodFromCard(card: com.stripe.android.model.Card): StripePaymentMethod {
-  return {
-    label: `${card.getBrand()} ...${card.getLast4()}`,
-    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(card.getBrand())),
-    templateImage: undefined,
-    type: "Card",
-    stripeID: card.getId(),
-    brand: card.getBrand()
+    stripeID,
+    brand: card.brand
   };
 }
 
