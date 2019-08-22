@@ -154,7 +154,7 @@ of tokens when interacting with your backend server. The `nativescript-stripe` p
 cross-platform data structures and method calls that might be helpful. In `index.d.ts` see:
 * `PaymentMethod` and related classes
 * `StripePaymentIntent` and related classes
-* Methods `Stripe.createPaymentMethod`, `Stripe.retrievePaymentIntent`, and `Stripe.confirmPaymentIntent`
+* Methods `Stripe.createPaymentMethod`, `Stripe.retrievePaymentIntent`, `Stripe.confirmPaymentIntent` and `Stripe.confirmSetupIntent`
 
 ## Handling secondary customer input
 SCA requires the customer to enter additional information with some charge cards. Stripe takes care of this
@@ -168,10 +168,7 @@ cannot be called on the UI thread in Android (but they can on iOS), and the tech
 secondary customer interaction is difficult. Hopefully these will be addressed soon.
 
 ## Status
-Finally, keep in mind that while these SCA support classes and methods have been added to the plugin, they
-have not yet been thoroughly tested. The `demo` and `demo-angular` apps do *not* (yet) support `PaymentIntent`,
-although they have been modified to work with the current Stripe example backend
-(which does fully support `PaymentIntent`). Any help updating the demo apps would be greatly appreciated.
+`demo-angular` now support `SetupIntent` and `PaymentIntent` SCA integration. Any credit card verification will be automatically prompted to the user.
 
 # TODO
 * Android Pay
