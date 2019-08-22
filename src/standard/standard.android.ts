@@ -29,7 +29,6 @@ export class StripeConfig extends StripeConfigCommon {
 
   private toNative(): com.stripe.android.PaymentSessionConfig {
     this.initPaymentConfiguration();
-    
     let optionalFields = [];
     if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
       optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_ONE_FIELD);
@@ -163,7 +162,7 @@ export class StripePaymentSession {
       }).catch(e => {
         this.listener.onError(100, e);
         this.paymentInProgress = false;
-      })
+      });
   }
 
   presentPaymentMethods(): void {

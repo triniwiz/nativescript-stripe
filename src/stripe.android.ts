@@ -77,7 +77,6 @@ export class Stripe {
           cb(new Error(error.localizedDescription), null);
         }
       });
-      
       this._stripe.createPaymentMethod(params, apiResultCallback, this._apiKey, null);
     } catch (error) {
       if (typeof cb === 'function') {
@@ -112,7 +111,6 @@ export class Stripe {
       activity.onActivityResult = (requestCode, resultCode, data) => {
         this._stripe.onSetupResult(requestCode, data, resultCb);
       };
-      
       this._stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
     } catch (error) {
       cb(new Error(error.localizedDescription), null);
@@ -136,7 +134,6 @@ export class Stripe {
       activity.onActivityResult = (requestCode, resultCode, data) => {
         this._stripe.onPaymentResult(requestCode, data, resultCb);
       };
-      
       this._stripe.confirmPayment(activity, piParams.native);
     } catch (error) {
        cb(new Error(error.localizedDescription), null);
@@ -391,7 +388,7 @@ export class StripePaymentIntentParams {
   sourceId: string;
   returnURL: string;  // a URL that opens your app
 
-  get native(): com.stripe.android.model.ConfirmPaymentIntentParams {
+  get native(): com.stripe.android.model.ConfirmPaymentIntentParams{
     if (this.sourceId) {
       return com.stripe.android.model.ConfirmPaymentIntentParams.createWithSourceId(this.sourceId, this.clientSecret, this.returnURL);
     } else if (this.paymentMethodId) {

@@ -103,15 +103,14 @@ export class Stripe {
     authContext.hostViewController = topmost().currentPage.ios;
     authContext.authenticationPresentingViewController = () => {
        return authContext.hostViewController;
-    }
-
+    };
     return authContext;
   }
 }
 
 function callback(
   cb: (error: Error, value: any) => void,
-  cvt: (value: any) => any): 
+  cvt: (value: any) => any):
     (value: any, err: NSError) => void {
       return (value: any, error: NSError) => {
         if (!error) {
