@@ -19,7 +19,7 @@
     "build.native": "node scripts/build-native.js",
     "test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch && cd ../demo-angular && tns build android && tns test android --justlaunch",
     "test.ios": "npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch && cd ../demo-angular && tns build ios && tns test ios --justlaunch",
-    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|typings)/**\"",
+    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|typings|platforms)/**\"",
     "plugin.tscwatch": "npm run tsc -- -w",
     "demo.ios": "npm run tsc && cd ../demo && tns run ios --emulator",
     "demo.ios.min": "npm run tsc && cd ../demo && tns run ios --env.uglify --emulator",
