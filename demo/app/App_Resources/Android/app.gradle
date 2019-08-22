@@ -7,6 +7,7 @@
 
 android {
   defaultConfig {
+    multiDexEnabled true
     generatedDensities = []
     applicationId = "org.nativescript.stripe.demo"
   }
