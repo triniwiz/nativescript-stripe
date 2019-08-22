@@ -1,4 +1,5 @@
 import * as utils from 'tns-core-modules/utils/utils';
+import { android as androidApp } from "tns-core-modules/application";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
@@ -68,10 +69,16 @@ export class Stripe {
     billing.setAddress(addr.build());
     const params = com.stripe.android.model.PaymentMethodCreateParams.create(cardParams.build(), billing.build());
     try {
-      const pm = this._stripe.createPaymentMethodSynchronous(params, this._apiKey);
-      if (typeof cb === 'function') {
-        cb(null, PaymentMethod.fromNative(pm));
-      }
+      const apiResultCallback = new com.stripe.android.ApiResultCallback<com.stripe.android.model.PaymentMethod>({
+        onSuccess: (result: any) => {
+          cb(null, PaymentMethod.fromNative(result))
+        },
+        onError: (error: any) => {
+          cb(new Error(error.localizedDescription), null)
+        }
+      })
+      
+      this._stripe.createPaymentMethod(params, apiResultCallback, this._apiKey, null)
     } catch (error) {
       if (typeof cb === 'function') {
         cb(new Error(error.localizedDescription), null);
@@ -80,37 +87,65 @@ export class Stripe {
   }
 
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    const params = com.stripe.android.model.PaymentIntentParams.createRetrievePaymentIntentParams(clientSecret);
     try {
-      const pi = this._stripe.retrievePaymentIntentSynchronous(params, this._apiKey);
-      if (typeof cb === 'function') {
-        cb(null, StripePaymentIntent.fromNative(pi));
-      }
+      const pi = this._stripe.retrievePaymentIntentSynchronous(clientSecret);
+      cb(null, StripePaymentIntent.fromNative(pi));
     } catch (error) {
-      if (typeof cb === 'function') {
-        cb(new Error(error.localizedDescription), null);
-      }
+      cb(new Error(error.localizedDescription), null);
     }
   }
 
-  confirmPaymentIntent(pi: StripePaymentIntent, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    const params = com.stripe.android.model.PaymentIntentParams.createConfirmPaymentIntentWithPaymentMethodId(
-      pi.id, pi.clientSecret, returnUrl);
+  confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
     try {
-      const pi = this._stripe.confirmPaymentIntentSynchronous(params, this._apiKey);
-      if (typeof cb === 'function') {
-        cb(null, StripePaymentIntent.fromNative(pi));
-      }
+      const activity = androidApp.foregroundActivity;
+
+      const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>({
+        onSuccess: (result: com.stripe.android.SetupIntentResult) => {
+          const setupIntent = result.getIntent();
+          cb(null, StripeSetupIntent.fromNative(setupIntent))
+        },
+        onError: (error: any) => {
+          cb(new Error(error.localizedDescription), null)
+        }
+      });
+
+      activity.onActivityResult = (requestCode, resultCode, data) => {
+        this._stripe.onSetupResult(requestCode, data, resultCb);
+      };
+      
+      this._stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
     } catch (error) {
-      if (typeof cb === 'function') {
-        cb(new Error(error.localizedDescription), null);
-      }
+      cb(new Error(error.localizedDescription), null);
+    }
+  }
+
+  confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+    try {
+      const activity = androidApp.foregroundActivity;
+
+      const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>({
+        onSuccess: (result: com.stripe.android.PaymentIntentResult) => {
+          const setupIntent = result.getIntent();
+          cb(null, StripePaymentIntent.fromNative(setupIntent))
+        },
+        onError: (error: any) => {
+          cb(new Error(error.localizedDescription), null)
+        }
+      });
+
+      activity.onActivityResult = (requestCode, resultCode, data) => {
+        this._stripe.onPaymentResult(requestCode, data, resultCb);
+      };
+      
+      this._stripe.confirmPayment(activity, piParams.native);
+    } catch (error) {
+       cb(new Error(error.localizedDescription), null);
     }
   }
 }
 
 export class Card implements CardCommon {
-  native: com.stripe.android.model.Card;
+  private _cardBuilder: com.stripe.android.model.Card.Builder;
   private _brand: CardBrand;
   private _last4: string;
 
@@ -121,7 +156,7 @@ export class Card implements CardCommon {
     cardCVC: string
   ) {
     if (cardNumber && cardExpMonth && cardExpYear && cardCVC) {
-      this.native = new com.stripe.android.model.Card(
+      this._cardBuilder = new com.stripe.android.model.Card.Builder(
         cardNumber,
         new java.lang.Integer(cardExpMonth),
         new java.lang.Integer(cardExpYear),
@@ -132,20 +167,20 @@ export class Card implements CardCommon {
 
   public static fromNative(card: com.stripe.android.model.Card): Card {
     const newCard = new Card(null, null, null, null);
-    newCard.native = card;
+    newCard._cardBuilder = card.toBuilder();
     return newCard;
   }
 
   public static fromNativePaymentMethod(pm: com.stripe.android.model.PaymentMethod): Card {
     const newCard = new Card(null, null, null, null);
-    const card = new com.stripe.android.model.Card();
-    card.setAddressCountry(pm.card.country);
-    card.setExpMonth(pm.card.expiryMonth);
-    card.setExpYear(pm.card.expiryYear);
     newCard._last4 = pm.card.last4;
     newCard._brand = <CardBrand>pm.card.brand;
-    newCard.native = card;
+    newCard._cardBuilder = new com.stripe.android.model.Card.Builder(null, pm.card.expiryMonth, pm.card.expiryYear, null).country(pm.card.country);
+
     return newCard;
+  }
+  get native(): com.stripe.android.model.Card {
+    return this._cardBuilder.build();
   }
 
   validateNumber(): boolean {
@@ -178,8 +213,10 @@ export class Card implements CardCommon {
   get name(): string {
     return this.native.getName();
   }
+
+
   set name(value: string) {
-    this.native.setName(value);
+    this._cardBuilder.name(value);
   }
 
   get addressLine1(): string {
@@ -187,14 +224,14 @@ export class Card implements CardCommon {
   }
 
   set addressLine1(value: string) {
-    this.native.setAddressLine1(value);
+    this._cardBuilder.addressLine1(value);
   }
 
   get addressLine2(): string {
     return this.native.getAddressLine2();
   }
   set addressLine2(value: string) {
-    this.native.setAddressLine2(value);
+    this._cardBuilder.addressLine2(value);
   }
 
   get addressCity(): string {
@@ -202,7 +239,7 @@ export class Card implements CardCommon {
   }
 
   set addressCity(value: string) {
-    this.native.setAddressCity(value);
+    this._cardBuilder.addressCity(value);
   }
 
   get addressZip(): string {
@@ -210,7 +247,7 @@ export class Card implements CardCommon {
   }
 
   set addressZip(value: string) {
-    this.native.setAddressZip(value);
+    this._cardBuilder.addressZip(value);
   }
 
   get addressState(): string {
@@ -218,7 +255,7 @@ export class Card implements CardCommon {
   }
 
   set addressState(value: string) {
-    this.native.setAddressState(value);
+    this._cardBuilder.addressState(value);
   }
 
   get addressCountry(): string {
@@ -226,7 +263,7 @@ export class Card implements CardCommon {
   }
 
   set addressCountry(value: string) {
-    this.native.setAddressCountry(value);
+    this._cardBuilder.addressCountry(value);
   }
 
   get currency(): string {
@@ -234,7 +271,7 @@ export class Card implements CardCommon {
   }
 
   set currency(value: string) {
-    this.native.setCurrency(value);
+    this._cardBuilder.currency(value);
   }
 
   get last4(): string {
@@ -261,17 +298,17 @@ export class Card implements CardCommon {
 }
 
 export class CreditCardView extends CreditCardViewBase {
-  private _android: com.stripe.android.view.CardInputWidget;
+  private _widget: com.stripe.android.view.CardInputWidget;
   get android(): com.stripe.android.view.CardInputWidget {
-    return this._android;
+    return this._widget;
   }
   public createNativeView(): com.stripe.android.view.CardInputWidget {
-    this._android = new com.stripe.android.view.CardInputWidget(this._context);
-    return this._android;
+    this._widget = new com.stripe.android.view.CardInputWidget(this._context);
+    return this._widget;
   }
 
   get card(): Card {
-    const card = this._android.getCard();
+    const card = this._widget.getCard();
     if (card) {
       return new Card(
         card.getNumber(),
@@ -324,24 +361,24 @@ export class StripePaymentIntent implements StripePaymentIntentCommon {
   get currency(): string { return this.native.getCurrency(); }
   get description(): string { return this.native.getDescription(); }
   get requiresAction(): boolean {
-    return com.stripe.android.model.PaymentIntent.Status.fromCode(this.native.getStatus()) === com.stripe.android.model.PaymentIntent.Status.RequiresAction;
+    return this.native.getStatus() === com.stripe.android.model.StripeIntent.Status.RequiresAction;
   }
   get captureMethod(): "manual" | "automatic" { return this.native.getCaptureMethod() as "manual" | "automatic"; }
   get status(): StripePaymentIntentStatus {
-    switch (com.stripe.android.model.PaymentIntent.Status.fromCode(this.native.getStatus())) {
-      case com.stripe.android.model.PaymentIntent.Status.Canceled:
+    switch (this.native.getStatus()) {
+      case com.stripe.android.model.StripeIntent.Status.Canceled:
         return StripePaymentIntentStatus.Canceled;
-      case com.stripe.android.model.PaymentIntent.Status.Processing:
+      case com.stripe.android.model.StripeIntent.Status.Processing:
         return StripePaymentIntentStatus.Processing;
-      case com.stripe.android.model.PaymentIntent.Status.RequiresAction:
+      case com.stripe.android.model.StripeIntent.Status.RequiresAction:
         return StripePaymentIntentStatus.RequiresAction;
-      case com.stripe.android.model.PaymentIntent.Status.RequiresCapture:
+      case com.stripe.android.model.StripeIntent.Status.RequiresCapture:
         return StripePaymentIntentStatus.RequiresCapture;
-      case com.stripe.android.model.PaymentIntent.Status.RequiresConfirmation:
+      case com.stripe.android.model.StripeIntent.Status.RequiresConfirmation:
         return StripePaymentIntentStatus.RequiresConfirmation;
-      case com.stripe.android.model.PaymentIntent.Status.RequiresPaymentMethod:
+      case com.stripe.android.model.StripeIntent.Status.RequiresPaymentMethod:
         return StripePaymentIntentStatus.RequiresPaymentMethod;
-      case com.stripe.android.model.PaymentIntent.Status.Succeeded:
+      case com.stripe.android.model.StripeIntent.Status.Succeeded:
         return StripePaymentIntentStatus.Succeeded;
     }
     return null;
@@ -349,21 +386,40 @@ export class StripePaymentIntent implements StripePaymentIntentCommon {
 }
 
 export class StripePaymentIntentParams {
-  clientSecret: string;
-  paymentMethodParams: any;
+  clientSecret: any;
   paymentMethodId: string;
-  sourceParams: any;
   sourceId: string;
   returnURL: string;  // a URL that opens your app
 
-  get native(): com.stripe.android.model.PaymentIntentParams {
-    const n = new com.stripe.android.model.PaymentIntentParams();
-    n.setClientSecret(this.clientSecret);
-    n.setPaymentMethodCreateParams(this.paymentMethodParams);
-    n.setPaymentMethodId(this.paymentMethodId);
-    n.setSourceParams(this.sourceParams);
-    n.setSourceId(this.sourceId);
-    n.setReturnUrl(this.returnURL);
-    return n;
+  get native(): com.stripe.android.model.ConfirmPaymentIntentParams {
+    if (this.sourceId) {
+      return com.stripe.android.model.ConfirmPaymentIntentParams.createWithSourceId(this.sourceId, this.clientSecret, this.returnURL);
+    } else if (this.paymentMethodId) {
+      return com.stripe.android.model.ConfirmPaymentIntentParams.createWithPaymentMethodId(this.paymentMethodId, this.clientSecret, this.returnURL);
+    } else {
+      return com.stripe.android.model.ConfirmPaymentIntentParams.create(this.clientSecret);
+    }
   }
+}
+
+export class StripeSetupIntentParams {
+  native: com.stripe.android.model.ConfirmSetupIntentParams
+
+  constructor(paymentMethodId: string, clientSecret: string) {
+    this.native = com.stripe.android.model.ConfirmSetupIntentParams.create(paymentMethodId, clientSecret)
+  }
+}
+
+export class StripeSetupIntent {
+  native: com.stripe.android.model.SetupIntent;
+
+  static fromNative(native: com.stripe.android.model.SetupIntent): StripeSetupIntent {
+    const si = new StripeSetupIntent();
+    si.native = native;
+    return si;
+  }
+
+  get status(): com.stripe.android.model.StripeIntent.Status { return this.native.getStatus(); }
+  get paymentMethodId(): string { return this.native.getPaymentMethodId(); }
+  get isSuccess() : boolean { return this.status === com.stripe.android.model.StripeIntent.Status.Succeeded }
 }

@@ -13,26 +13,33 @@ function useAndroidX() {
 
 export class StripeConfig extends StripeConfigCommon {
   private _native: com.stripe.android.PaymentSessionConfig;
+  private _paymentConfigurationInitiated: boolean = false
   get native(): com.stripe.android.PaymentSessionConfig {
     // getter gives client a chance to set properties before using.
     if (!this._native) this._native = this.toNative();
     return this._native;
   }
 
-  private toNative(): com.stripe.android.PaymentSessionConfig {
+  initPaymentConfiguration(): void {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
+    if (this._paymentConfigurationInitiated) return
     com.stripe.android.PaymentConfiguration.init(this.publishableKey);
+    this._paymentConfigurationInitiated = true
+  }
 
+  private toNative(): com.stripe.android.PaymentSessionConfig {
+    this.initPaymentConfiguration()
+    
     let optionalFields = [];
     if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.ADDRESS_LINE_ONE_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.ADDRESS_LINE_TWO_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CITY_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.STATE_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.POSTAL_CODE_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_ONE_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_TWO_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.CITY_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.STATE_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.POSTAL_CODE_FIELD);
     }
     if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.Phone) < 0) {
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.PHONE_FIELD);
+      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.PHONE_FIELD);
     }
 
     const shippingRequired = this.requiredShippingAddressFields.length !== 0;
@@ -50,12 +57,18 @@ export class StripeConfig extends StripeConfigCommon {
   }
 }
 
+
 export class StripeCustomerSession {
   native: com.stripe.android.CustomerSession;
 
   constructor() {
-    com.stripe.android.CustomerSession.initCustomerSession(createKeyProvider());
+    StripeConfig.shared().initPaymentConfiguration()
+    com.stripe.android.CustomerSession.initCustomerSession(this._getContext(), createKeyProvider());
     this.native = com.stripe.android.CustomerSession.getInstance();
+  }
+
+  private _getContext(): android.content.Context {
+    return androidApp.context;
   }
 }
 
@@ -81,11 +94,12 @@ export class StripePaymentSession {
   paymentInProgress: boolean;
   private receiver: android.content.BroadcastReceiver;
 
-  constructor(_page: Page,
+  constructor(
+    _page: Page,
     public customerSession: StripeCustomerSession,
     amount: number,
     public currency: string,
-    listener: StripePaymentListener,
+    public listener: StripePaymentListener,
     prefilledAddress?: StripeAddress) {
     let config = StripeConfig.shared().native;
     if (prefilledAddress) {
@@ -113,7 +127,9 @@ export class StripePaymentSession {
         .build();
     }
     this.native = new com.stripe.android.PaymentSession(this.patchActivity());
-    if (!this.native.init(createPaymentListener(this, listener), config)) {
+
+
+    if (!this.native.init(createPaymentSessionListener(this, listener), config)) {
       throw new Error("CustomerSession not initialized");
     }
     this.native.setCartTotal(amount);
@@ -132,7 +148,23 @@ export class StripePaymentSession {
 
   requestPayment() {
     this.paymentInProgress = true;
-    this.native.completePayment(createPaymentCompletionProvider());
+    // TODO: fix request payment
+    const data = this.native.getPaymentSessionData()
+    const shippingMethod = data.getShippingMethod();
+    const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
+    StripeConfig.shared().backendAPI.completeCharge(
+      data.getPaymentMethod().id,
+      data.getCartTotal() + shippingCost,
+      createShippingMethod(shippingMethod),
+      createAddress(data.getShippingInformation()))
+      .then(() => {
+        this.paymentInProgress = false
+        this.listener.onPaymentSuccess()
+        this.native.onCompleted()
+      }).catch(e => {
+        this.listener.onError(100, e);
+        this.paymentInProgress = false
+      })
   }
 
   presentPaymentMethods(): void {
@@ -166,23 +198,14 @@ export class StripePaymentSession {
   }
 }
 
-function createPaymentListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
+function createPaymentSessionListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
   return new com.stripe.android.PaymentSession.PaymentSessionListener({
-    onPaymentSessionDataChanged: function (sessionData: com.stripe.android.PaymentSessionData): void {
-      if (parent.paymentInProgress) {
-        if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.SUCCESS) {
-          if (listener.onPaymentSuccess) listener.onPaymentSuccess();
-        } else if (sessionData.getPaymentResult().startsWith(com.stripe.android.PaymentResultListener.ERROR)) {
-          if (listener.onError) listener.onError(100, sessionData.getPaymentResult());
-        } else if (sessionData.getPaymentResult() === com.stripe.android.PaymentResultListener.USER_CANCELLED) {
-          if (listener.onUserCancelled) listener.onUserCancelled();
-        }
-        parent.paymentInProgress = false;
-        return;
-      }
+    onPaymentSessionDataChanged: (sessionData: com.stripe.android.PaymentSessionData): void  => {
+      if (parent.paymentInProgress) return;
+
       parent.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
         onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
-          parent.selectedPaymentMethod = createPaymentMethod(customer, sessionData.getSelectedPaymentMethodId());
+          parent.selectedPaymentMethod = createPaymentMethod(customer, sessionData.getPaymentMethod());
           parent.selectedShippingMethod = createShippingMethod(sessionData.getShippingMethod());
           parent.shippingAddress = createAddress(sessionData.getShippingInformation());
           let paymentData = {
@@ -198,11 +221,11 @@ function createPaymentListener(parent: StripePaymentSession, listener: StripePay
         }
       }));
     },
-    onCommunicatingStateChanged: function (isCommunicating: boolean): void {
+    onCommunicatingStateChanged: (isCommunicating: boolean): void => {
       parent.loading = isCommunicating;
       listener.onCommunicatingStateChanged(isCommunicating);
     },
-    onError: function (code: number, message: string): void {
+    onError: (code: number, message: string): void => {
       listener.onError(code, message);
     }
   });
@@ -237,41 +260,24 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
   return new InternalReceiver(parent, listener);
 }
 
-function createPaymentCompletionProvider(): com.stripe.android.PaymentCompletionProvider {
-  return new com.stripe.android.PaymentCompletionProvider({
-    completePayment(data: com.stripe.android.PaymentSessionData, listener: com.stripe.android.PaymentResultListener): void {
-      const shippingMethod = data.getShippingMethod();
-      const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-      StripeConfig.shared().backendAPI.completeCharge(
-        data.getSelectedPaymentMethodId(),
-        data.getCartTotal() + shippingCost,
-        createShippingMethod(shippingMethod),
-        createAddress(data.getShippingInformation()))
-        .then(() => {
-          listener.onPaymentResult(com.stripe.android.PaymentResultListener.SUCCESS);
-        }).catch(e => {
-          listener.onPaymentResult(com.stripe.android.PaymentResultListener.ERROR +
-            ": " + e);
-        });
-    }
-  });
-}
-
-function createPaymentMethod(customer: com.stripe.android.model.Customer, paymentMethodId: string): StripePaymentMethod {
-  if (!paymentMethodId) return undefined;
+function createPaymentMethod(customer: com.stripe.android.model.Customer, paymentMethod: com.stripe.android.model.PaymentMethod): StripePaymentMethod {
+  if (!paymentMethod) return undefined;
   if (!customer) return { label: "Error (101)", image: undefined, templateImage: undefined };
-  let cs = customer.getSourceById(paymentMethodId);
+  
+  let cs = customer.getSourceById(paymentMethod.id);
   if (!cs) return { label: "Error (102)", image: undefined, templateImage: undefined };
+  
   let source = cs.asSource();
-  let card = cs.asCard();
-
   if (source) return createPaymentMethodFromSource(source);
+
+  let card = cs.asCard();
   if (card) return createPaymentMethodFromCard(card);
+  
   return { label: "Error (103)", image: undefined, templateImage: undefined };
 }
 
 function createPaymentMethodFromSource(source: com.stripe.android.model.Source): StripePaymentMethod {
-  if (source.getType() !== com.stripe.android.model.Source.CARD) {
+  if (source.getType() !== com.stripe.android.model.Source.SourceType.CARD) {
     return {
       label: source.getType(),
       stripeID: source.getId(),
@@ -280,10 +286,11 @@ function createPaymentMethodFromSource(source: com.stripe.android.model.Source):
       templateImage: undefined
     };
   }
+
   const card = <com.stripe.android.model.SourceCardData>source.getSourceTypeModel();
   return {
     label: `${card.getBrand()} ...${card.getLast4()}`,
-    image: getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue()),
+    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(card.getBrand())),
     templateImage: undefined,
     type: "Card",
     stripeID: source.getId(),
@@ -294,7 +301,7 @@ function createPaymentMethodFromSource(source: com.stripe.android.model.Source):
 function createPaymentMethodFromCard(card: com.stripe.android.model.Card): StripePaymentMethod {
   return {
     label: `${card.getBrand()} ...${card.getLast4()}`,
-    image: getBitmapFromResource(com.stripe.android.model.Card.BRAND_RESOURCE_MAP.get(card.getBrand()).longValue()),
+    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(card.getBrand())),
     templateImage: undefined,
     type: "Card",
     stripeID: card.getId(),

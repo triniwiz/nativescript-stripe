@@ -31,7 +31,8 @@ export class StandardComponent implements OnInit {
       price: 1200
     };
     this.paymentSession = this.stripeService.createPaymentSession(
-      this.page, this.item.price, new Listener(this));
+      this.page, this.item.price, new Listener(this)
+    );
   }
 
   get isLoading(): boolean {
