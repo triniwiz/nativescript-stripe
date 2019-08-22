@@ -388,7 +388,7 @@ export class StripePaymentIntentParams {
   sourceId: string;
   returnURL: string;  // a URL that opens your app
 
-  get native(): com.stripe.android.model.ConfirmPaymentIntentParams{
+  get native(): com.stripe.android.model.ConfirmPaymentIntentParams {
     if (this.sourceId) {
       return com.stripe.android.model.ConfirmPaymentIntentParams.createWithSourceId(this.sourceId, this.clientSecret, this.returnURL);
     } else if (this.paymentMethodId) {
@@ -418,5 +418,5 @@ export class StripeSetupIntent {
 
   get status(): com.stripe.android.model.StripeIntent.Status { return this.native.getStatus(); }
   get paymentMethodId(): string { return this.native.getPaymentMethodId(); }
-  get isSuccess() : boolean { return this.status === com.stripe.android.model.StripeIntent.Status.Succeeded; }
+  get isSuccess(): boolean { return this.status === com.stripe.android.model.StripeIntent.Status.Succeeded; }
 }
