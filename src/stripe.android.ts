@@ -337,30 +337,13 @@ export class PaymentMethod implements PaymentMethodCommon {
   get metadata(): object { return this.native.metadata; }
 }
 
-export class StripePaymentIntent implements StripePaymentIntentCommon {
-  native: com.stripe.android.model.PaymentIntent;
 
-  static fromNative(native: com.stripe.android.model.PaymentIntent): StripePaymentIntent {
-    const pi = new StripePaymentIntent();
-    pi.native = native;
-    return pi;
-  }
-
-  static fromApi(json: any): StripePaymentIntent {
-    const native = com.stripe.android.model.PaymentIntent.fromJson(json);
-    return StripePaymentIntent.fromNative(native);
-  }
+class StripeIntent {
+  native: com.stripe.android.model.PaymentIntent | com.stripe.android.model.SetupIntent;
 
   get id(): string { return this.native.getId(); }
   get clientSecret(): string { return this.native.getClientSecret(); }
-  get amount(): number { return this.native.getAmount().longValue(); }
-  get created(): Date { return new Date(this.native.getCreated().longValue()); }
-  get currency(): string { return this.native.getCurrency(); }
   get description(): string { return this.native.getDescription(); }
-  get requiresAction(): boolean {
-    return this.native.getStatus() === com.stripe.android.model.StripeIntent.Status.RequiresAction;
-  }
-  get captureMethod(): "manual" | "automatic" { return this.native.getCaptureMethod() as "manual" | "automatic"; }
   get status(): StripePaymentIntentStatus {
     switch (this.native.getStatus()) {
       case com.stripe.android.model.StripeIntent.Status.Canceled:
@@ -380,6 +363,30 @@ export class StripePaymentIntent implements StripePaymentIntentCommon {
     }
     return null;
   }
+  get requiresAction(): boolean {
+    return this.status === StripePaymentIntentStatus.RequiresAction;
+  }
+  get isSuccess(): boolean { return this.status === StripePaymentIntentStatus.Succeeded; }
+}
+
+export class StripePaymentIntent extends StripeIntent implements StripePaymentIntentCommon {
+  native: com.stripe.android.model.PaymentIntent;
+
+  static fromNative(native: com.stripe.android.model.PaymentIntent): StripePaymentIntent {
+    const pi = new StripePaymentIntent();
+    pi.native = native;
+    return pi;
+  }
+
+  static fromApi(json: any): StripePaymentIntent {
+    const native = com.stripe.android.model.PaymentIntent.fromJson(json);
+    return StripePaymentIntent.fromNative(native);
+  }
+
+  get amount(): number { return this.native.getAmount().longValue(); }
+  get created(): Date { return new Date(this.native.getCreated().longValue()); }
+  get currency(): string { return this.native.getCurrency(); }
+  get captureMethod(): "manual" | "automatic" { return this.native.getCaptureMethod() as "manual" | "automatic"; }
 }
 
 export class StripePaymentIntentParams {
@@ -407,7 +414,7 @@ export class StripeSetupIntentParams {
   }
 }
 
-export class StripeSetupIntent {
+export class StripeSetupIntent extends StripeIntent {
   native: com.stripe.android.model.SetupIntent;
 
   static fromNative(native: com.stripe.android.model.SetupIntent): StripeSetupIntent {
@@ -416,7 +423,5 @@ export class StripeSetupIntent {
     return si;
   }
 
-  get status(): com.stripe.android.model.StripeIntent.Status { return this.native.getStatus(); }
   get paymentMethodId(): string { return this.native.getPaymentMethodId(); }
-  get isSuccess(): boolean { return this.status === com.stripe.android.model.StripeIntent.Status.Succeeded; }
 }
