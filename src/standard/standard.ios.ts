@@ -256,13 +256,6 @@ function createPaymentMethod(paymentContext: STPPaymentContext): StripePaymentMe
       stripeId = pm.stripeId;
       brand = STPCard.stringFromBrand(pm.card.brand);
     }
-  } else if (pmt.isKindOfClass(STPSource)) {
-    const src = <STPSource><unknown>pmt;
-    if (src.type === STPSourceType.Card) {
-      type = "Card";
-      stripeId = src.stripeID;
-      brand = STPCard.stringFromBrand(src.cardDetails.brand);
-    }
   }
   return {
     label: pmt.label,
