@@ -40,29 +40,28 @@ export class StripeService implements StripeBackendAPI {
 
   // SetupIntent
   createSetupIntent(): Promise<any> {
-    return this._postRequest("create_setup_intent").then(response => response.content.toJSON())
+    return this._postRequest("create_setup_intent").then(response => response.content.toJSON());
   }
 
   // PaymentIntent
   createPaymentIntent(amount: number, currency: string = 'usd'): Promise<any> {
-    const content = 
+    const content =
         "&amount=" + amount +
-        "&currency=" + currency 
-    return this._postRequest("create_intent", content).then(response => response.content.toJSON())
+        "&currency=" + currency ;
+    return this._postRequest("create_intent", content).then(response => response.content.toJSON());
   }
 
   createCustomerKey(apiVersion: string): Promise<any> {
-    const content = `api_version=${apiVersion}`
-    return this._postRequest("ephemeral_keys", content).then(response => response.content.toJSON())
+    const content = `api_version=${apiVersion}`;
+    return this._postRequest("ephemeral_keys", content).then(response => response.content.toJSON());
   }
 
   completeCharge(stripeID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void> {
-    const content = 
+    const content =
         "payment_method=" + stripeID +
         "&amount=" + amount +
-        "&" + this._encodeShipping(shippingMethod, shippingAddress)
-
-    return this._postRequest("capture_payment", content)
+        "&" + this._encodeShipping(shippingMethod, shippingAddress);
+    return this._postRequest("capture_payment", content);
   }
 
   createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
@@ -96,7 +95,7 @@ export class StripeService implements StripeBackendAPI {
       if (response.statusCode < 200 || response.statusCode >= 300) {
         throw new Error(response.content.toString());
       }
-      return response
+      return response;
     });
   }
 

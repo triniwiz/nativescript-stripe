@@ -6,7 +6,7 @@ import { AppRoutingModule } from "./app.routing";
 import { CreditCardViewComponent } from "./demo/creditcardview.component";
 import { HomeComponent } from "./demo/home.component";
 import { StandardComponent } from "./demo/standard.component";
-import { IntentComponent } from "./demo/intent.component"
+import { IntentComponent } from "./demo/intent.component";
 import { StripeService } from "./demo/stripe.service";
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
