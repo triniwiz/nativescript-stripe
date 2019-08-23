@@ -84,36 +84,6 @@ const cc = new Card("1111111111111111",2,18,"123");
 cc.name = "Osei Fortune";
 ```
 
-### Get Token
-
-TypeScript
-```ts
-import {Stripe} from 'nativescript-stripe';
-const stripe = new Stripe('yourApiKey');
-stripe.createToken(cc, (error,token)=>{
-  if(!error){
-    //Do something with your token;
-
-  }else{
-    console.log(error);
-  }
-});
-```
-
-JavaScript
-```js
-var Stripe = require('nativescript-stripe').Stripe;
-const stripe = new Stripe('yourApiKey');
-stripe.createToken(cc, (error,token)=>{
-  if(!error){
-    //Do something with your token;
-
-  }else{
-    console.log(error);
-  }
-});
-```
-
 ## Standard Integration
 
 The `demo` and `demo-angular` folders contain demos that use the Standard Integration.
@@ -149,7 +119,7 @@ for some credit card purchases. Stripe supports this, though most of the work to
 required on the backend server and in the mobile app, outside the `nativescript-stripe` plugin.
 
 To support SCA, follow the instructions for [iOS](https://stripe.com/docs/payments/payment-intents/ios)
-and [Android](https://stripe.com/docs/payments/payment-intents/android) on using `PaymentIntent`s instead
+and [Android](https://stripe.com/docs/payments/payment-intents/android) on using `PaymentIntents` instead
 of tokens when interacting with your backend server. The `nativescript-stripe` plugin has
 cross-platform data structures and method calls that might be helpful. In `index.d.ts` see:
 * `PaymentMethod` and related classes
@@ -160,12 +130,9 @@ cross-platform data structures and method calls that might be helpful. In `index
 SCA requires the customer to enter additional information with some charge cards. Stripe takes care of this
 if you properly handle the redirect from the `StripePaymentIntent` returned from the server.
 
-On iOS, `StripeRedirectSession` can help manage the interaction with the customer.
+If you're using the [automatic confirmation flow](https://stripe.com/docs/payments/payment-intents/ios#automatic-confirmation-ios), `confirmPaymentIntent` and `confirmSetupIntent` will automatically manages the SCA validation by showing and validating the payment authentification.
 
-On Android, it appears that (as of May 1, 2019) the Android SDK regarding SCA is still undergoing heavy
-development and not everything is working as well as it could. For example, the new methods in `Stripe`
-cannot be called on the UI thread in Android (but they can on iOS), and the technique for handling
-secondary customer interaction is difficult. Hopefully these will be addressed soon.
+If you're using the [manual confirmation flow](https://stripe.com/docs/payments/payment-intents/ios#manual-confirmation-ios), where back-end creates the `PaymentIntent`|`SetupIntent` and requires an Intent authentification from the customer, `authenticatePaymentIntent` and `authenticateSetupIntent` will allow to manage that extra step before sending back the Intent to your server.
 
 ## Status
 `demo-angular` now support `SetupIntent` and `PaymentIntent` SCA integration. Any credit card verification will be automatically prompted to the user.
