@@ -150,7 +150,7 @@ export class StripePaymentSession {
     const data = this.native.getPaymentSessionData();
     const shippingMethod = data.getShippingMethod();
     const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-    StripeConfig.shared().backendAPI.completeCharge(
+    StripeConfig.shared().backendAPI.capturePayment(
       data.getPaymentMethod().id,
       data.getCartTotal() + shippingCost,
       createShippingMethod(shippingMethod),

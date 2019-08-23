@@ -100,8 +100,7 @@ export class Stripe {
 
       const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>({
         onSuccess: (result: com.stripe.android.SetupIntentResult) => {
-          const setupIntent = result.getIntent();
-          cb(null, StripeSetupIntent.fromNative(setupIntent));
+          cb(null, StripeSetupIntent.fromNative(result.getIntent()));
         },
         onError: (error: any) => {
           cb(new Error(error.localizedDescription), null);
@@ -117,14 +116,32 @@ export class Stripe {
     }
   }
 
+  authenticateSetupIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
+    const activity = androidApp.foregroundActivity;
+
+    const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>({
+      onSuccess: (result: com.stripe.android.SetupIntentResult) => {
+        cb(null, StripeSetupIntent.fromNative(result.getIntent()));
+      },
+      onError: (error: any) => {
+        cb(new Error(error.localizedDescription), null);
+      }
+    });
+
+    activity.onActivityResult = (requestCode, resultCode, data) => {
+      this._stripe.onSetupResult(requestCode, data, resultCb);
+    };
+
+    this._stripe.authenticateSetup(activity, clientSecret)
+  }
+
   confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
     try {
       const activity = androidApp.foregroundActivity;
 
       const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>({
         onSuccess: (result: com.stripe.android.PaymentIntentResult) => {
-          const setupIntent = result.getIntent();
-          cb(null, StripePaymentIntent.fromNative(setupIntent));
+          cb(null, StripePaymentIntent.fromNative(result.getIntent()));
         },
         onError: (error: any) => {
           cb(new Error(error.localizedDescription), null);
@@ -138,6 +155,26 @@ export class Stripe {
     } catch (error) {
        cb(new Error(error.localizedDescription), null);
     }
+  }
+
+  // Manual confirmation flow https://stripe.com/docs/payments/payment-intents/ios#manual-confirmation-ios
+  authenticatePaymentIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+    const activity = androidApp.foregroundActivity;
+
+    const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>({
+      onSuccess: (result: com.stripe.android.PaymentIntentResult) => {
+        cb(null, StripePaymentIntent.fromNative(result.getIntent()));
+      },
+      onError: (error: any) => {
+        cb(new Error(error.localizedDescription), null);
+      }
+    });
+
+    activity.onActivityResult = (requestCode, resultCode, data) => {
+      this._stripe.onPaymentResult(requestCode, data, resultCb);
+    };
+
+    this._stripe.authenticatePayment(activity, clientSecret)
   }
 }
 
@@ -367,6 +404,7 @@ class StripeIntent {
     return this.status === StripePaymentIntentStatus.RequiresAction;
   }
   get isSuccess(): boolean { return this.status === StripePaymentIntentStatus.Succeeded; }
+  get requiresConfirmation(): boolean { return this.status === StripePaymentIntentStatus.RequiresConfirmation; }
 }
 
 export class StripePaymentIntent extends StripeIntent implements StripePaymentIntentCommon {

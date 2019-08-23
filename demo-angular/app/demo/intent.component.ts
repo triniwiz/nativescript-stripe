@@ -14,6 +14,11 @@ export class IntentComponent {
   status: string;
   private stripe: Stripe;
 
+  private _item = {
+    price: 1200,
+    currency: 'usd'
+  }
+
   constructor(private stripeService: StripeService, public changeDetectionRef: ChangeDetectorRef) {
     if (-1 !== publishableKey.indexOf("pk_test_yours")) {
       throw new Error("publishableKey must be changed from placeholder");
@@ -36,11 +41,45 @@ export class IntentComponent {
     });
   }
 
-  confirmPayment(cardView: CreditCardView) {
+  // Authenticate and charge on the UI
+  // https://stripe.com/docs/payments/payment-intents/ios#automatic-confirmation-ios
+  automaticConfirmPayment(cardView: CreditCardView) {
     this._setStatus("Create Payment Method...");
     this.stripe.createPaymentMethod(cardView.card, (error, pm) => {
       if (error) return this._displayError(error);
-      this._createPaymentIntent(pm.id);
+      this._createPaymentIntent().then(p => {
+        const piParams = new StripePaymentIntentParams();
+        piParams.paymentMethodId = pm.id;
+        piParams.clientSecret = p.secret;
+        this._confirmPaymentIntent(piParams)
+      })
+    });
+  }
+
+  // Authenticate on the UI only, confirm charge on back-end
+  // https://stripe.com/docs/payments/payment-intents/ios#handle-authentication-manual
+  manualConfirmPayment(cardView: CreditCardView) {
+    this._setStatus("Create Payment Method...");
+    this.stripe.createPaymentMethod(cardView.card, (error, pm) => {
+      if (error) return this._displayError(error);
+
+      this._setStatus("Create Payment Intent...");
+      this.stripeService.capturePayment(pm.id, this._item.price).then(({ secret }) => {
+
+        this._setStatus("Authenticate Payment Intent...");
+        this.stripe.authenticatePaymentIntent(secret, null, (error, pintent) => {
+          if (error) return this._displayError(error);
+          if (pintent.requiresConfirmation) {
+            this._setStatus("Confirm Payment Intent...");
+            this.stripeService.confirmPaymentIntent(pintent.id).then(response => {
+              this._setStatus(`Payment Intent Processed: ${JSON.stringify(response)}`);
+            })
+          } else {
+            // Not ready to be processed by backend
+            this._setStatus(`Payment Status: ${pintent.status}`);
+          }
+        })
+      })
     });
   }
 
@@ -48,21 +87,18 @@ export class IntentComponent {
    * Private
    */
 
-  private _createPaymentIntent(paymentMethodId: string) {
+  private _createPaymentIntent(): Promise<any> {
     this._setStatus("Create Payment Intent...");
-    this.stripeService.createPaymentIntent(1200, "usd").then(p => {
-      const piParams = new StripePaymentIntentParams();
-      piParams.paymentMethodId = paymentMethodId;
-      piParams.clientSecret = p.secret;
-
-      this._setStatus("Confirm Payment Intent...");
-      this.stripe.confirmPaymentIntent(piParams, (error, pintent) => {
-        if (error) return this._displayError(error);
-        this._setStatus(`Payment Status: ${pintent.status}`);
-      });
+    return this.stripeService.createPaymentIntent(this._item.price, this._item.currency);
+  }
+  
+  private _confirmPaymentIntent(piParams) {
+    this._setStatus("Confirm Payment Intent...");
+    this.stripe.confirmPaymentIntent(piParams, (error, pintent) => {
+      if (error) return this._displayError(error);
+      this._setStatus(`Payment Status: ${pintent.status}`);
     });
   }
-
 
   private _setStatus(message) {
     this.status = message;

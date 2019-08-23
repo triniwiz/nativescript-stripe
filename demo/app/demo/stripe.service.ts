@@ -36,61 +36,33 @@ export class StripeService implements StripeBackendAPI {
     this.customerSession = new StripeCustomerSession();
   }
 
-  private backendURL(pathComponent: string): string {
-    if (!backendBaseURL) throw new Error("backendBaseURL must be set");
-    if (!backendBaseURL.endsWith("/")) {
-      return backendBaseURL + "/" + pathComponent;
-    } else {
-      return backendBaseURL + pathComponent;
-    }
+  // SetupIntent
+  createSetupIntent(): Promise<any> {
+    return this._postRequest("create_setup_intent").then(response => response.content.toJSON());
+  }
+
+  // PaymentIntent
+  createPaymentIntent(amount: number, currency: string = 'usd'): Promise<any> {
+    const content = `amount=${amount}&currency=${currency}`;
+    return this._postRequest("create_intent", content).then(response => response.content.toJSON());
   }
 
   createCustomerKey(apiVersion: string): Promise<any> {
-    let url = this.backendURL("ephemeral_keys");
-    return httpModule.request({
-      url: url,
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
-      content: "api_version=" + apiVersion
-    }).then(response => {
-      if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw new Error(response.content.toString());
-      }
-      return response.content.toJSON();
-    });
+    const content = `api_version=${apiVersion}`;
+    return this._postRequest("ephemeral_keys", content).then(response => response.content.toJSON());
   }
 
-  completeCharge(stripeID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void> {
-    let url = this.backendURL("capture_payment");
-    return httpModule.request({
-      url: url,
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
-      content:
-        "source=" + stripeID +
+  capturePayment(stripeID: string, amount: number, shippingMethod: StripeShippingMethod, shippingAddress: StripeAddress): Promise<void> {
+    const content =
+        "payment_method=" + stripeID +
         "&amount=" + amount +
-        "&" + this.encodeShipping(shippingMethod, shippingAddress)
-    }).then(response => {
-      if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw new Error(response.content.toString());
-      }
-    });
+        "&" + this._encodeShipping(shippingMethod, shippingAddress);
+    return this._postRequest("capture_payment", content);
   }
 
-  private encodeShipping(method: StripeShippingMethod, address: StripeAddress): string {
-    function entry(label: string, value: string): string {
-      return value ? encodeURI(label) + "=" + encodeURI(value) : "";
-    }
-    return entry("shipping[carrier]", method.label) +
-      entry("&shipping[name]", address.name) +
-      entry("&shipping[address][line1]", address.line1) +
-      entry("&shipping[address][line2]", address.line2) +
-      entry("&shipping[address][city]", address.city) +
-      entry("&shipping[address][state]", address.state) +
-      entry("&shipping[address][country]", address.country) +
-      entry("&shipping[address][postal_code]", address.postalCode) +
-      entry("&phone", address.phone) +
-      entry("&email", address.email);
+  confirmPaymentIntent(paymentIntentID: string): Promise<void> {
+    const content = `payment_intent_id=${paymentIntentID}`
+    return this._postRequest("confirm_payment", content);
   }
 
   createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
@@ -107,5 +79,49 @@ export class StripeService implements StripeBackendAPI {
 
   requestPayment(paymentSession: StripePaymentSession) {
     paymentSession.requestPayment();
+  }
+
+  /*
+   *  Private
+   */
+
+  private _postRequest(endpoint: string, content: string = ''): Promise<any> {
+    let url = this._backendURL(endpoint);
+    return httpModule.request({
+      url: url,
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },
+      content
+    }).then(response => {
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw new Error(response.content.toString());
+      }
+      return response;
+    });
+  }
+
+  private _backendURL(pathComponent: string): string {
+    if (!backendBaseURL) throw new Error("backendBaseURL must be set");
+    if (!backendBaseURL.endsWith("/")) {
+      return backendBaseURL + "/" + pathComponent;
+    } else {
+      return backendBaseURL + pathComponent;
+    }
+  }
+
+  private _encodeShipping(method: StripeShippingMethod, address: StripeAddress): string {
+    function entry(label: string, value: string): string {
+      return value ? encodeURI(label) + "=" + encodeURI(value) : "";
+    }
+    return entry("shipping[carrier]", method.label) +
+      entry("&shipping[name]", address.name) +
+      entry("&shipping[address][line1]", address.line1) +
+      entry("&shipping[address][line2]", address.line2) +
+      entry("&shipping[address][city]", address.city) +
+      entry("&shipping[address][state]", address.state) +
+      entry("&shipping[address][country]", address.country) +
+      entry("&shipping[address][postal_code]", address.postalCode) +
+      entry("&phone", address.phone) +
+      entry("&email", address.email);
   }
 }
