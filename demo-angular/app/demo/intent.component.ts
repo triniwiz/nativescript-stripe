@@ -17,7 +17,7 @@ export class IntentComponent {
   private _item = {
     price: 1200,
     currency: 'usd'
-  }
+  };
 
   constructor(private stripeService: StripeService, public changeDetectionRef: ChangeDetectorRef) {
     if (-1 !== publishableKey.indexOf("pk_test_yours")) {
@@ -51,8 +51,8 @@ export class IntentComponent {
         const piParams = new StripePaymentIntentParams();
         piParams.paymentMethodId = pm.id;
         piParams.clientSecret = p.secret;
-        this._confirmPaymentIntent(piParams)
-      })
+        this._confirmPaymentIntent(piParams);
+      });
     });
   }
 
@@ -73,13 +73,13 @@ export class IntentComponent {
             this._setStatus("Confirm Payment Intent...");
             this.stripeService.confirmPaymentIntent(pintent.id).then(response => {
               this._setStatus(`Payment Intent Processed: ${JSON.stringify(response)}`);
-            })
+            });
           } else {
             // Not ready to be processed by backend
             this._setStatus(`Payment Status: ${pintent.status}`);
           }
-        })
-      })
+        });
+      });
     });
   }
 
@@ -91,7 +91,7 @@ export class IntentComponent {
     this._setStatus("Create Payment Intent...");
     return this.stripeService.createPaymentIntent(this._item.price, this._item.currency);
   }
-  
+
   private _confirmPaymentIntent(piParams) {
     this._setStatus("Confirm Payment Intent...");
     this.stripe.confirmPaymentIntent(piParams, (error, pintent) => {

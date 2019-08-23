@@ -132,7 +132,7 @@ export class Stripe {
       this._stripe.onSetupResult(requestCode, data, resultCb);
     };
 
-    this._stripe.authenticateSetup(activity, clientSecret)
+    this._stripe.authenticateSetup(activity, clientSecret);
   }
 
   confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
@@ -174,7 +174,7 @@ export class Stripe {
       this._stripe.onPaymentResult(requestCode, data, resultCb);
     };
 
-    this._stripe.authenticatePayment(activity, clientSecret)
+    this._stripe.authenticatePayment(activity, clientSecret);
   }
 }
 

@@ -55,16 +55,14 @@ export class StripeService implements StripeBackendAPI {
   }
 
   capturePayment(stripeID: string, amount: number, shippingMethod?: StripeShippingMethod, shippingAddress?: StripeAddress): Promise<any> {
-    let content =
-        "payment_method=" + stripeID +
-        "&amount=" + amount;
-    if (shippingMethod && shippingAddress) content += "&" + this._encodeShipping(shippingMethod, shippingAddress);
-    return this._postRequest("capture_payment", content).then(response => response.content.toJSON());;
+    let content = `payment_method=${stripeID}&amount=${amount}`;
+    if (shippingMethod && shippingAddress) content += `&${this._encodeShipping(shippingMethod, shippingAddress)}`;
+    return this._postRequest("capture_payment", content).then(response => response.content.toJSON());
   }
 
   confirmPaymentIntent(paymentIntentID: string): Promise<any> {
-    const content = `payment_intent_id=${paymentIntentID}`
-    return this._postRequest("confirm_payment", content).then(response => response.content.toJSON());;
+    const content = `payment_intent_id=${paymentIntentID}`;
+    return this._postRequest("confirm_payment", content).then(response => response.content.toJSON());
   }
 
   createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
