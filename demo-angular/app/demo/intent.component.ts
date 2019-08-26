@@ -32,6 +32,7 @@ export class IntentComponent {
 
       this._setStatus("Create Payment Method...");
       this.stripe.createPaymentMethod(cardView.card, (error, pm) => {
+        if (error) return this._displayError(error);
         this._setStatus("Confirm Setup Intent...");
         this.stripe.confirmSetupIntent(pm.id, intent.secret, (error, setupIntent) => {
           if (error) this._displayError(error);

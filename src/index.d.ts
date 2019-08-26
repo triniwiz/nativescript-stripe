@@ -129,6 +129,7 @@ export declare class StripePaymentIntent implements StripePaymentIntentCommon {
   sourceId: string;
   requiresAction: boolean; // true if status == RequiresAction
   requiresConfirmation: boolean;
+  requiresCapture: boolean;
   status: StripePaymentIntentStatus;
 
   static fromNative(native: any): StripePaymentIntent;

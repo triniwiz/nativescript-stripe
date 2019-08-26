@@ -1,6 +1,5 @@
 import { View } from 'tns-core-modules/ui/core/view';
 import { topmost } from "tns-core-modules/ui/frame";
-import { ios as iosApp } from "tns-core-modules/application";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 
 export class Stripe {
@@ -504,6 +503,7 @@ class StripeIntent {
   get requiresAction(): boolean { return this.native.status === STPPaymentIntentStatus.RequiresAction; }
   get isSuccess(): boolean { return this.status === StripePaymentIntentStatus.Succeeded; }
   get requiresConfirmation(): boolean { return this.status === StripePaymentIntentStatus.RequiresConfirmation; }
+  get requiresCapture(): boolean { return this.status === StripePaymentIntentStatus.RequiresCapture; }
   get description(): string { return this.native.description; }
 }
 

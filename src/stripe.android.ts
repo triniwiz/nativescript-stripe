@@ -405,6 +405,7 @@ class StripeIntent {
   }
   get isSuccess(): boolean { return this.status === StripePaymentIntentStatus.Succeeded; }
   get requiresConfirmation(): boolean { return this.status === StripePaymentIntentStatus.RequiresConfirmation; }
+  get requiresCapture(): boolean { return this.status === StripePaymentIntentStatus.RequiresCapture; }
 }
 
 export class StripePaymentIntent extends StripeIntent implements StripePaymentIntentCommon {
