@@ -62,11 +62,11 @@ export class StripeCustomerSession {
 
   constructor() {
     StripeConfig.shared().initPaymentConfiguration();
-    com.stripe.android.CustomerSession.initCustomerSession(this._getContext(), createKeyProvider());
+    com.stripe.android.CustomerSession.initCustomerSession(this.context, createKeyProvider());
     this.native = com.stripe.android.CustomerSession.getInstance();
   }
 
-  private _getContext(): android.content.Context {
+  private get context(): android.content.Context {
     return androidApp.context;
   }
 }
@@ -126,7 +126,6 @@ export class StripePaymentSession {
         .build();
     }
     this.native = new com.stripe.android.PaymentSession(this.patchActivity());
-
 
     if (!this.native.init(createPaymentSessionListener(this, listener), config)) {
       throw new Error("CustomerSession not initialized");
