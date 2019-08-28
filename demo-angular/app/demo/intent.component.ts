@@ -5,7 +5,7 @@ import { isAndroid } from "tns-core-modules/platform";
 import { publishableKey, StripeService } from "./stripe.service";
 import { alert } from "tns-core-modules/ui/dialogs";
 
-import { ItentModalComponent } from './intent-modal.component'
+import { ItentModalComponent } from "./intent-modal.component";
 
 @Component({
   selector: "stp-intent",
@@ -23,7 +23,7 @@ export class IntentComponent {
   };
 
   constructor(
-    private stripeService: StripeService, 
+    private stripeService: StripeService,
     public changeDetectionRef: ChangeDetectorRef,
     private modalService: ModalDialogService,
     private vcRef: ViewContainerRef

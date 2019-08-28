@@ -9,12 +9,12 @@ import { publishableKey, StripeService } from "./stripe.service";
   moduleId: module.id,
   templateUrl: "intent-modal.component.html"
 })
-export class ItentModalComponent{
+export class ItentModalComponent {
   status: string;
   private stripe: Stripe;
 
   constructor(
-    private stripeService: StripeService, 
+    private stripeService: StripeService,
     public changeDetectionRef: ChangeDetectorRef,
     private dialogParams: ModalDialogParams
   ) {
@@ -23,7 +23,7 @@ export class ItentModalComponent{
     }
     this.stripe = new Stripe(publishableKey);
   }
- 
+
   /*
    *  Public methods
    */
