@@ -1,6 +1,7 @@
 import { View } from 'tns-core-modules/ui/core/view';
 import { topmost } from "tns-core-modules/ui/frame";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
+import { ios as iosUtils } from "tns-core-modules/utils/utils.ios";
 
 export class Stripe {
   constructor(apiKey: string) {
@@ -129,7 +130,9 @@ export class Stripe {
 
   private _getAuthentificationContext(): STPPaymentContext {
     const authContext = STPPaymentContext.alloc();
-    authContext.hostViewController = topmost().currentPage.ios;
+    const rootVC = topmost().currentPage.ios;
+
+    authContext.hostViewController = iosUtils.getVisibleViewController(rootVC);
     authContext.authenticationPresentingViewController = () => {
        return authContext.hostViewController;
     };

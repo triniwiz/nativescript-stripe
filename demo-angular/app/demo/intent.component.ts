@@ -1,8 +1,11 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, ViewContainerRef, Input } from "@angular/core";
+import { ModalDialogService } from "nativescript-angular/modal-dialog";
 import { CreditCardView, PaymentMethod, Stripe, Token, StripePaymentIntentParams, StripePaymentIntent } from "nativescript-stripe";
 import { isAndroid } from "tns-core-modules/platform";
 import { publishableKey, StripeService } from "./stripe.service";
 import { alert } from "tns-core-modules/ui/dialogs";
+
+import { ItentModalComponent } from './intent-modal.component'
 
 @Component({
   selector: "stp-intent",
@@ -19,11 +22,24 @@ export class IntentComponent {
     currency: 'usd'
   };
 
-  constructor(private stripeService: StripeService, public changeDetectionRef: ChangeDetectorRef) {
+  constructor(
+    private stripeService: StripeService, 
+    public changeDetectionRef: ChangeDetectorRef,
+    private modalService: ModalDialogService,
+    private vcRef: ViewContainerRef
+  ) {
     if (-1 !== publishableKey.indexOf("pk_test_yours")) {
       throw new Error("publishableKey must be changed from placeholder");
     }
     this.stripe = new Stripe(publishableKey);
+  }
+
+  openModal() {
+    this.modalService
+      .showModal(ItentModalComponent, {
+        fullscreen: true,
+        viewContainerRef: this.vcRef
+      });
   }
 
   registerCard(cardView: CreditCardView) {

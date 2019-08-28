@@ -1,0 +1,15 @@
+<StackLayout class="page">
+  <CreditCardView #card></CreditCardView>
+
+  <Button 
+    text="Save Credit Card - Setup Intent" 
+    (tap)="registerCard(card)" 
+    class="btn btn-primary"></Button>
+  
+  <Label [text]="status" textWrap="true" class="text-center"></Label>
+
+   <Button 
+    text="Close modal" 
+    (tap)="closeModal()" 
+    class="btn btn-cancel"></Button>
+</StackLayout>

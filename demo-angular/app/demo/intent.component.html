@@ -17,6 +17,11 @@
     text="Manual Confirm Intent Payment (12$)" 
     (tap)="manualConfirmPayment(card)" 
     class="btn btn-primary"></Button>
+
+  <Button 
+    text="From Modal" 
+    (tap)="openModal()" 
+    class="btn btn-primary"></Button>
   
   <Label [text]="status" textWrap="true" class="text-center"></Label>
 </StackLayout>
