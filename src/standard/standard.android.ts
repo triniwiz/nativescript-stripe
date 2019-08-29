@@ -78,7 +78,7 @@ function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
         .then(key => {
           keyUpdateListener.onKeyUpdate(JSON.stringify(key));
         }).catch(e => {
-          keyUpdateListener.onKeyUpdateFailure(500, e);
+          keyUpdateListener.onKeyUpdateFailure(500, JSON.stringify(e));
         });
     }
   });
