@@ -11,7 +11,7 @@ Changelog
 
 ### Breaking Changes
 - Sources and Tokens are now deprecated, uses Payment Methods and Payment Intents instead
-- [Back-end test app](https://github.com/stripe/example-ios-backend) needs to be updated if you want to plug with Intents.
+- [Back-end test app](https://github.com/stripe/example-ios-backend) needs to be updated if you want to use the plugin with Intents.
 - Stripe Service `completeCharge` has been renamed to `capturePayment`
 
 ## 5.5.0 (2019, August 20)

@@ -130,12 +130,12 @@ cross-platform data structures and method calls that might be helpful. In `index
 SCA requires the customer to enter additional information with some charge cards. Stripe takes care of this
 if you properly handle the redirect from the `StripePaymentIntent` returned from the server.
 
-If you're using the [automatic confirmation flow](https://stripe.com/docs/payments/payment-intents/ios#automatic-confirmation-ios), `confirmPaymentIntent` and `confirmSetupIntent` will automatically manages the SCA validation by showing and validating the payment authentification.
+If you're using the [automatic confirmation flow](https://stripe.com/docs/payments/payment-intents/ios#automatic-confirmation-ios), `confirmPaymentIntent` and `confirmSetupIntent` will automatically manage the SCA validation by showing and validating the payment authentification.
 
 If you're using the [manual confirmation flow](https://stripe.com/docs/payments/payment-intents/ios#manual-confirmation-ios), where back-end creates the `PaymentIntent`|`SetupIntent` and requires an Intent authentification from the customer, `authenticatePaymentIntent` and `authenticateSetupIntent` will allow to manage that extra step before sending back the Intent to your server.
 
 ## Status
-`demo-angular` now support `SetupIntent` and `PaymentIntent` SCA integration. Any credit card verification will be automatically prompted to the user.
+`demo-angular` now supports `SetupIntent` and `PaymentIntent` SCA integration. Any credit card verification will be automatically prompted to the user.
 
 # TODO
 * Android Pay

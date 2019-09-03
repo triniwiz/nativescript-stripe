@@ -83,7 +83,7 @@ export class StripeService implements StripeBackendAPI {
    *  Private
    */
 
-  private _postRequest(endpoint: string, content: string = ''): Promise<any> {
+  private _postRequest(endpoint: string, content: string = ""): Promise<any> {
     let url = this._backendURL(endpoint);
     return httpModule.request({
       url: url,
