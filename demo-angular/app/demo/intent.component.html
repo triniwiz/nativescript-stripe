@@ -1,0 +1,27 @@
+<ActionBar title="Intent Demo" class="action-bar"></ActionBar>
+
+<StackLayout class="page">
+  <CreditCardView #card></CreditCardView>
+
+  <Button 
+    text="Save Credit Card - Setup Intent" 
+    (tap)="registerCard(card)" 
+    class="btn btn-primary"></Button>
+  
+  <Button 
+    text="Automatic Confirm Intent Payment (12$)" 
+    (tap)="automaticConfirmPayment(card)" 
+    class="btn btn-primary"></Button>
+
+  <Button 
+    text="Manual Confirm Intent Payment (12$)" 
+    (tap)="manualConfirmPayment(card)" 
+    class="btn btn-primary"></Button>
+
+  <Button 
+    text="From Modal" 
+    (tap)="openModal()" 
+    class="btn btn-primary"></Button>
+  
+  <Label [text]="status" textWrap="true" class="text-center"></Label>
+</StackLayout>

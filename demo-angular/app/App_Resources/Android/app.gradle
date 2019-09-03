@@ -6,7 +6,8 @@
 //}
 
 android {  
-  defaultConfig {  
+  defaultConfig {
+    multiDexEnabled true
     generatedDensities = []
     applicationId = "org.nativescript.stripe.demoangular"  
   }  

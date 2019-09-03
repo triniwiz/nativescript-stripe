@@ -4,9 +4,11 @@ export declare class Stripe {
   constructor(apiKey: string);
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void;
   createPaymentMethod(card: CardCommon, cb: (error: Error, pm: PaymentMethod) => void): void;
-
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
-  confirmPaymentIntent(pi: StripePaymentIntent, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
+  confirmPaymentIntent(pi: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void;
+  confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
+  authenticateSetupIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripeSetupIntent) => void): void;
+  authenticatePaymentIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
 }
 export declare class CreditCardViewBase extends View { }
 export declare type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
@@ -126,10 +128,19 @@ export declare class StripePaymentIntent implements StripePaymentIntentCommon {
   paymentMethodId: string;
   sourceId: string;
   requiresAction: boolean; // true if status == RequiresAction
+  requiresConfirmation: boolean;
+  requiresCapture: boolean;
   status: StripePaymentIntentStatus;
 
   static fromNative(native: any): StripePaymentIntent;
   static fromApi(json: any): StripePaymentIntent;
+}
+
+export declare class StripeSetupIntent {
+  id: string;
+  clientSecret: string;
+  requiresAction: boolean; // true if status == RequiresAction
+  status: StripePaymentIntentStatus;
 }
 
 export declare const enum StripePaymentIntentStatus {

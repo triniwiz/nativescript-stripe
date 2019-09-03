@@ -1,6 +1,19 @@
 Changelog
 ==============================
 
+## 6.0.0 (2019, August 25)
+### Updates
+- SDK Updates for SCA compliance
+
+### Implements
+- [(# 78)](https://github.com/triniwiz/nativescript-stripe/issues/78) Stripe SDKs out of date; Upgrade needed for latest SCA process
+- [(# 45)](https://github.com/triniwiz/nativescript-stripe/issues/45) EU Strong Customer Authentication support integration
+
+### Breaking Changes
+- Sources and Tokens are now deprecated, uses Payment Methods and Payment Intents instead
+- [Back-end test app](https://github.com/stripe/example-ios-backend) needs to be updated if you want to use the plugin with Intents.
+- Stripe Service `completeCharge` has been renamed to `capturePayment`
+
 ## 5.5.0 (2019, August 20)
 ### Updates
 - Nativescript 6 compatibility

@@ -37,7 +37,7 @@ export declare interface StripeBackendAPI {
    * @returns a Promise that resolves on success and rejects on failure.
    *     Any error should be reported as a string that can be displayed to the user.
    */
-  completeCharge(sourceID: string, amount: number, shippingMethod?: StripeShippingMethod, shippingAddress?: StripeAddress): Promise<void>;
+  capturePayment(sourceID: string, amount: number, shippingMethod?: StripeShippingMethod, shippingAddress?: StripeAddress): Promise<void>;
 }
 /**
  * Called during event processing when status changes. On Angular apps, be sure to
