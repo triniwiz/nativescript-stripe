@@ -18,6 +18,12 @@ git commit -a -m "chore(): ver bump"
 git push
 ```
 
+Build the release (consider first cleaning all build artifacts):
+```
+cd src
+npm run build
+```
+
 Publish the release to `npm`:
 ```
 ./publish.sh
