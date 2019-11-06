@@ -1,6 +1,11 @@
 Changelog
 ==============================
 
+## 6.1.0 (2019, November 6)
+### Updates
+- Ability to set accountId `stripe.setStripeAccount('xxx')`
+
+
 ## 6.0.0 (2019, August 25)
 ### Updates
 - SDK Updates for SCA compliance

@@ -13,6 +13,10 @@ export class Stripe {
     );
   }
 
+  setStripeAccount(accountId: string) {
+    this._stripe.setStripeAccount(accountId);
+  }
+
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
     if (!card) {
       if (typeof cb === 'function') {
