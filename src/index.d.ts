@@ -113,39 +113,35 @@ export declare interface StripePaymentIntentCommon {
   currency: string;
   description: string;
   paymentMethodId: string;
+  sourceId: string;
   requiresAction: boolean; // true if status == RequiresAction
   status: StripePaymentIntentStatus;
 }
-
-declare class StripeIntent {
-    native: any;
-    readonly id: string;
-    readonly clientSecret: string;
-    readonly description: string;
-    readonly status: StripePaymentIntentStatus;
-    readonly requiresAction: boolean;
-    readonly isSuccess: boolean;
-    readonly requiresConfirmation: boolean;
-    readonly requiresCapture: boolean;
-}
-
-export declare class StripePaymentIntent extends StripeIntent implements StripePaymentIntentCommon {
+export declare class StripePaymentIntent implements StripePaymentIntentCommon {
   readonly native: any;
   id: string;
+  clientSecret: string;
+  amount: number; // in pennies
+  captureMethod: "manual" | "automatic";
+  created: Date;
+  currency: string;
+  description: string;
   paymentMethodId: string;
-  readonly amount: number;
-  readonly created: Date;
-  readonly currency: string;
-  readonly captureMethod: "manual" | "automatic";
+  sourceId: string;
+  requiresAction: boolean; // true if status == RequiresAction
+  requiresConfirmation: boolean;
+  requiresCapture: boolean;
+  status: StripePaymentIntentStatus;
 
   static fromNative(native: any): StripePaymentIntent;
   static fromApi(json: any): StripePaymentIntent;
 }
 
-export declare class StripeSetupIntent extends StripeIntent {
-  native: any
-  static fromNative(native: any): StripeSetupIntent;
-  readonly paymentMethodId: string;
+export declare class StripeSetupIntent {
+  id: string;
+  clientSecret: string;
+  requiresAction: boolean; // true if status == RequiresAction
+  status: StripePaymentIntentStatus;
 }
 
 export declare const enum StripePaymentIntentStatus {
