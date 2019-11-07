@@ -8,6 +8,10 @@ export class Stripe {
     STPPaymentConfiguration.sharedConfiguration().publishableKey = apiKey;
   }
 
+  setStripeAccount(accountId: string) {
+    STPPaymentConfiguration.sharedConfiguration().stripeAccount = accountId;
+  }
+
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
     if (!card) {
       if (typeof cb === 'function') {
