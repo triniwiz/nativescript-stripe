@@ -9,6 +9,7 @@ export class Stripe {
   }
 
   setStripeAccount(accountId: string) {
+    STPAPIClient.sharedClient().stripeAccount = accountId;
     STPPaymentConfiguration.sharedConfiguration().stripeAccount = accountId;
   }
 
