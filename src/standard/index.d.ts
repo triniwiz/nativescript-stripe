@@ -137,7 +137,7 @@ export declare const enum StripeBillingAddressFields {
   Name = 3
 }
 /** Available shipping address fields. */
-export const enum StripeShippingAddressField {
+export declare const enum StripeShippingAddressField {
   Name = "name",
   PostalAddress = "address",
   Phone = "phone",

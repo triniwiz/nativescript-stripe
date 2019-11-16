@@ -1,5 +1,12 @@
 Changelog
 
+## 6.2.0 (2019, November 16)
+### Updates
+- Builds correctly on NS v6 (see README note)
+
+### Fixes
+- [(# 90)](https://github.com/triniwiz/nativescript-stripe/issues/90) Not building with NS 6
+
 ## 6.1.0 (2019, November 6)
 ### Updates
 - Ability to set accountId `stripe.setStripeAccount('xxx')`
