@@ -14,8 +14,8 @@ matrix:
       node_js: "11"
       jdk: oraclejdk8
       before_install:
+        - travis_wait pip install six
         - travis_wait gem install cocoapods
-        - travis_wait pod --version
         - travis_wait pod repo update --silent
       script:
         - cd src && npm i
@@ -48,8 +48,8 @@ matrix:
       node_js: "11"
       jdk: oraclejdk8
       before_install:
+        - travis_wait pip install six
         - travis_wait gem install cocoapods
-        - travis_wait pod --version
         - travis_wait pod repo update --silent
       script:
         - cd src && npm i && npm run tsc && cd ../demo && tns build ios && cd ../demo-angular && tns build ios
