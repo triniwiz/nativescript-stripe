@@ -137,6 +137,15 @@ If you're using the [manual confirmation flow](https://stripe.com/docs/payments/
 ## Status
 `demo-angular` now supports `SetupIntent` and `PaymentIntent` SCA integration. Any credit card verification will be automatically prompted to the user.
 
+# Known Issues
+
+## `const enum` not found
+When building with NativeScript v6, it builds using the webpack-only flow in "transpileOnly" mode. A webpack [issue](https://github.com/NativeScript/nativescript-dev-webpack/issues/927) means that `const enum` values cannot be found in the final output.
+
+This problem is not present in Angular projects and likely won't be an issue if you do not use any of the exported enums.
+
+Unfortunately, the only fix I've found for this is to follow the advice in that issue and modify `webpack.config.js` in your app to set `transpileOnly` to `false`.
+
 # TODO
 * Android Pay
 * Apple Pay (supported by Standard Integration, not by Custom Integration)
