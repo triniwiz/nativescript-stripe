@@ -146,6 +146,8 @@ This problem is not present in Angular projects and likely won't be an issue if 
 
 Unfortunately, the only fix I've found for this is to follow the advice in that issue and modify `webpack.config.js` in your app to set `transpileOnly` to `false`.
 
+Note: This may no longer be needed once this TypeScript [bug](https://github.com/Microsoft/TypeScript/issues/16671) is fixed.
+
 # TODO
 * Android Pay
 * Apple Pay (supported by Standard Integration, not by Custom Integration)
