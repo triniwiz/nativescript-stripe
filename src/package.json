@@ -12,7 +12,7 @@
   },
   "scripts": {
     "setup": "../../setup-keys.sh",
-    "ngc.clean": "find ./ angular/ -name '*.metadata.json' -delete && find ./ angular/ -name '*.ngsummary.json' -delete",
+    "ngc.clean": "find ./ angular/ standard/ -name '*.metadata.json' -delete && find ./ angular/ standard/ -name '*.ngsummary.json' -delete",
     "ngc": "npm run ngc.clean && ngc -skipLibCheck --project tsconfig.json",
     "tsc": "npm run ngc",
     "build": "npm run tsc && npm run build.native",
