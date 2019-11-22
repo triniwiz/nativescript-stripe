@@ -1,5 +1,9 @@
 Changelog
 
+## 6.2.1 (2019, November 21)
+### Fixes
+- [(# 87)](https://github.com/triniwiz/nativescript-stripe/issues/87) Can't Resolve tns-core-modules/utils/utils.ios
+
 ## 6.2.0 (2019, November 16)
 ### Updates
 - Builds correctly on NS v6 (see README note)
