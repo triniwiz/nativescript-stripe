@@ -1,7 +1,7 @@
 import { View } from 'tns-core-modules/ui/core/view';
 import { topmost } from "tns-core-modules/ui/frame";
+import { ios as iosUtils } from "tns-core-modules/utils/utils";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
-import { ios as iosUtils } from "tns-core-modules/utils/utils.ios";
 
 export class Stripe {
   constructor(apiKey: string) {
