@@ -1,5 +1,9 @@
 Changelog
 
+## 6.3.0 (2020, March 30)
+### Fixes
+- [(# 97)](https://github.com/triniwiz/nativescript-stripe/issues/97) IOS Build Failed (Xcode >= 11.3). This was fixed by upgrading to Stripe iOS SDK 19.0.1 (from SDK 16.0.6). No code changes were made. This release does not specifically use any new features of SDK 17, 18, or 19. Note that Stripe SDK 19 requires Apple iOS platform 10 or greater (currently supported by > 95% of all iOS devices).
+
 ## 6.2.1 (2019, November 21)
 ### Fixes
 - [(# 87)](https://github.com/triniwiz/nativescript-stripe/issues/87) Can't Resolve tns-core-modules/utils/utils.ios
