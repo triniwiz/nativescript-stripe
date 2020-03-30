@@ -1,6 +1,6 @@
 {
   "name": "nativescript-stripe",
-  "version": "6.2.1",
+  "version": "6.3.0",
   "description": "NativeScript Stripe sdk",
   "main": "stripe",
   "typings": "index.d.ts",
@@ -50,6 +50,10 @@
     "name": "Osei Fortune",
     "email": "fortune.osei@yahoo.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/triniwiz/nativescript-stripe"
+  },
   "bugs": {
     "url": "https://github.com/triniwiz/nativescript-stripe/issues"
   },
@@ -62,6 +66,7 @@
     "@angular/compiler-cli": "8.0.0",
     "@angular/core": "8.0.0",
     "@angular/platform-browser": "8.0.0",
+    "@angular/platform-browser-dynamic": "8.0.0",
     "@angular/router": "8.0.0",
     "nativescript-angular": "8.0.2",
     "prompt": "^1.0.0",
@@ -72,7 +77,7 @@
     "tns-platform-declarations": "6.0.1",
     "typescript": "3.4.5",
     "tslint": "^5.14.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "~0.9.1"
   },
   "bootstrapper": "nativescript-plugin-seed",
   "dependencies": {}
