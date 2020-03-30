@@ -31,7 +31,7 @@ Stripe Android [v10.2.1 SDK](https://github.com/stripe/stripe-android/releases/t
 
 ## iOS
 
-Stripe [iOS 16.0.6 SDK](https://github.com/stripe/stripe-ios/releases/tag/v16.0.6) (pod) is being used
+Stripe [iOS 19.0.1 SDK](https://github.com/stripe/stripe-ios/releases/tag/v19.0.1) (pod) is being used
 
 ## Angular
 To use the Custom Integration's CreditCardView in Angular,
