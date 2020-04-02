@@ -12,22 +12,9 @@ function useAndroidX() {
 }
 
 export class StripeConfig extends StripeConfigCommon {
-  private _native: com.stripe.android.PaymentSessionConfig;
   private _paymentConfigurationInitiated: boolean = false;
   get native(): com.stripe.android.PaymentSessionConfig {
     // getter gives client a chance to set properties before using.
-    if (!this._native) this._native = this.toNative();
-    return this._native;
-  }
-
-  initPaymentConfiguration(): void {
-    if (!this.publishableKey) throw new Error("publishableKey must be set");
-    if (this._paymentConfigurationInitiated) return;
-    com.stripe.android.PaymentConfiguration.init(this.publishableKey);
-    this._paymentConfigurationInitiated = true;
-  }
-
-  private toNative(): com.stripe.android.PaymentSessionConfig {
     this.initPaymentConfiguration();
     let optionalFields = [];
     if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
@@ -48,6 +35,13 @@ export class StripeConfig extends StripeConfigCommon {
       .setOptionalShippingInfoFields(optionalFields)
       .build();
     return config;
+  }
+
+  initPaymentConfiguration(): void {
+    if (!this.publishableKey) throw new Error("publishableKey must be set");
+    if (this._paymentConfigurationInitiated) return;
+    com.stripe.android.PaymentConfiguration.init(this.publishableKey);
+    this._paymentConfigurationInitiated = true;
   }
 
   static shared(): StripeConfig {
