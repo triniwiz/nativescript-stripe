@@ -2,19 +2,13 @@ import { Page } from "tns-core-modules/ui/page";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
 export class StripeConfig extends StripeConfigCommon {
-  private _native: STPPaymentConfiguration;
   get native(): STPPaymentConfiguration {
     // getter gives client a chance to set properties before using.
-    if (!this._native) this._native = this.toNative();
-    return this._native;
-  }
-
-  private toNative(): STPPaymentConfiguration {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
     let config = STPPaymentConfiguration.sharedConfiguration();
-    if (this.publishableKey) config.publishableKey = this.publishableKey;
-    if (this.appleMerchantID) config.appleMerchantIdentifier = this.appleMerchantID;
-    if (this.requiredBillingAddressFields) config.requiredBillingAddressFields = this.requiredBillingAddressFields as any;
+    config.publishableKey = this.publishableKey;
+    config.appleMerchantIdentifier = this.appleMerchantID;
+    config.requiredBillingAddressFields = this.requiredBillingAddressFields as any;
     if (this.requiredShippingAddressFields && this.requiredShippingAddressFields.length > 0) {
       let fields = new NSMutableSet<string>({capacity: 4});
       this.requiredShippingAddressFields.forEach(f => {
@@ -34,8 +28,10 @@ export class StripeConfig extends StripeConfigCommon {
         }
       });
       config.requiredShippingAddressFields = fields;
+    } else {
+      config.requiredShippingAddressFields = undefined;
     }
-    if (this.companyName) config.companyName = this.companyName;
+    config.companyName = this.companyName;
     return config;
   }
 
