@@ -1,5 +1,9 @@
 Changelog
 
+## 6.3.2 (2020, April 4)
+### Fixes
+- [(# 103)](https://github.com/triniwiz/nativescript-stripe/issues/103) Android PaymentSession with Prefilled Address crashes
+
 ## 6.3.1 (2020, April 1)
 ### Fixes
 - [(# 101)](https://github.com/triniwiz/nativescript-stripe/issues/101) PaymentSession Doesn't Reread Config. Re-reads StripeConfig when a new PaymentSession is created.
