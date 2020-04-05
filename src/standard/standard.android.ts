@@ -15,6 +15,10 @@ export class StripeConfig extends StripeConfigCommon {
   private _paymentConfigurationInitiated: boolean = false;
   get native(): com.stripe.android.PaymentSessionConfig {
     // getter gives client a chance to set properties before using.
+    return this.nativeBuilder.build();
+  }
+
+  get nativeBuilder(): com.stripe.android.PaymentSessionConfig.Builder {
     this.initPaymentConfiguration();
     let optionalFields = [];
     if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
@@ -29,12 +33,10 @@ export class StripeConfig extends StripeConfigCommon {
     }
 
     const shippingRequired = this.requiredShippingAddressFields.length !== 0;
-    let config = new com.stripe.android.PaymentSessionConfig.Builder()
+    return new com.stripe.android.PaymentSessionConfig.Builder()
       .setShippingInfoRequired(shippingRequired)
       .setShippingMethodsRequired(shippingRequired)
-      .setOptionalShippingInfoFields(optionalFields)
-      .build();
-    return config;
+      .setOptionalShippingInfoFields(optionalFields);
   }
 
   initPaymentConfiguration(): void {
@@ -94,7 +96,7 @@ export class StripePaymentSession {
     public currency: string,
     public listener: StripePaymentListener,
     prefilledAddress?: StripeAddress) {
-    let config = StripeConfig.shared().native;
+    let builder = StripeConfig.shared().nativeBuilder;
     if (prefilledAddress) {
       const info = new com.stripe.android.model.ShippingInformation(
         new com.stripe.android.model.Address.Builder()
@@ -108,17 +110,9 @@ export class StripePaymentSession {
         prefilledAddress.name,
         prefilledAddress.phone
       );
-      config = new com.stripe.android.PaymentSessionConfig.Builder()
-        .setOptionalShippingInfoFields(
-          config.getOptionalShippingInfoFields() ?
-            config.getOptionalShippingInfoFields().toArray() : [])
-        .setShippingInfoRequired(config.isShippingInfoRequired())
-        .setShippingMethodsRequired(config.isShippingMethodRequired())
-        .setHiddenShippingInfoFields(config.getHiddenShippingInfoFields() ?
-          config.getHiddenShippingInfoFields().toArray() : [])
-        .setPrepopulatedShippingInfo(info)
-        .build();
+      builder.setPrepopulatedShippingInfo(info);
     }
+    let config = builder.build();
     this.native = new com.stripe.android.PaymentSession(this.patchActivity());
 
     if (!this.native.init(createPaymentSessionListener(this, listener), config)) {
