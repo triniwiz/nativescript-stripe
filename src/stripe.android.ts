@@ -1,6 +1,7 @@
 import * as utils from 'tns-core-modules/utils/utils';
 import { android as androidApp } from "tns-core-modules/application";
-import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
+import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token, Source } from './stripe.common';
+
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
   private _apiKey: string;
@@ -48,6 +49,53 @@ export class Stripe {
         }
       })
     );
+  }
+
+  createSource(card: CardCommon, cb: (error: Error, source: Source) => void): void {
+    if (!card) {
+      if (typeof cb === 'function') {
+        cb(new Error('Invalid card'), null);
+      }
+      return;
+    }
+    const cardSourceParams = com.stripe.android.model.SourceParams.createCardParams(card.native)
+
+    try {
+      this._stripe.createSource(
+        cardSourceParams, 
+        new com.stripe.android.SourceCallback({
+          onSuccess: function(source) {
+              if (typeof cb === 'function') {
+                const newSource: Source = {
+                  id: source.getId(),
+                  amount: source.getAmount(),
+                  card: card,
+                  client_secret: source.getClientSecret(),
+                  created: source.getCreated(),
+                  currency: source.getCurrency(),
+                  flow: source.getFlow(),
+                  livemode: source.isLiveMode(),
+                  metadata: source.getMetaData(),
+                  object: source.getSourceTypeData(),
+                  owner: source.getOwner(),
+                  statement_descriptor: null,
+                  status: source.getStatus(),
+                  type: source.getType(),
+                  usage: source.getUsage()
+                };
+                cb(null, newSource);
+            }
+          },
+          onError: function(error) {
+            cb(new Error(error.getLocalizedMessage()), null);
+          }
+        })
+      );
+    } catch(error){
+      if (typeof cb === 'function') {
+        cb(new Error(error.localizedDescription), null);
+      }
+    }
   }
 
   createPaymentMethod(card: CardCommon, cb: (error: Error, pm: PaymentMethod) => void): void {

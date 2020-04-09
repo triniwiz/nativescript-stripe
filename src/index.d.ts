@@ -4,6 +4,7 @@ export declare class Stripe {
   constructor(apiKey: string);
   setStripeAccount(accountId: string): void;
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void;
+  createSource(card: CardCommon, cb: (error: Error, token: Source) => void): void;
   createPaymentMethod(card: CardCommon, cb: (error: Error, pm: PaymentMethod) => void): void;
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
   confirmPaymentIntent(pi: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void;
@@ -70,6 +71,44 @@ export declare class CreditCardView extends CreditCardViewBase {
   createNativeView(): any /*ios:STPPaymentCardTextField, android:com.stripe.android.view.CardInputWidget*/;
   readonly card: Card;
 }
+
+export declare interface CardAddress {
+  city: null | string;
+  country: null | string;
+  line1: null | string;
+  line2: null | string;
+  postal_code: null | string;
+  state: null | string;
+}
+export declare interface CardOwner {
+  address: CardAddress;
+  email: null | string
+  name: null | string
+  phone: null | string
+  verified_address: null | string
+  verified_email: null | string
+  verified_name: null | string
+  verified_phone: null | string
+}
+
+export declare interface Source {
+  amount: number;
+  card: CardCommon;
+  client_secret: string;
+  created: number;
+  currency: string;
+  flow: string;
+  id: string;
+  livemode: boolean;
+  metadata: {};
+  object: string;
+  owner: CardOwner;
+  statement_descriptor: null | string;
+  status: string;
+  type: string;
+  usage: string;
+}
+
 export declare interface Token {
   id: string;
   bankAccount: any;
