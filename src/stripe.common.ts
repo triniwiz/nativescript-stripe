@@ -37,25 +37,6 @@ export interface CardCommon {
   readonly country: string;
 }
 
-export interface CardAddress {
-  city: null | string;
-  country: null | string;
-  line1: null | string;
-  line2: null | string;
-  postal_code: null | string;
-  state: null | string;
-}
-export interface CardOwner {
-  address: CardAddress;
-  email: null | string
-  name: null | string
-  phone: null | string
-  verified_address: null | string
-  verified_email: null | string
-  verified_name: null | string
-  verified_phone: null | string
-}
-
 export interface Token {
   id: string;
   bankAccount: any;
@@ -69,19 +50,15 @@ export interface Token {
 export interface Source {
   amount: number;
   card: CardCommon;
-  client_secret: string | null;
-  created: number;
-  currency: string | null;
-  flow: string | null;
+  clientSecret?: string;
+  created: Date;
+  currency?: string;
   id: string;
   livemode: boolean;
-  metadata: {};
-  object: string;
-  owner: CardOwner | null;
-  statement_descriptor: null | string;
-  status: string | null;
-  type: string | null;
-  usage: string | null;
+  metadata: object;
+  status?: string;
+  type?: string;
+  usage?: string;
 }
 
 export interface PaymentMethodCommon {
