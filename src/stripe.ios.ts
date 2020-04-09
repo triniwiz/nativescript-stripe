@@ -23,7 +23,7 @@ export class Stripe {
     const apiClient = STPAPIClient.sharedClient();
     apiClient.createTokenWithCardCompletion(
       card.native,
-      callback(cb, (token) => <Token>{
+      callback(cb, (token: STPToken) => <Token>{
         id: token.tokenId,
         bankAccount: token.bankAccount,
         card: card, // token.card is incomplete

@@ -28,7 +28,7 @@ export class Stripe {
     this._stripe.createToken(
       card.native,
       new com.stripe.android.TokenCallback({
-        onSuccess: function (token) {
+        onSuccess: function (token: com.stripe.android.model.Token) {
           if (typeof cb === 'function') {
             const newToken: Token = {
               id: token.getId(),
@@ -64,7 +64,7 @@ export class Stripe {
       this._stripe.createSource(
         cardSourceParams, 
         new com.stripe.android.SourceCallback({
-          onSuccess: function(source) {
+          onSuccess: function(source: com.stripe.android.model.Source) {
               if (typeof cb === 'function') {
                 const newSource: Source = {
                   id: source.getId(),
