@@ -82,8 +82,6 @@ export declare interface Source {
   livemode: boolean;
   metadata: object;
   status?: string;
-  type?: string;
-  usage?: string;
 }
 
 export declare interface Token {

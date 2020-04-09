@@ -68,16 +68,13 @@ export class Stripe {
               if (typeof cb === 'function') {
                 const newSource: Source = {
                   id: source.getId(),
-                  amount: source.getAmount(),
+                  amount: source.getAmount().longValue(),
                   card: card,
                   clientSecret: source.getClientSecret(),
                   created: new Date(source.getCreated().toString()),
                   currency: source.getCurrency(),
                   livemode: source.isLiveMode().booleanValue(),
-                  metadata: source.getMetaData(),
-                  status: source.getStatus(),
-                  type: source.getType(),
-                  usage: source.getUsage()
+                  metadata: source.getMetaData()
                 };
                 cb(null, newSource);
             }

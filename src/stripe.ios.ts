@@ -47,18 +47,15 @@ export class Stripe {
 
     const apiClient = STPAPIClient.sharedClient();
     apiClient.createSourceWithParamsCompletion(
-      sourceParams, callback(cb, (source) => <Source> {
+      sourceParams, callback(cb, (source: STPSource) => <Source> {
         id: source.stripeID,
         amount: source.amount,
         card: card,
-        clientSecret: source.client_secret,
+        clientSecret: source.clientSecret,
         created: new Date(source.created),
         currency: source.currency,
         livemode: source.livemode,
-        metadata: source.metadata,
-        status: source.status,
-        type: source.type,
-        usage: source.usage
+        metadata: source.metadata
       })
     );
   }
