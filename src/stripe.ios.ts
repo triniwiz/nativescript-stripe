@@ -1,7 +1,7 @@
 import { View } from 'tns-core-modules/ui/core/view';
 import { topmost } from "tns-core-modules/ui/frame";
 import { ios as iosUtils } from "tns-core-modules/utils/utils";
-import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token, Source } from './stripe.common';
+import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 
 export class Stripe {
   constructor(apiKey: string) {
@@ -43,7 +43,7 @@ export class Stripe {
       return;
     }
     
-    const sourceParams = STPSourceParams.cardParamsWithCard(card.native)
+    const sourceParams = STPSourceParams.cardParamsWithCard(card.native);
 
     const apiClient = STPAPIClient.sharedClient();
     apiClient.createSourceWithParamsCompletion(

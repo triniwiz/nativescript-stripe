@@ -73,7 +73,7 @@ export declare class CreditCardView extends CreditCardViewBase {
 }
 
 export declare interface Source {
-  amount: number;
+  amount: number; /**in pennies*/
   card: CardCommon;
   clientSecret?: string;
   created: Date;
@@ -81,7 +81,6 @@ export declare interface Source {
   id: string;
   livemode: boolean;
   metadata: object;
-  status?: string;
 }
 
 export declare interface Token {

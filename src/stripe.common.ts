@@ -48,7 +48,7 @@ export interface Token {
 }
 
 export interface Source {
-  amount: number;
+  amount: number; /**in pennies*/
   card: CardCommon;
   clientSecret?: string;
   created: Date;
@@ -56,9 +56,6 @@ export interface Source {
   id: string;
   livemode: boolean;
   metadata: object;
-  status?: string;
-  type?: string;
-  usage?: string;
 }
 
 export interface PaymentMethodCommon {

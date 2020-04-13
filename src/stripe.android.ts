@@ -1,6 +1,6 @@
 import * as utils from 'tns-core-modules/utils/utils';
 import { android as androidApp } from "tns-core-modules/application";
-import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token, Source } from './stripe.common';
+import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
@@ -58,13 +58,13 @@ export class Stripe {
       }
       return;
     }
-    const cardSourceParams = com.stripe.android.model.SourceParams.createCardParams(card.native)
+    const cardSourceParams = com.stripe.android.model.SourceParams.createCardParams(card.native);
 
     try {
       this._stripe.createSource(
         cardSourceParams, 
         new com.stripe.android.SourceCallback({
-          onSuccess: function(source: com.stripe.android.model.Source) {
+          onSuccess: function (source: com.stripe.android.model.Source) {
               if (typeof cb === 'function') {
                 const newSource: Source = {
                   id: source.getId(),
@@ -79,12 +79,12 @@ export class Stripe {
                 cb(null, newSource);
             }
           },
-          onError: function(error) {
+          onError: function (error) {
             cb(new Error(error.getLocalizedMessage()), null);
           }
         })
       );
-    } catch(error){
+    } catch (error) {
       if (typeof cb === 'function') {
         cb(new Error(error.localizedDescription), null);
       }
