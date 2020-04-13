@@ -1,5 +1,9 @@
 Changelog
 
+## 6.4.0 (2020, April 13)
+### Fixes
+- [(# 105)](https://github.com/triniwiz/nativescript-stripe/issues/105) `createSource` support.
+
 ## 6.3.2 (2020, April 4)
 ### Fixes
 - [(# 103)](https://github.com/triniwiz/nativescript-stripe/issues/103) Android PaymentSession with Prefilled Address crashes

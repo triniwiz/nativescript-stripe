@@ -42,7 +42,7 @@ export class Stripe {
       }
       return;
     }
-    
+
     const sourceParams = STPSourceParams.cardParamsWithCard(card.native);
 
     const apiClient = STPAPIClient.sharedClient();

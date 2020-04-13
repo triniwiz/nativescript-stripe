@@ -1,5 +1,5 @@
-import * as utils from 'tns-core-modules/utils/utils';
 import { android as androidApp } from "tns-core-modules/application";
+import * as utils from 'tns-core-modules/utils/utils';
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 
 export class Stripe {
@@ -62,7 +62,7 @@ export class Stripe {
 
     try {
       this._stripe.createSource(
-        cardSourceParams, 
+        cardSourceParams,
         new com.stripe.android.SourceCallback({
           onSuccess: function (source: com.stripe.android.model.Source) {
               if (typeof cb === 'function') {
