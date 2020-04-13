@@ -29,4 +29,4 @@ Publish the release to `npm`:
 ./publish.sh
 ```
 
-Create a new github release at https://github.com/triniwiz/nativescript-stripe/releases.
+Create a new github release at https://github.com/triniwiz/nativescript-stripe/releases. Upload the build in `./package'.
