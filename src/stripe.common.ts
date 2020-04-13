@@ -47,6 +47,17 @@ export interface Token {
   livemode: boolean;
 }
 
+export interface Source {
+  amount: number; /**in pennies*/
+  card: CardCommon;
+  clientSecret?: string;
+  created: Date;
+  currency?: string;
+  id: string;
+  livemode: boolean;
+  metadata: object;
+}
+
 export interface PaymentMethodCommon {
   readonly native: any;
   id: string;

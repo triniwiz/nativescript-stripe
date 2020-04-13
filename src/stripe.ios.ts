@@ -1,7 +1,7 @@
 import { View } from 'tns-core-modules/ui/core/view';
 import { topmost } from "tns-core-modules/ui/frame";
 import { ios as iosUtils } from "tns-core-modules/utils/utils";
-import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
+import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 
 export class Stripe {
   constructor(apiKey: string) {
@@ -23,7 +23,7 @@ export class Stripe {
     const apiClient = STPAPIClient.sharedClient();
     apiClient.createTokenWithCardCompletion(
       card.native,
-      callback(cb, (token) => <Token>{
+      callback(cb, (token: STPToken) => <Token>{
         id: token.tokenId,
         bankAccount: token.bankAccount,
         card: card, // token.card is incomplete
@@ -31,6 +31,31 @@ export class Stripe {
         livemode: token.livemode,
         android: null,
         ios: token
+      })
+    );
+  }
+
+  createSource(card: CardCommon, cb: (error: Error, source: Source) => void): void {
+    if (!card) {
+      if (typeof cb === 'function') {
+        cb(new Error('Invalid card'), null);
+      }
+      return;
+    }
+    
+    const sourceParams = STPSourceParams.cardParamsWithCard(card.native);
+
+    const apiClient = STPAPIClient.sharedClient();
+    apiClient.createSourceWithParamsCompletion(
+      sourceParams, callback(cb, (source: STPSource) => <Source> {
+        id: source.stripeID,
+        amount: source.amount,
+        card: card,
+        clientSecret: source.clientSecret,
+        created: new Date(source.created),
+        currency: source.currency,
+        livemode: source.livemode,
+        metadata: source.metadata
       })
     );
   }

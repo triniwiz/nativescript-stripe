@@ -1,8 +1,12 @@
 <Page xmlns:stripe="nativescript-stripe" loaded="pageLoaded" class="page">
-  <Page.actionBar><ActionBar title="CreditCardView Demo" class="action-bar"/></Page.actionBar>
+  <Page.actionBar>
+    <ActionBar title="CreditCardView Demo" class="action-bar" />
+  </Page.actionBar>
   <StackLayout>
-    <stripe:CreditCardView id="card"/>
+    <stripe:CreditCardView id="card" />
     <Button text="Create Token" tap="createToken" class="btn btn-primary"></Button>
+    <Button text="Create Source" tap="createSource" class="btn btn-primary"></Button>
     <Label text="{{ token }}" textWrap="true"></Label>
+    <Label text="{{ source }}" textWrap="true"></Label>
   </StackLayout>
 </Page>

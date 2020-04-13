@@ -4,6 +4,7 @@ export declare class Stripe {
   constructor(apiKey: string);
   setStripeAccount(accountId: string): void;
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void;
+  createSource(card: CardCommon, cb: (error: Error, source: Source) => void): void;
   createPaymentMethod(card: CardCommon, cb: (error: Error, pm: PaymentMethod) => void): void;
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
   confirmPaymentIntent(pi: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void;
@@ -70,6 +71,18 @@ export declare class CreditCardView extends CreditCardViewBase {
   createNativeView(): any /*ios:STPPaymentCardTextField, android:com.stripe.android.view.CardInputWidget*/;
   readonly card: Card;
 }
+
+export declare interface Source {
+  amount: number; /**in pennies*/
+  card: CardCommon;
+  clientSecret?: string;
+  created: Date;
+  currency?: string;
+  id: string;
+  livemode: boolean;
+  metadata: object;
+}
+
 export declare interface Token {
   id: string;
   bankAccount: any;
