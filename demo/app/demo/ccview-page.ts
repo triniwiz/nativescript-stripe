@@ -1,4 +1,4 @@
-import { CreditCardView, Stripe, Token, Source } from "nativescript-stripe";
+import { CreditCardView, Source, Stripe, Token } from "nativescript-stripe";
 import { EventData, fromObject } from "tns-core-modules/data/observable";
 import { Button } from "tns-core-modules/ui/button";
 import { Page } from "tns-core-modules/ui/page";
@@ -35,7 +35,7 @@ export function createSource(args: EventData) {
   let page = (<Button>args.object).page;
   let ccView: CreditCardView = page.getViewById("card");
   stripe.createSource(ccView.card, (error, source) => {
-    let value = error ? error.message : formatSource(source)
+    let value = error ? error.message : formatSource(source);
     tokenSource.set("source", value);
   });
 }
