@@ -139,7 +139,7 @@ export class StripePaymentSession {
     const shippingMethod = data.getShippingMethod();
     const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
     StripeConfig.shared().backendAPI.capturePayment(
-      data.getPaymentMethod().id,
+      data.getPaymentMethod().component1(), // id
       data.getCartTotal() + shippingCost,
       createShippingMethod(shippingMethod),
       createAddress(data.getShippingInformation()))
@@ -248,18 +248,22 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
 
 function createPaymentMethod(paymentMethod: com.stripe.android.model.PaymentMethod): StripePaymentMethod {
   if (!paymentMethod) return undefined;
-  if (paymentMethod.card) return createPaymentMethodFromCard(paymentMethod.card, paymentMethod.id);
+  const pmCard = paymentMethod.component8(); // card
+  const pmId = paymentMethod.component1(); // id
+  if (pmCard) return createPaymentMethodFromCard(pmCard, pmId);
   return { label: "Error (103)", image: undefined, templateImage: undefined };
 }
 
 function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMethod.Card, stripeID: string): StripePaymentMethod {
+  const brand = card.component1(); // brand
+  const last4 = card.component7(); // last4
   return {
-    label: `${card.brand} ...${card.last4}`,
-    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(card.brand)),
+    label: `${brand} ...${last4}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(brand)),
     templateImage: undefined,
     type: "Card",
     stripeID,
-    brand: card.brand
+    brand: brand
   };
 }
 
@@ -307,8 +311,8 @@ function createAdShippingMethod(method: StripeShippingMethod, currency: string):
   return new com.stripe.android.model.ShippingMethod(
     method.label,
     method.identifier,
-    method.detail,
     method.amount,
-    currency
+    currency,
+    method.detail
   );
 }

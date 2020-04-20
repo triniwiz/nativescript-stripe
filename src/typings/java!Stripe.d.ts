@@ -1,4 +1,5 @@
-
+// NOTE!!!! This file contains the declarations needed for the NS plugin implementation.
+//          It may not contain all declarations since the dts-generator does a poor job with Kotlin source.
 // Generated from Stripe 10.2.1
 // Using Android DTS Generator as documented at https://docs.nativescript.org/core-concepts/android-runtime/metadata/generating-typescript-declarations:
 //   Download .aar from https://bintray.com/bintray/jcenter/com.stripe%3Astripe-android/10.2.1#files/com%2Fstripe%2Fstripe-android%2F10.2.1
@@ -1095,7 +1096,7 @@ declare module com {
         public createSource(param0: com.stripe.android.model.SourceParams, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Source>): void;
         public createSourceSynchronous(param0: com.stripe.android.model.SourceParams): com.stripe.android.model.Source;
         public createToken(param0: com.stripe.android.model.Card, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
-        public createTokenSynchronous(param0: com.stripe.android.model.Card): com.stripe.android.model.Token;
+        public createCardTokenSynchronous(param0: com.stripe.android.model.Card): com.stripe.android.model.Token;
         public onPaymentResult(param0: number, param1: globalAndroid.content.Intent, param2: com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>): boolean;
         public onSetupResult(param0: number, param1: globalAndroid.content.Intent, param2: string, param3: com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>): boolean;
         public onSetupResult(param0: number, param1: globalAndroid.content.Intent, param2: com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>): boolean;
@@ -1708,7 +1709,7 @@ declare module com {
           public toBuilder(): com.stripe.android.model.Card.Builder;
           public getName(): string;
           public getMetadata(): java.util.Map<string,string>;
-          public getCVC(): string;
+          public getCvc(): string;
           public validateCard(): boolean;
         }
         export module Card {
@@ -1993,16 +1994,29 @@ declare module com {
       export module model {
         export class PaymentMethod extends com.stripe.android.model.StripeModel {
           public static class: java.lang.Class<com.stripe.android.model.PaymentMethod>;
-          public id: string;
-          public created: java.lang.Long;
-          public liveMode: boolean;
-          public type: string;
-          public billingDetails: com.stripe.android.model.PaymentMethod.BillingDetails;
-          public card: com.stripe.android.model.PaymentMethod.Card;
-          public cardPresent: com.stripe.android.model.PaymentMethod.CardPresent;
-          public ideal: com.stripe.android.model.PaymentMethod.Ideal;
-          public customerId: string;
-          public metadata: java.util.Map<string,string>;
+          // These don't map properly in NS. They map to .component1(), etc.
+          // public id: string;
+          // public created: java.lang.Long;
+          // public liveMode: boolean;
+          // public type: string;
+          // public billingDetails: com.stripe.android.model.PaymentMethod.BillingDetails;
+          // public card: com.stripe.android.model.PaymentMethod.Card;
+          // public cardPresent: com.stripe.android.model.PaymentMethod.CardPresent;
+          // public ideal: com.stripe.android.model.PaymentMethod.Ideal;
+          // public customerId: string;
+          // public metadata: java.util.Map<string,string>;
+          public component1(): string; // id
+          public component2(): java.lang.Long; // created
+          public component3(): boolean; // liveMode
+          public component4(): string; // type
+          public component5(): com.stripe.android.model.PaymentMethod.BillingDetails; // billingDetails
+          public component6(): string; // customerId
+          public component7(): java.util.Map<string,string>; // metadata
+          public component8(): com.stripe.android.model.PaymentMethod.Card; // card
+          public component9(): com.stripe.android.model.PaymentMethod.CardPresent; // cardPresent
+          public component10(): com.stripe.android.model.PaymentMethod.Fpx; // fpx
+          public component11(): com.stripe.android.model.PaymentMethod.Ideal; // ideal
+          public component12(): com.stripe.android.model.PaymentMethod.SepaDebit; // sepaDebit
           public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.model.PaymentMethod>;
           public equals(param0: any): boolean;
           public toMap(): java.util.Map<string,any>;
@@ -2058,15 +2072,25 @@ declare module com {
           }
           export class Card extends com.stripe.android.model.PaymentMethod.PaymentMethodTypeImpl {
             public static class: java.lang.Class<com.stripe.android.model.PaymentMethod.Card>;
-            public brand: string;
-            public checks: com.stripe.android.model.PaymentMethod.Card.Checks;
-            public country: string;
-            public expiryMonth: java.lang.Integer;
-            public expiryYear: java.lang.Integer;
-            public funding: string;
-            public last4: string;
-            public threeDSecureUsage: com.stripe.android.model.PaymentMethod.Card.ThreeDSecureUsage;
-            public wallet: com.stripe.android.model.wallets.Wallet;
+            // These don't map properly in NS. They map to .component1(), etc.
+            // public brand: string;
+            // public checks: com.stripe.android.model.PaymentMethod.Card.Checks;
+            // public country: string;
+            // public expiryMonth: java.lang.Integer;
+            // public expiryYear: java.lang.Integer;
+            // public funding: string;
+            // public last4: string;
+            // public threeDSecureUsage: com.stripe.android.model.PaymentMethod.Card.ThreeDSecureUsage;
+            // public wallet: com.stripe.android.model.wallets.Wallet;
+            public component1(): string; // brand
+            public component2(): com.stripe.android.model.PaymentMethod.Card.Checks; // checks
+            public component3(): string; // country
+            public component4(): java.lang.Integer; // expiryMonth
+            public component5(): java.lang.Integer; // expiryYear
+            public component6(): string; // funding
+            public component7(): string; // last4
+            public component8(): com.stripe.android.model.PaymentMethod.Card.ThreeDSecureUsage; // threeDSecureUsage
+            public component9(): com.stripe.android.model.wallets.Wallet; // wallet
             public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.model.PaymentMethod.Card>;
             public describeContents(): number;
             public toMap(): java.util.Map<string,any>;
@@ -2161,6 +2185,21 @@ declare module com {
             public hashCode(): number;
             public equals(param0: any): boolean;
           }
+					export class Fpx {
+						public static class: java.lang.Class<com.stripe.android.model.PaymentMethod.Fpx>;
+						public bank: string;
+						public accountHolderType: string;
+						public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.model.PaymentMethod.Fpx>;
+						public describeContents(): number;
+						public component2(): string;
+						public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+						public component1(): string;
+						public hashCode(): number;
+						public equals(param0: any): boolean;
+						public copy(param0: string, param1: string): com.stripe.android.model.PaymentMethod.Fpx;
+						public constructor(param0: string, param1: string);
+						public toString(): string;
+					}
           export class Ideal extends com.stripe.android.model.PaymentMethod.PaymentMethodTypeImpl {
             public static class: java.lang.Class<com.stripe.android.model.PaymentMethod.Ideal>;
             public bank: string;
@@ -2182,7 +2221,28 @@ declare module com {
               public build(): com.stripe.android.model.PaymentMethod.Ideal;
             }
           }
-          export abstract class PaymentMethodTypeImpl extends com.stripe.android.model.StripeModel {
+          export class SepaDebit {
+						public static class: java.lang.Class<com.stripe.android.model.PaymentMethod.SepaDebit>;
+						public bankCode: string;
+						public branchCode: string;
+						public country: string;
+						public fingerprint: string;
+						public last4: string;
+						public static CREATOR: globalAndroid.os.Parcelable.Creator<com.stripe.android.model.PaymentMethod.SepaDebit>;
+						public component4(): string;
+						public component3(): string;
+						public describeContents(): number;
+						public component5(): string;
+						public component2(): string;
+						public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+						public component1(): string;
+						public hashCode(): number;
+						public equals(param0: any): boolean;
+						public copy(param0: string, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.PaymentMethod.SepaDebit;
+						public constructor(param0: string, param1: string, param2: string, param3: string, param4: string);
+						public toString(): string;
+					}
+        export abstract class PaymentMethodTypeImpl extends com.stripe.android.model.StripeModel {
             public static class: java.lang.Class<com.stripe.android.model.PaymentMethod.PaymentMethodTypeImpl>;
             public type: com.stripe.android.model.PaymentMethod.Type;
             public describeContents(): number;
@@ -2343,11 +2403,13 @@ declare module com {
           public toMap(): java.util.Map<string,any>;
           public describeContents(): number;
           public getIdentifier(): string;
-          public constructor(param0: string, param1: string, param2: string, param3: number, param4: string);
+          public constructor(param0: string, param1: string, param2: string, param3: java.util.Currency, param4: string);
           public equals(param0: any): boolean;
           public getAmount(): number;
           public constructor();
-          public constructor(param0: string, param1: string, param2: number, param3: string);
+          public constructor(param0: string, param1: string, param2: number, param3: string, param4: string);
+					public constructor(param0: string, param1: string, param2: number, param3: java.util.Currency);
+					public constructor(param0: string, param1: string, param2: number, param3: string);
           public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
           public getDetail(): string;
           public hashCode(): number;
@@ -3280,8 +3342,6 @@ declare module com {
         export class AddPaymentMethodActivity extends com.stripe.android.view.StripeActivity {
           public static class: java.lang.Class<com.stripe.android.view.AddPaymentMethodActivity>;
           public static TOKEN_ADD_PAYMENT_METHOD_ACTIVITY: string;
-          public static EXTRA_NEW_PAYMENT_METHOD: string;
-          public static EXTRA_SHOULD_REQUIRE_POSTAL_CODE: string;
           public onActionSave(): void;
           public setCommunicatingProgress(param0: boolean): void;
           public onCreate(param0: globalAndroid.os.Bundle): void;

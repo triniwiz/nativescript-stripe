@@ -260,10 +260,15 @@ export class Card implements CardCommon {
   }
 
   public static fromNativePaymentMethod(pm: com.stripe.android.model.PaymentMethod): Card {
+    const pmCard = pm.component8(); // card
     const newCard = new Card(null, null, null, null);
-    newCard._last4 = pm.card.last4;
-    newCard._brand = <CardBrand>pm.card.brand;
-    newCard._cardBuilder = new com.stripe.android.model.Card.Builder(null, pm.card.expiryMonth, pm.card.expiryYear, null).country(pm.card.country);
+    newCard._last4 = pmCard.component7(); // last4
+    newCard._brand = <CardBrand>pmCard.component1(); // brand
+    newCard._cardBuilder = new com.stripe.android.model.Card.Builder(
+      null,
+      pmCard.component4(), // expiryMonth
+      pmCard.component5(), // expiryYear
+      null).country(pmCard.component3()); // country
 
     return newCard;
   }
@@ -290,7 +295,7 @@ export class Card implements CardCommon {
     return this.native.getNumber();
   }
   get cvc(): string {
-    return this.native.getCVC();
+    return this.native.getCvc();
   }
   get expMonth(): number {
     return this.native.getExpMonth().intValue();
@@ -402,7 +407,7 @@ export class CreditCardView extends CreditCardViewBase {
         card.getNumber(),
         card.getExpMonth().intValue(),
         card.getExpYear().intValue(),
-        card.getCVC()
+        card.getCvc()
       );
     } else {
       return null;
@@ -419,13 +424,15 @@ export class PaymentMethod implements PaymentMethodCommon {
     return pm;
   }
 
-  get id(): string { return this.native.id; }
-  get created(): Date { return new Date(this.native.created.longValue()); }
-  get type(): "card" { return this.native.type as "card"; }
-  get billingDetails(): object { return this.native.billingDetails; }
+  // With Kotlin, the accessors no longer work. They are mapped to "componentX()", where X is the order
+  // the fields appear in the Kotlin constructor.
+  get id(): string { return this.native.component1(); }
+  get created(): Date { return new Date(this.native.component2().longValue() * 1000); }
+  get type(): "card" { return this.native.component4() as "card"; }
+  get billingDetails(): object { return this.native.component5(); }
   get card(): CardCommon { return Card.fromNativePaymentMethod(this.native); }
-  get customerId(): string { return this.native.customerId; }
-  get metadata(): object { return this.native.metadata; }
+  get customerId(): string { return this.native.component6(); }
+  get metadata(): object { return this.native.component7(); }
 }
 
 
