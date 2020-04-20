@@ -1,5 +1,6 @@
 import { android as androidApp } from "tns-core-modules/application";
 import { Page } from "tns-core-modules/ui/page";
+import * as utils from 'tns-core-modules/utils/utils';
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 
 declare let global: any;
@@ -42,7 +43,7 @@ export class StripeConfig extends StripeConfigCommon {
   initPaymentConfiguration(): void {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
     if (this._paymentConfigurationInitiated) return;
-    com.stripe.android.PaymentConfiguration.init(this.publishableKey);
+    com.stripe.android.PaymentConfiguration.init(utils.ad.getApplicationContext(), this.publishableKey);
     this._paymentConfigurationInitiated = true;
   }
 
@@ -189,7 +190,7 @@ function createPaymentSessionListener(parent: StripePaymentSession, listener: St
       if (parent.paymentInProgress) return;
 
       parent.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
-        onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
+        onCustomerRetrieved(_customer: com.stripe.android.model.Customer) {
           parent.selectedPaymentMethod = createPaymentMethod(sessionData.getPaymentMethod());
           parent.selectedShippingMethod = createShippingMethod(sessionData.getShippingMethod());
           parent.shippingAddress = createAddress(sessionData.getShippingInformation());

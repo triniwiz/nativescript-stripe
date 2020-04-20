@@ -5,17 +5,26 @@ import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source,
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
   private _apiKey: string;
+  private _stripeAccountId: string;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, stripeAccountId?: string) {
     this._apiKey = apiKey;
-    this._stripe = new com.stripe.android.Stripe(
-      utils.ad.getApplicationContext(),
-      apiKey
-    );
+    this._stripeAccountId = stripeAccountId;
   }
 
   setStripeAccount(accountId: string) {
-    this._stripe.setStripeAccount(accountId);
+    this._stripeAccountId = accountId;
+  }
+
+  private get stripe(): com.stripe.android.Stripe {
+    if (!this._stripe) {
+      this._stripe = new com.stripe.android.Stripe(
+        utils.ad.getApplicationContext(),
+        this._apiKey,
+        this._stripeAccountId
+      );
+    }
+    return this._stripe;
   }
 
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
@@ -25,9 +34,9 @@ export class Stripe {
       }
       return;
     }
-    this._stripe.createToken(
+    this.stripe.createToken(
       card.native,
-      new com.stripe.android.TokenCallback({
+      new com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>({
         onSuccess: function (token: com.stripe.android.model.Token) {
           if (typeof cb === 'function') {
             const newToken: Token = {
@@ -61,9 +70,9 @@ export class Stripe {
     const cardSourceParams = com.stripe.android.model.SourceParams.createCardParams(card.native);
 
     try {
-      this._stripe.createSource(
+      this.stripe.createSource(
         cardSourceParams,
-        new com.stripe.android.SourceCallback({
+        new com.stripe.android.ApiResultCallback<com.stripe.android.model.Source>({
           onSuccess: function (source: com.stripe.android.model.Source) {
               if (typeof cb === 'function') {
                 const newSource: Source = {
@@ -122,7 +131,7 @@ export class Stripe {
           cb(new Error(error.localizedDescription), null);
         }
       });
-      this._stripe.createPaymentMethod(params, apiResultCallback, this._apiKey, null);
+      this.stripe.createPaymentMethod(params, apiResultCallback);
     } catch (error) {
       if (typeof cb === 'function') {
         cb(new Error(error.localizedDescription), null);
@@ -132,7 +141,7 @@ export class Stripe {
 
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
     try {
-      const pi = this._stripe.retrievePaymentIntentSynchronous(clientSecret);
+      const pi = this.stripe.retrievePaymentIntentSynchronous(clientSecret);
       cb(null, StripePaymentIntent.fromNative(pi));
     } catch (error) {
       cb(new Error(error.localizedDescription), null);
@@ -153,9 +162,9 @@ export class Stripe {
       });
 
       activity.onActivityResult = (requestCode, resultCode, data) => {
-        this._stripe.onSetupResult(requestCode, data, resultCb);
+        this.stripe.onSetupResult(requestCode, data, resultCb);
       };
-      this._stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
+      this.stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
     } catch (error) {
       cb(new Error(error.localizedDescription), null);
     }
@@ -174,10 +183,10 @@ export class Stripe {
     });
 
     activity.onActivityResult = (requestCode, resultCode, data) => {
-      this._stripe.onSetupResult(requestCode, data, resultCb);
+      this.stripe.onSetupResult(requestCode, data, resultCb);
     };
 
-    this._stripe.authenticateSetup(activity, clientSecret);
+    this.stripe.authenticateSetup(activity, clientSecret);
   }
 
   confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
@@ -194,9 +203,9 @@ export class Stripe {
       });
 
       activity.onActivityResult = (requestCode, resultCode, data) => {
-        this._stripe.onPaymentResult(requestCode, data, resultCb);
+        this.stripe.onPaymentResult(requestCode, data, resultCb);
       };
-      this._stripe.confirmPayment(activity, piParams.native);
+      this.stripe.confirmPayment(activity, piParams.native);
     } catch (error) {
        cb(new Error(error.localizedDescription), null);
     }
@@ -216,10 +225,10 @@ export class Stripe {
     });
 
     activity.onActivityResult = (requestCode, resultCode, data) => {
-      this._stripe.onPaymentResult(requestCode, data, resultCb);
+      this.stripe.onPaymentResult(requestCode, data, resultCb);
     };
 
-    this._stripe.authenticatePayment(activity, clientSecret);
+    this.stripe.authenticatePayment(activity, clientSecret);
   }
 }
 
