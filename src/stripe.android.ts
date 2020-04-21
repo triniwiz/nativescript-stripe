@@ -233,6 +233,7 @@ export class Stripe {
 }
 
 export class Card implements CardCommon {
+  private _native: com.stripe.android.model.Card;
   private _cardBuilder: com.stripe.android.model.Card.Builder;
   private _brand: CardBrand;
   private _last4: string;
@@ -273,7 +274,8 @@ export class Card implements CardCommon {
     return newCard;
   }
   get native(): com.stripe.android.model.Card {
-    return this._cardBuilder.build();
+    if (!this._native) this._native = this._cardBuilder.build();
+    return this._native;
   }
 
   validateNumber(): boolean {
@@ -373,7 +375,7 @@ export class Card implements CardCommon {
   }
 
   get brand(): CardBrand {
-    if (!this._brand) this._brand = <CardBrand>this.native.getBrand();
+    if (!this._brand) this._brand = <CardBrand>this.native.getBrand().getCode();
     return this._brand;
   }
 
@@ -428,7 +430,7 @@ export class PaymentMethod implements PaymentMethodCommon {
   // the fields appear in the Kotlin constructor.
   get id(): string { return this.native.component1(); }
   get created(): Date { return new Date(this.native.component2().longValue() * 1000); }
-  get type(): "card" { return this.native.component4() as "card"; }
+  get type(): "card" { return this.native.component4().toString() as "card"; }
   get billingDetails(): object { return this.native.component5(); }
   get card(): CardCommon { return Card.fromNativePaymentMethod(this.native); }
   get customerId(): string { return this.native.component6(); }

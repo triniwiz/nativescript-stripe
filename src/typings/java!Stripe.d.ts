@@ -924,19 +924,16 @@ declare module com {
         public static EXTRA_PAYMENT_SESSION_ACTIVE: string;
         public static PAYMENT_SESSION_DATA_KEY: string;
         public static PAYMENT_SESSION_CONFIG: string;
-        public constructor(param0: globalAndroid.app.Activity);
-        public constructor(param0: androidx.fragment.app.Fragment);
-        public presentPaymentMethodSelection(param0: boolean): void;
-        public init(param0: com.stripe.android.PaymentSession.PaymentSessionListener, param1: com.stripe.android.PaymentSessionConfig): boolean;
+        public constructor(param0: globalAndroid.app.Activity, param1: com.stripe.android.PaymentSessionConfig);
+        public constructor(param0: androidx.fragment.app.Fragment, param1: com.stripe.android.PaymentSessionConfig);
+        public init(param0: com.stripe.android.PaymentSession.PaymentSessionListener): boolean;
         public presentPaymentMethodSelection(param0: string): void;
         public savePaymentSessionInstanceState(param0: globalAndroid.os.Bundle): void;
-        public init(param0: com.stripe.android.PaymentSession.PaymentSessionListener, param1: com.stripe.android.PaymentSessionConfig, param2: globalAndroid.os.Bundle): boolean;
+        public init(param0: com.stripe.android.PaymentSession.PaymentSessionListener, param1: globalAndroid.os.Bundle): boolean;
         public onCompleted(): void;
         public getPaymentSessionData(): com.stripe.android.PaymentSessionData;
         public setCartTotal(param0: number): void;
-        public presentPaymentMethodSelection(): void;
         public presentShippingFlow(): void;
-        public presentPaymentMethodSelection(param0: boolean, param1: string): void;
         public onDestroy(): void;
         public handlePaymentData(param0: number, param1: number, param2: globalAndroid.content.Intent): boolean;
       }
@@ -988,15 +985,47 @@ declare module com {
       export module PaymentSessionConfig {
         export class Builder extends com.stripe.android.ObjectBuilder<com.stripe.android.PaymentSessionConfig> {
           public static class: java.lang.Class<com.stripe.android.PaymentSessionConfig.Builder>;
-          public setPrepopulatedShippingInfo(param0: com.stripe.android.model.ShippingInformation): com.stripe.android.PaymentSessionConfig.Builder;
+          public constructor();
           public build(): com.stripe.android.PaymentSessionConfig;
           public setOptionalShippingInfoFields(param0: native.Array<string>): com.stripe.android.PaymentSessionConfig.Builder;
-          public setShippingInfoRequired(param0: boolean): com.stripe.android.PaymentSessionConfig.Builder;
-          public constructor();
-          public setShippingMethodsRequired(param0: boolean): com.stripe.android.PaymentSessionConfig.Builder;
-          public build(): any;
+					public setAddPaymentMethodFooter(param0: number): com.stripe.android.PaymentSessionConfig.Builder;
+					public setAllowedShippingCountryCodes(param0: java.util.Set<string>): com.stripe.android.PaymentSessionConfig.Builder;
+          public setBillingAddressFields(param0: com.stripe.android.view.BillingAddressFields): com.stripe.android.PaymentSessionConfig.Builder;
           public setHiddenShippingInfoFields(param0: native.Array<string>): com.stripe.android.PaymentSessionConfig.Builder;
+					public setPaymentMethodTypes(param0: java.util.List<any>): com.stripe.android.PaymentSessionConfig.Builder;
+          public setPrepopulatedShippingInfo(param0: com.stripe.android.model.ShippingInformation): com.stripe.android.PaymentSessionConfig.Builder;
+          public setShippingInfoRequired(param0: boolean): com.stripe.android.PaymentSessionConfig.Builder;
+					public setShippingInformationValidator(param0: com.stripe.android.PaymentSessionConfig.ShippingInformationValidator): com.stripe.android.PaymentSessionConfig.Builder;
+					public setShippingMethodsFactory(param0: com.stripe.android.PaymentSessionConfig.ShippingMethodsFactory): com.stripe.android.PaymentSessionConfig.Builder;
+          public setShippingMethodsRequired(param0: boolean): com.stripe.android.PaymentSessionConfig.Builder;
+					public setShouldShowGooglePay(param0: boolean): com.stripe.android.PaymentSessionConfig.Builder;
+					public setShouldPrefetchCustomer(param0: boolean): com.stripe.android.PaymentSessionConfig.Builder;
+					public setWindowFlags(param0: java.lang.Integer): com.stripe.android.PaymentSessionConfig.Builder;
         }
+				export class ShippingInformationValidator {
+					public static class: java.lang.Class<com.stripe.android.PaymentSessionConfig.ShippingInformationValidator>;
+					/**
+					 * Constructs a new instance of the com.stripe.android.PaymentSessionConfig$ShippingInformationValidator interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+					 */
+					public constructor(implementation: {
+						isValid(param0: com.stripe.android.model.ShippingInformation): boolean;
+						getErrorMessage(param0: com.stripe.android.model.ShippingInformation): string;
+					});
+					public constructor();
+					public getErrorMessage(param0: com.stripe.android.model.ShippingInformation): string;
+					public isValid(param0: com.stripe.android.model.ShippingInformation): boolean;
+				}
+				export class ShippingMethodsFactory {
+					public static class: java.lang.Class<com.stripe.android.PaymentSessionConfig.ShippingMethodsFactory>;
+					/**
+					 * Constructs a new instance of the com.stripe.android.PaymentSessionConfig$ShippingMethodsFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+					 */
+					public constructor(implementation: {
+						create(param0: com.stripe.android.model.ShippingInformation): java.util.List<com.stripe.android.model.ShippingMethod>;
+					});
+					public constructor();
+					public create(param0: com.stripe.android.model.ShippingInformation): java.util.List<com.stripe.android.model.ShippingMethod>;
+				}
       }
     }
   }
@@ -1075,28 +1104,44 @@ declare module com {
         public constructor(param0: globalAndroid.content.Context, param1: string);
 				public constructor(param0: globalAndroid.content.Context, param1: string, param2: string);
         public authenticatePayment(param0: globalAndroid.app.Activity, param1: string): void;
+				/** @deprecated */
         public authenticatePayment(param0: androidx.fragment.app.Fragment, param1: string): void;
+				/** @deprecated */
         public authenticateSetup(param0: androidx.fragment.app.Fragment, param1: string): void;
         public authenticateSetup(param0: globalAndroid.app.Activity, param1: string): void;
         public confirmPayment(param0: globalAndroid.app.Activity, param1: com.stripe.android.model.ConfirmPaymentIntentParams): void;
-        public confirmPaymentIntentSynchronous(param0: com.stripe.android.model.ConfirmPaymentIntentParams): com.stripe.android.model.PaymentIntent;
         public confirmPayment(param0: androidx.fragment.app.Fragment, param1: com.stripe.android.model.ConfirmPaymentIntentParams): void;
+        public confirmPaymentIntentSynchronous(param0: com.stripe.android.model.ConfirmPaymentIntentParams): com.stripe.android.model.PaymentIntent;
         public confirmSetupIntent(param0: globalAndroid.app.Activity, param1: com.stripe.android.model.ConfirmSetupIntentParams): void;
         public confirmSetupIntent(param0: androidx.fragment.app.Fragment, param1: com.stripe.android.model.ConfirmSetupIntentParams): void;
         public confirmSetupIntentSynchronous(param0: com.stripe.android.model.ConfirmSetupIntentParams, param1: string): com.stripe.android.model.SetupIntent;
+				public createAccountToken(param0: com.stripe.android.model.AccountParams, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
+				public createAccountToken(param0: com.stripe.android.model.AccountParams, param1: string, param2: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
         public createAccountTokenSynchronous(param0: com.stripe.android.model.AccountParams): com.stripe.android.model.Token;
+				public createAccountTokenSynchronous(param0: com.stripe.android.model.AccountParams, param1: string): com.stripe.android.model.Token;
         public createBankAccountToken(param0: com.stripe.android.model.BankAccount, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
+				public createBankAccountToken(param0: com.stripe.android.model.BankAccount, param1: string, param2: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
         public createBankAccountTokenSynchronous(param0: com.stripe.android.model.BankAccount): com.stripe.android.model.Token;
+        /** @deprecated */
+        public createToken(param0: com.stripe.android.model.Card, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
+				public createCardToken(param0: com.stripe.android.model.Card, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
+				public createCardToken(param0: com.stripe.android.model.Card, param1: string, param2: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
+        public createCardTokenSynchronous(param0: com.stripe.android.model.Card): com.stripe.android.model.Token;
         public createCvcUpdateToken(param0: string, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
+				public createCvcUpdateToken(param0: string, param1: string, param2: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
         public createCvcUpdateTokenSynchronous(param0: string): com.stripe.android.model.Token;
+				public createCvcUpdateTokenSynchronous(param0: string, param1: string): com.stripe.android.model.Token;
         public createPaymentMethod(param0: com.stripe.android.model.PaymentMethodCreateParams, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.PaymentMethod>): void;
+				public createPaymentMethod(param0: com.stripe.android.model.PaymentMethodCreateParams, param1: string, param2: com.stripe.android.ApiResultCallback<com.stripe.android.model.PaymentMethod>): void;
         public createPaymentMethodSynchronous(param0: com.stripe.android.model.PaymentMethodCreateParams): com.stripe.android.model.PaymentMethod;
+				public createPaymentMethodSynchronous(param0: com.stripe.android.model.PaymentMethodCreateParams, param1: string): com.stripe.android.model.PaymentMethod;
         public createPiiToken(param0: string, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
+				public createPiiToken(param0: string, param1: string, param2: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
         public createPiiTokenSynchronous(param0: string): com.stripe.android.model.Token;
         public createSource(param0: com.stripe.android.model.SourceParams, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Source>): void;
+        public createSource(param0: com.stripe.android.model.SourceParams, param1: string, param2: com.stripe.android.ApiResultCallback<com.stripe.android.model.Source>): void;
         public createSourceSynchronous(param0: com.stripe.android.model.SourceParams): com.stripe.android.model.Source;
-        public createToken(param0: com.stripe.android.model.Card, param1: com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>): void;
-        public createCardTokenSynchronous(param0: com.stripe.android.model.Card): com.stripe.android.model.Token;
+				public createSourceSynchronous(param0: com.stripe.android.model.SourceParams, param1: string): com.stripe.android.model.Source;
         public onPaymentResult(param0: number, param1: globalAndroid.content.Intent, param2: com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>): boolean;
         public onSetupResult(param0: number, param1: globalAndroid.content.Intent, param2: string, param3: com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>): boolean;
         public onSetupResult(param0: number, param1: globalAndroid.content.Intent, param2: com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>): boolean;
@@ -1537,6 +1582,8 @@ declare module com {
         export class AccountParams {
           public static class: java.lang.Class<com.stripe.android.model.AccountParams>;
           public equals(param0: any): boolean;
+					public static create(param0: boolean, param1: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual): com.stripe.android.model.AccountParams;
+					/** @deprecated */
           public static createAccountParams(param0: boolean, param1: com.stripe.android.model.AccountParams.BusinessType, param2: java.util.Map<string,any>): com.stripe.android.model.AccountParams;
           public hashCode(): number;
           public toParamMap(): java.util.Map<string,any>;
@@ -1549,6 +1596,116 @@ declare module com {
             public code: string;
             public static values(): native.Array<com.stripe.android.model.AccountParams.BusinessType>;
             public static valueOf(param0: string): com.stripe.android.model.AccountParams.BusinessType;
+          }
+					export abstract class BusinessTypeParams extends com.stripe.android.model.StripeParamsModel {
+						public static class: java.lang.Class<com.stripe.android.model.AccountParams.BusinessTypeParams>;
+						public toParamMap(): java.util.Map<string,any>;
+          }
+          export module BusinessTypeParams {
+            export class Individual extends com.stripe.android.model.AccountParams.BusinessTypeParams {
+							public static class: java.lang.Class<com.stripe.android.model.AccountParams.BusinessTypeParams.Individual>;
+							public getGender(): string;
+							public component13(): string;
+							public component18(): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Verification;
+							public component7(): string;
+							public hashCode(): number;
+							public getVerification(): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Verification;
+							public component10(): string;
+							public component16(): string;
+							public component1(): com.stripe.android.model.Address;
+							public toParamMap(): java.util.Map<string,any>;
+							public toString(): string;
+							public copy(param0: com.stripe.android.model.Address, param1: com.stripe.android.model.AddressJapanParams, param2: com.stripe.android.model.AddressJapanParams, param3: com.stripe.android.model.DateOfBirth, param4: string, param5: string, param6: string, param7: string, param8: string, param9: string, param10: string, param11: string, param12: string, param13: string, param14: java.util.Map<string,string>, param15: string, param16: string, param17: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Verification): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual;
+							public getFirstName(): string;
+							public component12(): string;
+							public describeContents(): number;
+							public component17(): string;
+							public getAddressKana(): com.stripe.android.model.AddressJapanParams;
+							public getAddress(): com.stripe.android.model.Address;
+							public component6(): string;
+							public getLastNameKanji(): string;
+							public getFirstNameKana(): string;
+							public constructor();
+							public getAddressKanji(): com.stripe.android.model.AddressJapanParams;
+							public getMetadata(): java.util.Map<string,string>;
+							public getFirstNameKanji(): string;
+							public component9(): string;
+							public component4(): com.stripe.android.model.DateOfBirth;
+							public component15(): java.util.Map<string,string>;
+							public getLastNameKana(): string;
+							public component5(): string;
+							public getMaidenName(): string;
+							public component3(): com.stripe.android.model.AddressJapanParams;
+							public getIdNumber(): string;
+							public component8(): string;
+							public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+							public getDateOfBirth(): com.stripe.android.model.DateOfBirth;
+							public getLastName(): string;
+							public getPhone(): string;
+							public component14(): string;
+							public getEmail(): string;
+							public getSsnLast4(): string;
+							public component2(): com.stripe.android.model.AddressJapanParams;
+							public component11(): string;
+							public constructor(param0: com.stripe.android.model.Address, param1: com.stripe.android.model.AddressJapanParams, param2: com.stripe.android.model.AddressJapanParams, param3: com.stripe.android.model.DateOfBirth, param4: string, param5: string, param6: string, param7: string, param8: string, param9: string, param10: string, param11: string, param12: string, param13: string, param14: java.util.Map<string,string>, param15: string, param16: string, param17: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Verification);
+							public equals(param0: any): boolean;
+						}
+						export module Individual {
+							export class Builder extends com.stripe.android.ObjectBuilder<com.stripe.android.model.AccountParams.BusinessTypeParams.Individual> {
+								public static class: java.lang.Class<com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder>;
+								public setVerification(param0: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Verification): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setLastNameKanji(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setMetadata(param0: java.util.Map<string,string>): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setDateOfBirth(param0: com.stripe.android.model.DateOfBirth): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setLastName(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setPhone(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public constructor();
+								public setFirstNameKana(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setAddressKana(param0: com.stripe.android.model.AddressJapanParams): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setIdNumber(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setMaidenName(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public build(): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual;
+								public setAddress(param0: com.stripe.android.model.Address): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setAddressKanji(param0: com.stripe.android.model.AddressJapanParams): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setLastNameKana(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public build(): any;
+								public setFirstName(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setEmail(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setFirstNameKanji(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setGender(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+								public setSsnLast4(param0: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Builder;
+							}
+							export class Document extends com.stripe.android.model.StripeParamsModel {
+								public static class: java.lang.Class<com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document>;
+								public copy(param0: string, param1: string): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document;
+								public toString(): string;
+								public describeContents(): number;
+								public constructor(param0: string, param1: string);
+								public equals(param0: any): boolean;
+								public toParamMap(): java.util.Map<string,any>;
+								public constructor();
+								public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+								public constructor(param0: string);
+								public hashCode(): number;
+							}
+							export class Verification extends com.stripe.android.model.StripeParamsModel {
+								public static class: java.lang.Class<com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Verification>;
+								public component1(): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document;
+								public toString(): string;
+								public getAdditionalDocument(): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document;
+								public equals(param0: any): boolean;
+								public toParamMap(): java.util.Map<string,any>;
+								public getDocument(): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document;
+								public constructor();
+								public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+								public component2(): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document;
+								public constructor(param0: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document, param1: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document);
+								public constructor(param0: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document);
+								public describeContents(): number;
+								public copy(param0: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document, param1: com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Document): com.stripe.android.model.AccountParams.BusinessTypeParams.Individual.Verification;
+								public hashCode(): number;
+							}
+						}
           }
         }
       }
@@ -1609,6 +1766,56 @@ declare module com {
       }
     }
   }
+}
+
+declare module com {
+	export module stripe {
+		export module android {
+			export module model {
+				export class AddressJapanParams extends com.stripe.android.model.StripeParamsModel {
+					public static class: java.lang.Class<com.stripe.android.model.AddressJapanParams>;
+					public component2(): string;
+					public component5(): string;
+					public component7(): string;
+					public copy(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string, param6: string): com.stripe.android.model.AddressJapanParams;
+					public describeContents(): number;
+					public getLine1(): string;
+					public component3(): string;
+					public getCountry(): string;
+					public getState(): string;
+					public getCity(): string;
+					public toParamMap(): java.util.Map<string,any>;
+					public getTown(): string;
+					public equals(param0: any): boolean;
+					public toString(): string;
+					public component1(): string;
+					public getLine2(): string;
+					public constructor();
+					public component6(): string;
+					public component4(): string;
+					public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+					public getPostalCode(): string;
+					public hashCode(): number;
+					public constructor(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string, param6: string);
+				}
+				export module AddressJapanParams {
+					export class Builder extends com.stripe.android.ObjectBuilder<com.stripe.android.model.AddressJapanParams> {
+						public static class: java.lang.Class<com.stripe.android.model.AddressJapanParams.Builder>;
+						public setLine2(param0: string): com.stripe.android.model.AddressJapanParams.Builder;
+						public setCity(param0: string): com.stripe.android.model.AddressJapanParams.Builder;
+						public constructor();
+						public setState(param0: string): com.stripe.android.model.AddressJapanParams.Builder;
+						public setPostalCode(param0: string): com.stripe.android.model.AddressJapanParams.Builder;
+						public setCountry(param0: string): com.stripe.android.model.AddressJapanParams.Builder;
+						public build(): com.stripe.android.model.AddressJapanParams;
+						public setLine1(param0: string): com.stripe.android.model.AddressJapanParams.Builder;
+						public setTown(param0: string): com.stripe.android.model.AddressJapanParams.Builder;
+						public build(): any;
+					}
+				}
+			}
+		}
+	}
 }
 
 declare module com {
@@ -1693,11 +1900,10 @@ declare module com {
           public getNumber(): string;
           public toPaymentMethodParamsCard(): com.stripe.android.model.PaymentMethodCreateParams.Card;
           public getExpMonth(): java.lang.Integer;
-          public getBrand(): string;
+          public getBrand(): com.stripe.android.model.CardBrand;
           public getAddressLine1Check(): string;
           public static fromString(param0: string): com.stripe.android.model.Card;
           public getAddressLine1(): string;
-          public static getBrandIcon(param0: string): number;
           public getAddressZipCheck(): string;
           public getCountry(): string;
           public validateNumber(): boolean;
@@ -1711,6 +1917,7 @@ declare module com {
           public getMetadata(): java.util.Map<string,string>;
           public getCvc(): string;
           public validateCard(): boolean;
+					public getTokenizationMethod(): com.stripe.android.model.TokenizationMethod;
         }
         export module Card {
           export class Builder extends com.stripe.android.ObjectBuilder<com.stripe.android.model.Card> {
@@ -1740,23 +1947,6 @@ declare module com {
             public addressCity(param0: string): com.stripe.android.model.Card.Builder;
             public addressState(param0: string): com.stripe.android.model.Card.Builder;
           }
-          export class CardBrand {
-            public static class: java.lang.Class<com.stripe.android.model.Card.CardBrand>;
-            /**
-             * Constructs a new instance of the com.stripe.android.model.Card$CardBrand interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
-             */
-            public constructor(implementation: {
-            });
-            public constructor();
-            public static UNIONPAY: string;
-            public static DISCOVER: string;
-            public static MASTERCARD: string;
-            public static VISA: string;
-            public static JCB: string;
-            public static UNKNOWN: string;
-            public static DINERS_CLUB: string;
-            public static AMERICAN_EXPRESS: string;
-          }
           export class FundingType {
             public static class: java.lang.Class<com.stripe.android.model.Card.FundingType>;
             /**
@@ -1774,6 +1964,49 @@ declare module com {
       }
     }
   }
+}
+
+declare module com {
+	export module stripe {
+		export module android {
+			export module model {
+				export class CardBrand {
+					public static class: java.lang.Class<com.stripe.android.model.CardBrand>;
+					public static AmericanExpress: com.stripe.android.model.CardBrand;
+					public static Discover: com.stripe.android.model.CardBrand;
+					public static JCB: com.stripe.android.model.CardBrand;
+					public static DinersClub: com.stripe.android.model.CardBrand;
+					public static Visa: com.stripe.android.model.CardBrand;
+					public static MasterCard: com.stripe.android.model.CardBrand;
+					public static UnionPay: com.stripe.android.model.CardBrand;
+					public static Unknown: com.stripe.android.model.CardBrand;
+					public static Companion: com.stripe.android.model.CardBrand.companion;
+					public getDisplayName(): string;
+					public getIcon(): number;
+					public static valueOf(param0: string): com.stripe.android.model.CardBrand;
+					public getSpacePositions(): java.util.Set<java.lang.Integer>;
+					public isValidCardNumberLength(param0: string): boolean;
+					public static values(): native.Array<com.stripe.android.model.CardBrand>;
+					public getCvcLength(): java.util.Set<java.lang.Integer>;
+					public getMaxCvcLength(): number;
+					public getPrefixes(): java.util.List<string>;
+					public getCode(): string;
+					public isMaxCvc(param0: string): boolean;
+					public getCvcIcon(): number;
+					public getMaxLengthWithoutSpaces(): number;
+					public getMaxLengthWithSpaces(): number;
+					public isValidCvc(param0: string): boolean;
+				}
+				export module CardBrand {
+					export class companion {
+						public static class: java.lang.Class<com.stripe.android.model.CardBrand.companion>;
+						public fromCardNumber(param0: string): com.stripe.android.model.CardBrand;
+						public fromCode(param0: string): com.stripe.android.model.CardBrand;
+					}
+				}
+			}
+		}
+	}
 }
 
 declare module com {
@@ -1939,6 +2172,32 @@ declare module com {
 }
 
 declare module com {
+	export module stripe {
+		export module android {
+			export module model {
+				export class DateOfBirth extends com.stripe.android.model.StripeParamsModel {
+					public static class: java.lang.Class<com.stripe.android.model.DateOfBirth>;
+					public component3(): number;
+					public copy(param0: number, param1: number, param2: number): com.stripe.android.model.DateOfBirth;
+					public describeContents(): number;
+					public toParamMap(): java.util.Map<string,any>;
+					public equals(param0: any): boolean;
+					public getYear(): number;
+					public getMonth(): number;
+					public toString(): string;
+					public constructor(param0: number, param1: number, param2: number);
+					public component1(): number;
+					public component2(): number;
+					public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+					public getDay(): number;
+					public hashCode(): number;
+				}
+			}
+		}
+	}
+}
+
+declare module com {
   export module stripe {
     export module android {
       export module model {
@@ -1998,7 +2257,7 @@ declare module com {
           // public id: string;
           // public created: java.lang.Long;
           // public liveMode: boolean;
-          // public type: string;
+          // public type: com.stripe.android.model.PaymentMethod.Type;
           // public billingDetails: com.stripe.android.model.PaymentMethod.BillingDetails;
           // public card: com.stripe.android.model.PaymentMethod.Card;
           // public cardPresent: com.stripe.android.model.PaymentMethod.CardPresent;
@@ -2008,7 +2267,7 @@ declare module com {
           public component1(): string; // id
           public component2(): java.lang.Long; // created
           public component3(): boolean; // liveMode
-          public component4(): string; // type
+          public component4(): com.stripe.android.model.PaymentMethod.Type; // type
           public component5(): com.stripe.android.model.PaymentMethod.BillingDetails; // billingDetails
           public component6(): string; // customerId
           public component7(): java.util.Map<string,string>; // metadata
@@ -2524,7 +2783,7 @@ declare module com {
           public getExpiryMonth(): java.lang.Integer;
           public getFunding(): string;
           public getAddressLine1Check(): string;
-          public getBrand(): string;
+          public getBrand(): com.stripe.android.model.CardBrand;
           public toMap(): java.util.Map<string,any>;
           public getDynamicLast4(): string;
           public getAddressZipCheck(): string;
@@ -2532,7 +2791,7 @@ declare module com {
           public getThreeDSecureStatus(): string;
           public getLast4(): string;
           public getCvcCheck(): string;
-          public getTokenizationMethod(): string;
+          public getTokenizationMethod(): com.stripe.android.model.TokenizationMethod;
           public equals(param0: any): boolean;
           public getExpiryYear(): java.lang.Integer;
           public hashCode(): number;
@@ -2610,51 +2869,96 @@ declare module com {
   export module stripe {
     export module android {
       export module model {
-        export class SourceParams {
+        export class SourceParams extends com.stripe.android.model.StripeParamsModel {
           public static class: java.lang.Class<com.stripe.android.model.SourceParams>;
-          public setToken(param0: string): com.stripe.android.model.SourceParams;
-          public getRedirect(): java.util.Map<string,any>;
-          public static createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string): com.stripe.android.model.SourceParams;
-          public static createCardParams(param0: com.stripe.android.model.Card): com.stripe.android.model.SourceParams;
-          public static createMasterpassParams(param0: string, param1: string): com.stripe.android.model.SourceParams;
-          public static createSourceFromTokenParams(param0: string): com.stripe.android.model.SourceParams;
-          public static createBancontactParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
-          public getCurrency(): string;
-          public static createVisaCheckoutParams(param0: string): com.stripe.android.model.SourceParams;
-          public setAmount(param0: number): com.stripe.android.model.SourceParams;
-          public static createEPSParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
-          public static createSofortParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
-          public static createCustomParams(): com.stripe.android.model.SourceParams;
-          public static createIdealParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
-          public setMetaData(param0: java.util.Map<string,string>): com.stripe.android.model.SourceParams;
-          public getOwner(): java.util.Map<string,any>;
-          public getUsage(): string;
-          public setUsage(param0: string): com.stripe.android.model.SourceParams;
-          public static createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string, param6: string): com.stripe.android.model.SourceParams;
-          public setCurrency(param0: string): com.stripe.android.model.SourceParams;
-          public static createGiropayParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
-          public getType(): string;
-          public hashCode(): number;
-          public static createMultibancoParams(param0: number, param1: string, param2: string): com.stripe.android.model.SourceParams;
-          public setTypeRaw(param0: string): com.stripe.android.model.SourceParams;
-          public getApiParameterMap(): java.util.Map<string,any>;
-          public setExtraParams(param0: java.util.Map<string,any>): com.stripe.android.model.SourceParams;
-          public getAmount(): java.lang.Long;
-          public getMetaData(): java.util.Map<string,string>;
-          public static createAlipayReusableParams(param0: string, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
-          public static createThreeDSecureParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
-          public getTypeRaw(): string;
-          public setOwner(param0: java.util.Map<string,any>): com.stripe.android.model.SourceParams;
-          public toParamMap(): java.util.Map<string,any>;
-          public setApiParameterMap(param0: java.util.Map<string,any>): com.stripe.android.model.SourceParams;
-          public static createRetrieveSourceParams(param0: string): java.util.Map<string,string>;
-          public equals(param0: any): boolean;
-          public static createAlipaySingleUseParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
-          public static createP24Params(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
-          public setReturnUrl(param0: string): com.stripe.android.model.SourceParams;
-          public static createCardParamsFromGooglePay(param0: org.json.JSONObject): com.stripe.android.model.SourceParams;
-          public setRedirect(param0: java.util.Map<string,any>): com.stripe.android.model.SourceParams;
-          public setType(param0: string): com.stripe.android.model.SourceParams;
+					public static Companion: com.stripe.android.model.SourceParams.companion;
+					public static createAlipayReusableParams(param0: string, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+					public static createAlipaySingleUseParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+					public static createCardParams(param0: com.stripe.android.model.Card): com.stripe.android.model.SourceParams;
+					public static createCardParamsFromGooglePay(param0: org.json.JSONObject): com.stripe.android.model.SourceParams;
+					public static createCustomParams(param0: string): com.stripe.android.model.SourceParams;
+					public static createBancontactParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+					public static createEPSParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+					public static createGiropayParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+					public static createIdealParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+					// public static createKlarna(param0: string, param1: string, param2: com.stripe.android.model.KlarnaSourceParams): com.stripe.android.model.SourceParams;
+					public static createMasterpassParams(param0: string, param1: string): com.stripe.android.model.SourceParams;
+					public static createMultibancoParams(param0: number, param1: string, param2: string): com.stripe.android.model.SourceParams;
+					public static createP24Params(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+					public static createRetrieveSourceParams(param0: string): java.util.Map<string,string>;
+					public static createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string): com.stripe.android.model.SourceParams;
+					public static createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string, param6: string): com.stripe.android.model.SourceParams;
+					public static createSofortParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+					public static createSourceFromTokenParams(param0: string): com.stripe.android.model.SourceParams;
+					public static createThreeDSecureParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+					public static createVisaCheckoutParams(param0: string): com.stripe.android.model.SourceParams;
+					public static createWeChatPayParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+					public getAmount(): java.lang.Long;
+					public setAmount(param0: java.lang.Long): com.stripe.android.model.SourceParams;
+					public getCurrency(): string;
+					public setCurrency(param0: string): com.stripe.android.model.SourceParams;
+					public getMetaData(): java.util.Map<string,string>;
+					public setMetaData(param0: java.util.Map<string,string>): com.stripe.android.model.SourceParams;
+					public getOwner(): com.stripe.android.model.SourceParams.OwnerParams;
+					public setOwner(param0: com.stripe.android.model.SourceParams.OwnerParams): com.stripe.android.model.SourceParams;
+					public getReturnUrl(): string;
+					public setReturnUrl(param0: string): com.stripe.android.model.SourceParams;
+					public setToken(param0: string): com.stripe.android.model.SourceParams;
+					public getTypeRaw(): string;
+					public getUsage(): string;
+					public setUsage(param0: string): com.stripe.android.model.SourceParams;
+					public getType(): string;
+					public getApiParameterMap(): java.util.Map<string,any>;
+					public setApiParameterMap(param0: java.util.Map<string,any>): com.stripe.android.model.SourceParams;
+					public setExtraParams(param0: java.util.Map<string,any>): com.stripe.android.model.SourceParams;
+					public toParamMap(): java.util.Map<string,any>;
+					public equals(param0: any): boolean;
+					public hashCode(): number;
+				}
+        export module SourceParams {
+          export class OwnerParams extends com.stripe.android.model.StripeParamsModel {
+            public static class: java.lang.Class<com.stripe.android.model.SourceParams.OwnerParams>;
+            public constructor();
+            public describeContents(): number;
+            public toParamMap(): java.util.Map<string, any>;
+            public getAddress$stripe_release(): com.stripe.android.model.Address;
+            public writeToParcel(param0: globalAndroid.os.Parcel, param1: number): void;
+            public hashCode(): number;
+            public equals(param0: any): boolean;
+            public component4$stripe_release(): string;
+            public getName$stripe_release(): string;
+            public getPhone$stripe_release(): string;
+            public toString(): string;
+            public copy(param0: com.stripe.android.model.Address, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams.OwnerParams;
+            public component1$stripe_release(): com.stripe.android.model.Address;
+            public constructor(param0: com.stripe.android.model.Address, param1: string, param2: string, param3: string);
+            public component3$stripe_release(): string;
+            public component2$stripe_release(): string;
+            public getEmail$stripe_release(): string;
+          }
+					export class companion {
+						public static class: java.lang.Class<com.stripe.android.model.SourceParams.companion>;
+						public createWeChatPayParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+						public createAlipaySingleUseParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+						public createVisaCheckoutParams(param0: string): com.stripe.android.model.SourceParams;
+						public createGiropayParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+						public createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string): com.stripe.android.model.SourceParams;
+						public createSourceFromTokenParams(param0: string): com.stripe.android.model.SourceParams;
+						public createAlipayReusableParams(param0: string, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+						public createCardParams(param0: com.stripe.android.model.Card): com.stripe.android.model.SourceParams;
+						public createCardParamsFromGooglePay(param0: org.json.JSONObject): com.stripe.android.model.SourceParams;
+						public createSofortParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+						public createBancontactParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+						public createIdealParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+						public createMasterpassParams(param0: string, param1: string): com.stripe.android.model.SourceParams;
+						public createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string, param6: string): com.stripe.android.model.SourceParams;
+						public createThreeDSecureParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+						public createEPSParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+						public createMultibancoParams(param0: number, param1: string, param2: string): com.stripe.android.model.SourceParams;
+						public createRetrieveSourceParams(param0: string): java.util.Map<string,string>;
+						public createP24Params(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+						public createCustomParams(param0: string): com.stripe.android.model.SourceParams;
+					}
         }
       }
     }
@@ -2990,6 +3294,26 @@ declare module com {
 }
 
 declare module com {
+	export module stripe {
+		export module android {
+			export module model {
+				export class StripeParamsModel {
+					public static class: java.lang.Class<com.stripe.android.model.StripeParamsModel>;
+					/**
+					 * Constructs a new instance of the com.stripe.android.model.StripeParamsModel interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+					 */
+					public constructor(implementation: {
+						toParamMap(): java.util.Map<string,any>;
+					});
+					public constructor();
+					public toParamMap(): java.util.Map<string,any>;
+				}
+			}
+		}
+	}
+}
+
+declare module com {
   export module stripe {
     export module android {
       export module model {
@@ -3069,6 +3393,23 @@ declare module com {
       }
     }
   }
+}
+
+declare module com {
+	export module stripe {
+		export module android {
+			export module model {
+				export class TokenizationMethod {
+					public static class: java.lang.Class<com.stripe.android.model.TokenizationMethod>;
+					public static ApplePay: com.stripe.android.model.TokenizationMethod;
+					public static GooglePay: com.stripe.android.model.TokenizationMethod;
+					public getCode(): string;
+					public static values(): native.Array<com.stripe.android.model.TokenizationMethod>;
+					public static valueOf(param0: string): com.stripe.android.model.TokenizationMethod;
+				}
+			}
+		}
+	}
 }
 
 declare module com {
@@ -3419,6 +3760,23 @@ declare module com {
 }
 
 declare module com {
+	export module stripe {
+		export module android {
+			export module view {
+				export class BillingAddressFields {
+					public static class: java.lang.Class<com.stripe.android.view.BillingAddressFields>;
+					public static None: com.stripe.android.view.BillingAddressFields;
+					public static PostalCode: com.stripe.android.view.BillingAddressFields;
+					public static Full: com.stripe.android.view.BillingAddressFields;
+					public static valueOf(param0: string): com.stripe.android.view.BillingAddressFields;
+					public static values(): native.Array<com.stripe.android.view.BillingAddressFields>;
+				}
+			}
+		}
+	}
+}
+
+declare module com {
   export module stripe {
     export module android {
       export module view {
@@ -3432,14 +3790,12 @@ declare module com {
             onCardComplete(): void;
             onExpirationComplete(): void;
             onCvcComplete(): void;
-            onPostalCodeComplete(): void;
           });
           public constructor();
           public onCvcComplete(): void;
           public onExpirationComplete(): void;
           public onFocusChange(param0: string): void;
           public onCardComplete(): void;
-          public onPostalCodeComplete(): void;
         }
         export module CardInputListener {
           export class FocusField {
@@ -3839,26 +4195,6 @@ declare module com {
           public onBackPressed(): void;
           public onPause(): void;
           public onResume(): void;
-        }
-      }
-    }
-  }
-}
-
-declare module com {
-  export module stripe {
-    export module android {
-      export module view {
-        export class PaymentFlowExtras {
-          public static class: java.lang.Class<com.stripe.android.view.PaymentFlowExtras>;
-          public static EXTRA_DEFAULT_SHIPPING_METHOD: string;
-          public static EXTRA_IS_SHIPPING_INFO_VALID: string;
-          public static EXTRA_SHIPPING_INFO_DATA: string;
-          public static EXTRA_SHIPPING_INFO_ERROR: string;
-          public static EVENT_SHIPPING_INFO_PROCESSED: string;
-          public static EVENT_SHIPPING_INFO_SUBMITTED: string;
-          public static EXTRA_VALID_SHIPPING_METHODS: string;
-          public constructor();
         }
       }
     }
