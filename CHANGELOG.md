@@ -1,8 +1,12 @@
 Changelog
 
+## 6.5.0 (2020, April 22)
+### Updates
+- [(# 108)](https://github.com/triniwiz/nativescript-stripe/issues/108) Update to Stripe Android SDK v12. No new functionality. Should be backward compatible with v6.4.0.
+
 ## 6.4.0 (2020, April 13)
 ### Fixes
-- [(# 105)](https://github.com/triniwiz/nativescript-stripe/issues/105) `createSource` support.
+- [(# 105)](https://github.com/triniwiz/nativescript-stripe/issues/105) `createSource` support. (Thank you, @MohammedBashiru)
 
 ## 6.3.2 (2020, April 4)
 ### Fixes
