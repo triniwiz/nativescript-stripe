@@ -1,7 +1,8 @@
 import { android as androidApp } from "tns-core-modules/application";
 import { Page } from "tns-core-modules/ui/page";
-import * as utils from 'tns-core-modules/utils/utils';
+import * as utils from "tns-core-modules/utils/utils";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
+export * from "./standard.common";
 
 declare let global: any;
 function getLocalBroadcastManagerPackage() {

@@ -8,6 +8,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "lib": ["es6", "dom"],
+        "preserveConstEnums": true,
         "pretty": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,

@@ -221,7 +221,7 @@ module.exports = env => {
                             configFile: tsConfigPath,
                             // https://github.com/TypeStrong/ts-loader/blob/ea2fcf925ec158d0a536d1e766adfec6567f5fb4/README.md#faster-builds
                             // https://github.com/TypeStrong/ts-loader/blob/ea2fcf925ec158d0a536d1e766adfec6567f5fb4/README.md#hot-module-replacement
-                            transpileOnly: false,
+                            transpileOnly: true,
                             allowTsInNodeModules: true,
                             compilerOptions: {
                                 sourceMap: isAnySourceMapEnabled,
