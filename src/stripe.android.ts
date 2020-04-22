@@ -1,21 +1,31 @@
 import { android as androidApp } from "tns-core-modules/application";
-import * as utils from 'tns-core-modules/utils/utils';
+import * as utils from "tns-core-modules/utils/utils";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
+export * from "./stripe.common";
 
 export class Stripe {
   private _stripe: com.stripe.android.Stripe;
   private _apiKey: string;
+  private _stripeAccountId: string;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, stripeAccountId?: string) {
     this._apiKey = apiKey;
-    this._stripe = new com.stripe.android.Stripe(
-      utils.ad.getApplicationContext(),
-      apiKey
-    );
+    this._stripeAccountId = stripeAccountId;
   }
 
   setStripeAccount(accountId: string) {
-    this._stripe.setStripeAccount(accountId);
+    this._stripeAccountId = accountId;
+  }
+
+  private get stripe(): com.stripe.android.Stripe {
+    if (!this._stripe) {
+      this._stripe = new com.stripe.android.Stripe(
+        utils.ad.getApplicationContext(),
+        this._apiKey,
+        this._stripeAccountId
+      );
+    }
+    return this._stripe;
   }
 
   createToken(card: CardCommon, cb: (error: Error, token: Token) => void): void {
@@ -25,9 +35,9 @@ export class Stripe {
       }
       return;
     }
-    this._stripe.createToken(
+    this.stripe.createToken(
       card.native,
-      new com.stripe.android.TokenCallback({
+      new com.stripe.android.ApiResultCallback<com.stripe.android.model.Token>({
         onSuccess: function (token: com.stripe.android.model.Token) {
           if (typeof cb === 'function') {
             const newToken: Token = {
@@ -61,9 +71,9 @@ export class Stripe {
     const cardSourceParams = com.stripe.android.model.SourceParams.createCardParams(card.native);
 
     try {
-      this._stripe.createSource(
+      this.stripe.createSource(
         cardSourceParams,
-        new com.stripe.android.SourceCallback({
+        new com.stripe.android.ApiResultCallback<com.stripe.android.model.Source>({
           onSuccess: function (source: com.stripe.android.model.Source) {
               if (typeof cb === 'function') {
                 const newSource: Source = {
@@ -122,7 +132,7 @@ export class Stripe {
           cb(new Error(error.localizedDescription), null);
         }
       });
-      this._stripe.createPaymentMethod(params, apiResultCallback, this._apiKey, null);
+      this.stripe.createPaymentMethod(params, apiResultCallback);
     } catch (error) {
       if (typeof cb === 'function') {
         cb(new Error(error.localizedDescription), null);
@@ -132,7 +142,7 @@ export class Stripe {
 
   retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
     try {
-      const pi = this._stripe.retrievePaymentIntentSynchronous(clientSecret);
+      const pi = this.stripe.retrievePaymentIntentSynchronous(clientSecret);
       cb(null, StripePaymentIntent.fromNative(pi));
     } catch (error) {
       cb(new Error(error.localizedDescription), null);
@@ -153,9 +163,9 @@ export class Stripe {
       });
 
       activity.onActivityResult = (requestCode, resultCode, data) => {
-        this._stripe.onSetupResult(requestCode, data, resultCb);
+        this.stripe.onSetupResult(requestCode, data, resultCb);
       };
-      this._stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
+      this.stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
     } catch (error) {
       cb(new Error(error.localizedDescription), null);
     }
@@ -174,10 +184,10 @@ export class Stripe {
     });
 
     activity.onActivityResult = (requestCode, resultCode, data) => {
-      this._stripe.onSetupResult(requestCode, data, resultCb);
+      this.stripe.onSetupResult(requestCode, data, resultCb);
     };
 
-    this._stripe.authenticateSetup(activity, clientSecret);
+    this.stripe.authenticateSetup(activity, clientSecret);
   }
 
   confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
@@ -194,9 +204,9 @@ export class Stripe {
       });
 
       activity.onActivityResult = (requestCode, resultCode, data) => {
-        this._stripe.onPaymentResult(requestCode, data, resultCb);
+        this.stripe.onPaymentResult(requestCode, data, resultCb);
       };
-      this._stripe.confirmPayment(activity, piParams.native);
+      this.stripe.confirmPayment(activity, piParams.native);
     } catch (error) {
        cb(new Error(error.localizedDescription), null);
     }
@@ -216,10 +226,10 @@ export class Stripe {
     });
 
     activity.onActivityResult = (requestCode, resultCode, data) => {
-      this._stripe.onPaymentResult(requestCode, data, resultCb);
+      this.stripe.onPaymentResult(requestCode, data, resultCb);
     };
 
-    this._stripe.authenticatePayment(activity, clientSecret);
+    this.stripe.authenticatePayment(activity, clientSecret);
   }
 }
 
@@ -251,10 +261,15 @@ export class Card implements CardCommon {
   }
 
   public static fromNativePaymentMethod(pm: com.stripe.android.model.PaymentMethod): Card {
+    const pmCard = pm.component8(); // card
     const newCard = new Card(null, null, null, null);
-    newCard._last4 = pm.card.last4;
-    newCard._brand = <CardBrand>pm.card.brand;
-    newCard._cardBuilder = new com.stripe.android.model.Card.Builder(null, pm.card.expiryMonth, pm.card.expiryYear, null).country(pm.card.country);
+    newCard._last4 = pmCard.component7(); // last4
+    newCard._brand = <CardBrand>pmCard.component1(); // brand
+    newCard._cardBuilder = new com.stripe.android.model.Card.Builder(
+      null,
+      pmCard.component4(), // expiryMonth
+      pmCard.component5(), // expiryYear
+      null).country(pmCard.component3()); // country
 
     return newCard;
   }
@@ -281,7 +296,7 @@ export class Card implements CardCommon {
     return this.native.getNumber();
   }
   get cvc(): string {
-    return this.native.getCVC();
+    return this.native.getCvc();
   }
   get expMonth(): number {
     return this.native.getExpMonth().intValue();
@@ -393,7 +408,7 @@ export class CreditCardView extends CreditCardViewBase {
         card.getNumber(),
         card.getExpMonth().intValue(),
         card.getExpYear().intValue(),
-        card.getCVC()
+        card.getCvc()
       );
     } else {
       return null;
@@ -410,13 +425,15 @@ export class PaymentMethod implements PaymentMethodCommon {
     return pm;
   }
 
-  get id(): string { return this.native.id; }
-  get created(): Date { return new Date(this.native.created.longValue()); }
-  get type(): "card" { return this.native.type as "card"; }
-  get billingDetails(): object { return this.native.billingDetails; }
+  // With Kotlin, the accessors no longer work. They are mapped to "componentX()", where X is the order
+  // the fields appear in the Kotlin constructor.
+  get id(): string { return this.native.component1(); }
+  get created(): Date { return new Date(this.native.component2().longValue() * 1000); }
+  get type(): "card" { return this.native.component4() as "card"; }
+  get billingDetails(): object { return this.native.component5(); }
   get card(): CardCommon { return Card.fromNativePaymentMethod(this.native); }
-  get customerId(): string { return this.native.customerId; }
-  get metadata(): object { return this.native.metadata; }
+  get customerId(): string { return this.native.component6(); }
+  get metadata(): object { return this.native.component7(); }
 }
 
 

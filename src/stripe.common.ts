@@ -91,3 +91,10 @@ export const enum StripePaymentIntentStatus {
   RequiresCapture = "requires_capture",
   Canceled = "canceled"
 }
+
+export const enum StripeRedirectState {
+  NotStarted = 0,
+  InProgress = 1,
+  Cancelled = 2,
+  Completed = 3
+}

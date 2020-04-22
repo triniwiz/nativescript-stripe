@@ -1,6 +1,8 @@
 import { android as androidApp } from "tns-core-modules/application";
 import { Page } from "tns-core-modules/ui/page";
+import * as utils from "tns-core-modules/utils/utils";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
+export * from "./standard.common";
 
 declare let global: any;
 function getLocalBroadcastManagerPackage() {
@@ -42,7 +44,7 @@ export class StripeConfig extends StripeConfigCommon {
   initPaymentConfiguration(): void {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
     if (this._paymentConfigurationInitiated) return;
-    com.stripe.android.PaymentConfiguration.init(this.publishableKey);
+    com.stripe.android.PaymentConfiguration.init(utils.ad.getApplicationContext(), this.publishableKey);
     this._paymentConfigurationInitiated = true;
   }
 
@@ -138,7 +140,7 @@ export class StripePaymentSession {
     const shippingMethod = data.getShippingMethod();
     const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
     StripeConfig.shared().backendAPI.capturePayment(
-      data.getPaymentMethod().id,
+      data.getPaymentMethod().component1(), // id
       data.getCartTotal() + shippingCost,
       createShippingMethod(shippingMethod),
       createAddress(data.getShippingInformation()))
@@ -189,7 +191,7 @@ function createPaymentSessionListener(parent: StripePaymentSession, listener: St
       if (parent.paymentInProgress) return;
 
       parent.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
-        onCustomerRetrieved(customer: com.stripe.android.model.Customer) {
+        onCustomerRetrieved(_customer: com.stripe.android.model.Customer) {
           parent.selectedPaymentMethod = createPaymentMethod(sessionData.getPaymentMethod());
           parent.selectedShippingMethod = createShippingMethod(sessionData.getShippingMethod());
           parent.shippingAddress = createAddress(sessionData.getShippingInformation());
@@ -247,18 +249,22 @@ function createShippingBroadcastReceiver(parent: StripePaymentSession, listener:
 
 function createPaymentMethod(paymentMethod: com.stripe.android.model.PaymentMethod): StripePaymentMethod {
   if (!paymentMethod) return undefined;
-  if (paymentMethod.card) return createPaymentMethodFromCard(paymentMethod.card, paymentMethod.id);
+  const pmCard = paymentMethod.component8(); // card
+  const pmId = paymentMethod.component1(); // id
+  if (pmCard) return createPaymentMethodFromCard(pmCard, pmId);
   return { label: "Error (103)", image: undefined, templateImage: undefined };
 }
 
 function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMethod.Card, stripeID: string): StripePaymentMethod {
+  const brand = card.component1(); // brand
+  const last4 = card.component7(); // last4
   return {
-    label: `${card.brand} ...${card.last4}`,
-    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(card.brand)),
+    label: `${brand} ...${last4}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(brand)),
     templateImage: undefined,
     type: "Card",
     stripeID,
-    brand: card.brand
+    brand: brand
   };
 }
 
@@ -306,8 +312,8 @@ function createAdShippingMethod(method: StripeShippingMethod, currency: string):
   return new com.stripe.android.model.ShippingMethod(
     method.label,
     method.identifier,
-    method.detail,
     method.amount,
-    currency
+    currency,
+    method.detail
   );
 }
