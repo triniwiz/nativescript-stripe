@@ -46,7 +46,7 @@ export class StripeService implements StripeBackendAPI {
   // PaymentIntent
   createPaymentIntent(amount: number, currency: string = 'usd'): Promise<any> {
     const content = `amount=${amount}&currency=${currency}`;
-    return this._postRequest("create_intent", content).then(response => response.content.toJSON());
+    return this._postRequest("create_payment_intent", content).then(response => response.content.toJSON());
   }
 
   createCustomerKey(apiVersion: string): Promise<any> {
@@ -55,14 +55,14 @@ export class StripeService implements StripeBackendAPI {
   }
 
   capturePayment(stripeID: string, amount: number, shippingMethod?: StripeShippingMethod, shippingAddress?: StripeAddress): Promise<any> {
-    let content = `payment_method=${stripeID}&amount=${amount}`;
+    let content = `payment_method_id=${stripeID}&amount=${amount}`;
     if (shippingMethod && shippingAddress) content += `&${this._encodeShipping(shippingMethod, shippingAddress)}`;
-    return this._postRequest("capture_payment", content).then(response => response.content.toJSON());
+    return this._postRequest("confirm_payment_intent", content).then(response => response.content.toJSON());
   }
 
   confirmPaymentIntent(paymentIntentID: string): Promise<any> {
     const content = `payment_intent_id=${paymentIntentID}`;
-    return this._postRequest("confirm_payment", content).then(response => response.content.toJSON());
+    return this._postRequest("confirm_payment_intent", content).then(response => response.content.toJSON());
   }
 
   createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
@@ -94,7 +94,7 @@ export class StripeService implements StripeBackendAPI {
       content
     }).then(response => {
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw new Error(response.content.toString());
+        throw new Error(`Status: ${response.statusCode}; ${response.content.toString()}.`);
       }
       return response;
     });
