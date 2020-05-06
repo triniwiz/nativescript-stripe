@@ -419,6 +419,29 @@ export class Card implements CardCommon {
     return 'Unknown';
   }
 
+  private static fromCardBrand(brand: CardBrand): STPCardBrand {
+    switch (brand.toLowerCase()) {
+      case 'visa':
+        return STPCardBrand.Visa;
+      case 'amex':
+      case 'americanexpress':
+      case 'american_express':
+      case 'american express':
+        return STPCardBrand.Amex;
+      case 'mastercard':
+        return STPCardBrand.MasterCard;
+      case 'discover':
+        return STPCardBrand.Discover;
+      case 'jcb':
+        return STPCardBrand.JCB;
+      case 'dinersclub':
+      case 'diners_club':
+      case 'diners club':
+        return STPCardBrand.DinersClub;
+    }
+    return STPCardBrand.Unknown;
+  }
+
   /**
    * Not available in IOS
    */
@@ -435,6 +458,14 @@ export class Card implements CardCommon {
 
   get country(): string {
     return this.native.addressCountry;
+  }
+
+  /**
+   * Returns an image for a card given its brand.
+   * The returned value can be used as [src] in an Image tag.
+   */
+  static cardImage(brand: CardBrand): any {
+    return STPImageLibrary.brandImageForCardBrand(Card.fromCardBrand(brand));
   }
 }
 
