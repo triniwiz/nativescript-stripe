@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ViewContainerRef, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import { ModalDialogService } from "nativescript-angular/modal-dialog";
 import { Card, CreditCardView, PaymentMethod, Stripe, StripePaymentIntentParams } from "nativescript-stripe";
 import { alert } from "tns-core-modules/ui/dialogs";
@@ -10,7 +10,9 @@ import { publishableKey, StripeService } from "./stripe.service";
   moduleId: module.id,
   templateUrl: "./intent.component.html",
 })
-export class IntentComponent {
+export class IntentComponent implements AfterViewInit {
+  @ViewChild('card', { static: false }) cardViewElement: ElementRef;
+  cardView: CreditCardView;
   payment: string;
   status: string;
   private stripe: Stripe;
@@ -30,6 +32,16 @@ export class IntentComponent {
       throw new Error("publishableKey must be changed from placeholder");
     }
     this.stripe = new Stripe(publishableKey);
+  }
+
+  ngAfterViewInit() {
+    this.cardView = <CreditCardView>this.cardViewElement.nativeElement;
+
+    // Enable Postal Code input on Android after a slight delay
+    const that = this;
+    setTimeout(function() {
+      that.cardView.android.setPostalCodeEnabled(true);
+    }, 500);
   }
 
   openModal() {
