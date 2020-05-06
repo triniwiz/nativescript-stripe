@@ -1,5 +1,9 @@
 Changelog
 
+## 6.6.0 (2020, May 5)
+### Updates
+- [(# 115)](https://github.com/triniwiz/nativescript-stripe/issues/115) Make Stripe's credit card images visible to clients
+
 ## 6.5.0 (2020, April 22)
 ### Updates
 - [(# 108)](https://github.com/triniwiz/nativescript-stripe/issues/108) Update to Stripe Android SDK v12. No new functionality. Should be backward compatible with v6.4.0.
