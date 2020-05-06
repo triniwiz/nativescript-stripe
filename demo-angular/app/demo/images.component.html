@@ -1,0 +1,17 @@
+<ActionBar title="Images" class="action-bar">
+  <NavigationButton text=""></NavigationButton>
+</ActionBar>
+<StackLayout class="page p-10">
+  <GridLayout rows="auto" columns="*,2*">
+    <Label col="0" text="Brand" class="h2 text-center"></Label>
+    <Label col="1" text="Image" class="h2 text-center"></Label>
+  </GridLayout>
+  <StackLayout class="hr-light m-10"></StackLayout>
+  <StackLayout *ngFor="let brand of brands">
+    <GridLayout rows="auto" columns="*,2*">
+      <Label col="0" [text]="brand"></Label>
+      <Image col="1" width="32" height="20" [src]="images[brand]"></Image>
+    </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
+  </StackLayout>
+</StackLayout>

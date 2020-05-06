@@ -389,6 +389,51 @@ export class Card implements CardCommon {
   get country(): string {
     return this.native.getCountry();
   }
+
+  /**
+   * Returns an image for a card given its brand.
+   * The returned value can be used as [src] in an Image tag.
+   */
+  static cardImage(brand: CardBrand): any {
+    return getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(Card.fromCardBrand(brand)));
+  }
+
+  private static fromCardBrand(brand: CardBrand): string {
+    switch (brand.toLowerCase()) {
+      case 'visa':
+        return com.stripe.android.model.Card.CardBrand.VISA;
+      case 'amex':
+      case 'americanexpress':
+      case 'american_express':
+      case 'american express':
+        return com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS;
+      case 'mastercard':
+        return com.stripe.android.model.Card.CardBrand.MASTERCARD;
+      case 'discover':
+        return com.stripe.android.model.Card.CardBrand.DISCOVER;
+      case 'jcb':
+        return com.stripe.android.model.Card.CardBrand.JCB;
+      case 'dinersclub':
+      case 'diners_club':
+      case 'diners club':
+        return com.stripe.android.model.Card.CardBrand.DINERS_CLUB;
+    }
+    return com.stripe.android.model.Card.CardBrand.UNKNOWN;
+  }
+
+}
+
+function getBitmapFromResource(resID: number): android.graphics.Bitmap {
+  let image = androidApp.foregroundActivity.getResources().getDrawable(resID, null);
+  if (image instanceof android.graphics.Bitmap) {
+    return image;
+  }
+  let bitmap = android.graphics.Bitmap.createBitmap(image.getIntrinsicWidth(),
+    image.getIntrinsicHeight(), android.graphics.Bitmap.Config.ARGB_8888);
+  let canvas = new android.graphics.Canvas(bitmap);
+  image.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+  image.draw(canvas);
+  return bitmap;
 }
 
 export class CreditCardView extends CreditCardViewBase {

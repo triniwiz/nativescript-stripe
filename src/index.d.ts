@@ -65,6 +65,7 @@ export declare class Card implements CardCommon {
   readonly fingerprint: string;
   readonly funding: string;
   readonly country: string;
+  static cardImage(brand: CardBrand): any;
 }
 export declare class CreditCardView extends CreditCardViewBase {
   readonly android: any /*com.stripe.android.view.CardInputWidget*/;
