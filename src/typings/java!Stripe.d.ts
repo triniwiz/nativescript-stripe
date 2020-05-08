@@ -926,7 +926,6 @@ declare module com {
         public static PAYMENT_SESSION_CONFIG: string;
         public constructor(param0: globalAndroid.app.Activity);
         public constructor(param0: androidx.fragment.app.Fragment);
-        public presentPaymentMethodSelection(param0: boolean): void;
         public init(param0: com.stripe.android.PaymentSession.PaymentSessionListener, param1: com.stripe.android.PaymentSessionConfig): boolean;
         public presentPaymentMethodSelection(param0: string): void;
         public savePaymentSessionInstanceState(param0: globalAndroid.os.Bundle): void;
@@ -934,9 +933,7 @@ declare module com {
         public onCompleted(): void;
         public getPaymentSessionData(): com.stripe.android.PaymentSessionData;
         public setCartTotal(param0: number): void;
-        public presentPaymentMethodSelection(): void;
         public presentShippingFlow(): void;
-        public presentPaymentMethodSelection(param0: boolean, param1: string): void;
         public onDestroy(): void;
         public handlePaymentData(param0: number, param1: number, param2: globalAndroid.content.Intent): boolean;
       }
@@ -2612,11 +2609,9 @@ declare module com {
       export module model {
         export class SourceParams {
           public static class: java.lang.Class<com.stripe.android.model.SourceParams>;
+					public static Companion: com.stripe.android.model.SourceParams.companion;
           public setToken(param0: string): com.stripe.android.model.SourceParams;
           public getRedirect(): java.util.Map<string,any>;
-          public static createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string): com.stripe.android.model.SourceParams;
-          public static createCardParams(param0: com.stripe.android.model.Card): com.stripe.android.model.SourceParams;
-          public static createMasterpassParams(param0: string, param1: string): com.stripe.android.model.SourceParams;
           public static createSourceFromTokenParams(param0: string): com.stripe.android.model.SourceParams;
           public static createBancontactParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
           public getCurrency(): string;
@@ -2655,6 +2650,31 @@ declare module com {
           public static createCardParamsFromGooglePay(param0: org.json.JSONObject): com.stripe.android.model.SourceParams;
           public setRedirect(param0: java.util.Map<string,any>): com.stripe.android.model.SourceParams;
           public setType(param0: string): com.stripe.android.model.SourceParams;
+        }
+        export module SourceParams {
+          export class companion {
+            public static class: java.lang.Class<com.stripe.android.model.SourceParams.companion>;
+            public createWeChatPayParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+            public createAlipaySingleUseParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+            public createVisaCheckoutParams(param0: string): com.stripe.android.model.SourceParams;
+            public createGiropayParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+            public createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string): com.stripe.android.model.SourceParams;
+            public createSourceFromTokenParams(param0: string): com.stripe.android.model.SourceParams;
+            public createAlipayReusableParams(param0: string, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+            public createCardParams(param0: com.stripe.android.model.Card): com.stripe.android.model.SourceParams;
+            public createCardParamsFromGooglePay(param0: org.json.JSONObject): com.stripe.android.model.SourceParams;
+            public createSofortParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+            public createBancontactParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+            public createIdealParams(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+            public createMasterpassParams(param0: string, param1: string): com.stripe.android.model.SourceParams;
+            public createSepaDebitParams(param0: string, param1: string, param2: string, param3: string, param4: string, param5: string, param6: string): com.stripe.android.model.SourceParams;
+            public createThreeDSecureParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+            public createEPSParams(param0: number, param1: string, param2: string, param3: string): com.stripe.android.model.SourceParams;
+            public createMultibancoParams(param0: number, param1: string, param2: string): com.stripe.android.model.SourceParams;
+            public createRetrieveSourceParams(param0: string): java.util.Map<string, string>;
+            public createP24Params(param0: number, param1: string, param2: string, param3: string, param4: string): com.stripe.android.model.SourceParams;
+            public createCustomParams(param0: string): com.stripe.android.model.SourceParams;
+          }
         }
       }
     }
@@ -3479,6 +3499,7 @@ declare module com {
           public setCvcNumberTextWatcher(param0: globalAndroid.text.TextWatcher): void;
           public setCardNumberTextWatcher(param0: globalAndroid.text.TextWatcher): void;
           public setExpiryDateTextWatcher(param0: globalAndroid.text.TextWatcher): void;
+					public setPostalCodeEnabled(param0: boolean): void;
           public setCardInputListener(param0: com.stripe.android.view.CardInputListener): void;
           public clear(): void;
           public onRestoreInstanceState(param0: globalAndroid.os.Parcelable): void;

@@ -75,7 +75,7 @@ export class StandardComponent implements OnInit {
     if (this.shippingAddress) {
       const addr = this.shippingAddress;
       info += [
-        `${this.shippingInfo.label} to:`,
+        this.shippingInfo ? `${this.shippingInfo.label} to:` : "No Shipping Info",
         addr.name,
         addr.line1,
         addr.line2,

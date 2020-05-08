@@ -155,7 +155,7 @@ export class StripePaymentSession {
   }
 
   presentPaymentMethods(): void {
-    this.native.presentPaymentMethodSelection();
+    this.native.presentPaymentMethodSelection(null);
   }
 
   presentShipping(): void {
@@ -187,7 +187,7 @@ export class StripePaymentSession {
 
 function createPaymentSessionListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
   return new com.stripe.android.PaymentSession.PaymentSessionListener({
-    onPaymentSessionDataChanged: (sessionData: com.stripe.android.PaymentSessionData): void  => {
+    onPaymentSessionDataChanged: (sessionData: com.stripe.android.PaymentSessionData): void => {
       if (parent.paymentInProgress) return;
 
       parent.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
@@ -259,12 +259,12 @@ function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMetho
   const brand = card.component1(); // brand
   const last4 = card.component7(); // last4
   return {
-    label: `${brand} ...${last4}`,
-    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(brand)),
+    label: `${toCardBrand(brand)} ...${last4}`,
+    image: getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(fixupCardBrand(brand))),
     templateImage: undefined,
     type: "Card",
     stripeID,
-    brand: brand
+    brand: toCardBrand(brand)
   };
 }
 
@@ -316,4 +316,51 @@ function createAdShippingMethod(method: StripeShippingMethod, currency: string):
     currency,
     method.detail
   );
+}
+
+function toCardBrand(brand: string): string {
+  switch (brand.toLowerCase()) {
+    case com.stripe.android.model.Card.CardBrand.VISA.toLowerCase():
+      return 'Visa';
+    case com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS.toLowerCase():
+    case 'amex':
+    case 'american express':
+      return 'Amex';
+    case com.stripe.android.model.Card.CardBrand.MASTERCARD.toLowerCase():
+      return 'MasterCard';
+    case com.stripe.android.model.Card.CardBrand.DISCOVER.toLowerCase():
+      return 'Discover';
+    case com.stripe.android.model.Card.CardBrand.JCB.toLowerCase():
+      return 'JCB';
+    case com.stripe.android.model.Card.CardBrand.DINERS_CLUB.toLowerCase():
+    case 'diners':
+    case 'diners club':
+      return 'DinersClub';
+  }
+  return 'Unknown';
+}
+
+function fixupCardBrand(brand: string): string {
+  let result;
+  switch (brand.toLowerCase()) {
+    case 'visa':
+      return com.stripe.android.model.Card.CardBrand.VISA;
+    case 'amex':
+    case 'americanexpress':
+    case 'american_express':
+    case 'american express':
+      return com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS;
+    case 'mastercard':
+      return com.stripe.android.model.Card.CardBrand.MASTERCARD;
+    case 'discover':
+      return com.stripe.android.model.Card.CardBrand.DISCOVER;
+    case 'jcb':
+      return com.stripe.android.model.Card.CardBrand.JCB;
+    case 'diners':
+    case 'dinersclub':
+    case 'diners_club':
+    case 'diners club':
+      return com.stripe.android.model.Card.CardBrand.DINERS_CLUB;
+  }
+  return com.stripe.android.model.Card.CardBrand.UNKNOWN;
 }

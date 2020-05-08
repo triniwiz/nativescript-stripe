@@ -68,7 +68,7 @@ export class Stripe {
       }
       return;
     }
-    const cardSourceParams = com.stripe.android.model.SourceParams.createCardParams(card.native);
+    const cardSourceParams = com.stripe.android.model.SourceParams.Companion.createCardParams(card.native);
 
     try {
       this.stripe.createSource(
@@ -264,7 +264,7 @@ export class Card implements CardCommon {
     const pmCard = pm.component8(); // card
     const newCard = new Card(null, null, null, null);
     newCard._last4 = pmCard.component7(); // last4
-    newCard._brand = <CardBrand>pmCard.component1(); // brand
+    newCard._brand = toCardBrand(pmCard.component1()); // brand
     newCard._cardBuilder = new com.stripe.android.model.Card.Builder(
       null,
       pmCard.component4(), // expiryMonth
@@ -374,7 +374,7 @@ export class Card implements CardCommon {
   }
 
   get brand(): CardBrand {
-    if (!this._brand) this._brand = <CardBrand>this.native.getBrand();
+    if (!this._brand) this._brand = toCardBrand(this.native.getBrand());
     return this._brand;
   }
 
@@ -395,32 +395,54 @@ export class Card implements CardCommon {
    * The returned value can be used as [src] in an Image tag.
    */
   static cardImage(brand: CardBrand): any {
-    return getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(Card.fromCardBrand(brand)));
+    return getBitmapFromResource(com.stripe.android.model.Card.getBrandIcon(fixupCardBrand(brand)));
   }
+}
 
-  private static fromCardBrand(brand: CardBrand): string {
-    switch (brand.toLowerCase()) {
-      case 'visa':
-        return com.stripe.android.model.Card.CardBrand.VISA;
-      case 'amex':
-      case 'americanexpress':
-      case 'american_express':
-      case 'american express':
-        return com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS;
-      case 'mastercard':
-        return com.stripe.android.model.Card.CardBrand.MASTERCARD;
-      case 'discover':
-        return com.stripe.android.model.Card.CardBrand.DISCOVER;
-      case 'jcb':
-        return com.stripe.android.model.Card.CardBrand.JCB;
-      case 'dinersclub':
-      case 'diners_club':
-      case 'diners club':
-        return com.stripe.android.model.Card.CardBrand.DINERS_CLUB;
-    }
-    return com.stripe.android.model.Card.CardBrand.UNKNOWN;
+function toCardBrand(brand: string): CardBrand {
+  switch (brand.toLowerCase()) {
+    case com.stripe.android.model.Card.CardBrand.VISA.toLowerCase():
+      return 'Visa';
+    case com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS.toLowerCase():
+    case 'amex':
+    case 'american express':
+      return 'Amex';
+    case com.stripe.android.model.Card.CardBrand.MASTERCARD.toLowerCase():
+      return 'MasterCard';
+    case com.stripe.android.model.Card.CardBrand.DISCOVER.toLowerCase():
+      return 'Discover';
+    case com.stripe.android.model.Card.CardBrand.JCB.toLowerCase():
+      return 'JCB';
+    case com.stripe.android.model.Card.CardBrand.DINERS_CLUB.toLowerCase():
+    case 'diners':
+    case 'diners club':
+      return 'DinersClub';
   }
+  return 'Unknown';
+}
 
+function fixupCardBrand(brand: string): string {
+  switch (brand.toLowerCase()) {
+    case 'visa':
+      return com.stripe.android.model.Card.CardBrand.VISA;
+    case 'amex':
+    case 'americanexpress':
+    case 'american_express':
+    case 'american express':
+      return com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS;
+    case 'mastercard':
+      return com.stripe.android.model.Card.CardBrand.MASTERCARD;
+    case 'discover':
+      return com.stripe.android.model.Card.CardBrand.DISCOVER;
+    case 'jcb':
+      return com.stripe.android.model.Card.CardBrand.JCB;
+    case 'diners':
+    case 'dinersclub':
+    case 'diners_club':
+    case 'diners club':
+      return com.stripe.android.model.Card.CardBrand.DINERS_CLUB;
+  }
+  return com.stripe.android.model.Card.CardBrand.UNKNOWN;
 }
 
 function getBitmapFromResource(resID: number): android.graphics.Bitmap {
@@ -443,6 +465,7 @@ export class CreditCardView extends CreditCardViewBase {
   }
   public createNativeView(): com.stripe.android.view.CardInputWidget {
     this._widget = new com.stripe.android.view.CardInputWidget(this._context);
+    // this._widget.setPostalCodeEnabled(true);
     return this._widget;
   }
 
