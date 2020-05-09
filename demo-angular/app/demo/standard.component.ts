@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { StripeAddress, StripePaymentData, StripePaymentListener, StripePaymentMethod, StripePaymentSession, StripeShippingMethod, StripeShippingMethods } from "nativescript-stripe/standard";
 import { Page } from "tns-core-modules/ui/page";
 import { Item } from "./item";
@@ -15,14 +16,18 @@ export class StandardComponent implements OnInit {
   successMessage: string;
   private paymentSession: StripePaymentSession;
   paymentMethod: StripePaymentMethod;
+  requireShipping: boolean;
   shippingInfo: StripeShippingMethod;
   shippingAddress: StripeAddress;
 
   constructor(
     private page: Page,
     private stripeService: StripeService,
+    route: ActivatedRoute,
     public changeDetectionRef: ChangeDetectorRef
-  ) { }
+  ) {
+    this.requireShipping = route.snapshot.queryParamMap.get("shipping") === "true";
+  }
 
   ngOnInit(): void {
     this.item = {
@@ -31,7 +36,7 @@ export class StandardComponent implements OnInit {
       price: 1200
     };
     this.paymentSession = this.stripeService.createPaymentSession(
-      this.page, this.item.price, new Listener(this)
+      this.page, this.item.price, this.requireShipping, new Listener(this)
     );
   }
 
@@ -72,10 +77,10 @@ export class StandardComponent implements OnInit {
     if (this.paymentMethod) {
       info += `Type= ${this.paymentMethod.type}; Brand= ${this.paymentMethod.brand}; ID= ${this.paymentMethod.stripeID}\n`;
     }
-    if (this.shippingAddress) {
+    if (this.requireShipping && this.shippingAddress) {
       const addr = this.shippingAddress;
       info += [
-        `${this.shippingInfo.label} to:`,
+        this.shippingInfo ? `${this.shippingInfo.label} to:` : "No Shipping Info",
         addr.name,
         addr.line1,
         addr.line2,

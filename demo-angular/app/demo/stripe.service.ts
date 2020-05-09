@@ -33,7 +33,6 @@ export class StripeService implements StripeBackendAPI {
     StripeConfig.shared().publishableKey = publishableKey;
     StripeConfig.shared().appleMerchantID = appleMerchantID;
     StripeConfig.shared().companyName = "Demo Company";
-    StripeConfig.shared().requiredShippingAddressFields = [StripeShippingAddressField.PostalAddress];
 
     this.customerSession = new StripeCustomerSession();
   }
@@ -65,7 +64,9 @@ export class StripeService implements StripeBackendAPI {
     return this._postRequest("confirm_payment_intent", content).then(response => response.content.toJSON());
   }
 
-  createPaymentSession(page: Page, price: number, listener?: StripePaymentListener): StripePaymentSession {
+  createPaymentSession(page: Page, price: number, requireShipping: boolean, listener?: StripePaymentListener): StripePaymentSession {
+    StripeConfig.shared().requiredShippingAddressFields = requireShipping ?
+      [StripeShippingAddressField.PostalAddress] : [];
     return new StripePaymentSession(page, this.customerSession, price, "usd", listener);
   }
 

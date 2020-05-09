@@ -1,4 +1,4 @@
-<ActionBar title="Details" class="action-bar">
+<ActionBar title="Standard Demo {{ requireShipping ? '' : '- No Shipping' }}" class="action-bar">
   <NavigationButton text=""></NavigationButton>
 </ActionBar>
 <StackLayout class="page p-10">
@@ -20,8 +20,8 @@
   </GridLayout>
 
   <!-- Shipping methods -->
-  <StackLayout class="hr-light m-10"></StackLayout>
-  <GridLayout rows="auto" columns="auto,*" (tap)="showShipping()" class="list-group-item">
+  <StackLayout *ngIf="requireShipping" class="hr-light m-10"></StackLayout>
+  <GridLayout *ngIf="requireShipping" rows="auto" columns="auto,*" (tap)="showShipping()" class="list-group-item">
     <Label row="0" col="0" text="Shipping Method"></Label>
     <Label row="0" col="1" [text]="shippingType" class="text-right text-muted"></Label>
   </GridLayout>
@@ -36,7 +36,7 @@
   <StackLayout class="hr-light m-10"></StackLayout>
   <Label [text]="errorMessage" class="text-danger" textWrap="true"></Label>
   <Button text="Buy" [isEnabled]="canBuy" class="btn btn-primary btn-active" (tap)="buy()"></Button>
-  
+
   <ActivityIndicator [busy]="paymentInProgress" [visibility]="paymentInProgress ? 'visible' : 'collapse'"></ActivityIndicator>
 
   <GridLayout>
