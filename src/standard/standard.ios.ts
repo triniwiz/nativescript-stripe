@@ -216,9 +216,11 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     }
   }
 
-  paymentContextDidUpdateShippingAddressCompletion(paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
+  paymentContextDidUpdateShippingAddressCompletion(_paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
     let methods = this.listener.provideShippingMethods(createAddress(address));
-    if (!methods.isValid) {
+    if (!methods) {
+      completion(STPShippingStatus.Invalid, createError("ShippingError", 120, "No shipping methods"), null, null);
+    } else if (!methods.isValid) {
       completion(STPShippingStatus.Invalid, createError("ShippingError", 123, methods.validationError), null, null);
     } else {
       let sh = <NSMutableArray<PKShippingMethod>>NSMutableArray.alloc().init();
