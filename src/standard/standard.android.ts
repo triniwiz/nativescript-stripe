@@ -22,19 +22,21 @@ export class StripeConfig extends StripeConfigCommon {
 
   get nativeBuilder(): com.stripe.android.PaymentSessionConfig.Builder {
     this.initPaymentConfiguration();
+    const shippingRequired = this.requiredShippingAddressFields && this.requiredShippingAddressFields.length !== 0;
     let optionalFields = [];
-    if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_ONE_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_TWO_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.CITY_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.STATE_FIELD);
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.POSTAL_CODE_FIELD);
-    }
-    if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.Phone) < 0) {
-      optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.PHONE_FIELD);
+    if (shippingRequired) {
+      if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.PostalAddress) < 0) {
+        optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_ONE_FIELD);
+        optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.ADDRESS_LINE_TWO_FIELD);
+        optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.CITY_FIELD);
+        optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.STATE_FIELD);
+        optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.POSTAL_CODE_FIELD);
+      }
+      if (this.requiredShippingAddressFields.indexOf(StripeShippingAddressField.Phone) < 0) {
+        optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.PHONE_FIELD);
+      }
     }
 
-    const shippingRequired = this.requiredShippingAddressFields.length !== 0;
     return new com.stripe.android.PaymentSessionConfig.Builder()
       .setShippingInfoRequired(shippingRequired)
       .setShippingMethodsRequired(shippingRequired)
@@ -187,7 +189,7 @@ export class StripePaymentSession {
 
 function createPaymentSessionListener(parent: StripePaymentSession, listener: StripePaymentListener): com.stripe.android.PaymentSession.PaymentSessionListener {
   return new com.stripe.android.PaymentSession.PaymentSessionListener({
-    onPaymentSessionDataChanged: (sessionData: com.stripe.android.PaymentSessionData): void  => {
+    onPaymentSessionDataChanged: (sessionData: com.stripe.android.PaymentSessionData): void => {
       if (parent.paymentInProgress) return;
 
       parent.customerSession.native.retrieveCurrentCustomer(new com.stripe.android.CustomerSession.CustomerRetrievalListener({
