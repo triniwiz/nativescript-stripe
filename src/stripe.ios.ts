@@ -48,7 +48,7 @@ export class Stripe {
 
     const apiClient = STPAPIClient.sharedClient();
     apiClient.createSourceWithParamsCompletion(
-      sourceParams, callback(cb, (source: STPSource) => <Source> {
+      sourceParams, callback(cb, (source: STPSource) => <Source>{
         id: source.stripeID,
         amount: source.amount,
         card: card,
@@ -75,6 +75,7 @@ export class Stripe {
     if (card.expYear) cardParams.expYear = card.expYear;
     if (card.number) cardParams.number = card.number;
     const billing = STPPaymentMethodBillingDetails.new();
+    billing.address = STPPaymentMethodAddress.new();
     if (card.addressLine1) billing.address.line1 = card.addressLine1;
     if (card.addressLine2) billing.address.line2 = card.addressLine2;
     if (card.addressCity) billing.address.city = card.addressCity;
@@ -165,7 +166,7 @@ export class Stripe {
 
     authContext.hostViewController = iosUtils.getVisibleViewController(rootVC);
     authContext.authenticationPresentingViewController = () => {
-       return authContext.hostViewController;
+      return authContext.hostViewController;
     };
     return authContext;
   }
@@ -174,19 +175,19 @@ export class Stripe {
 function callback(
   cb: (error: Error, value: any) => void,
   cvt: (value: any) => any):
-    (value: any, err: NSError) => void {
-      return (value: any, error: NSError) => {
-        if (!error) {
-          if (typeof cb === 'function') {
-            cb(null, cvt(value));
-          }
-        } else {
-          if (typeof cb === 'function') {
-            cb(new Error(error.toLocaleString()), null);
-          }
-        }
-      };
+  (value: any, err: NSError) => void {
+  return (value: any, error: NSError) => {
+    if (!error) {
+      if (typeof cb === 'function') {
+        cb(null, cvt(value));
+      }
+    } else {
+      if (typeof cb === 'function') {
+        cb(new Error(error.toLocaleString()), null);
+      }
     }
+  };
+}
 
 export class Card implements CardCommon {
   native: STPCardParams;
