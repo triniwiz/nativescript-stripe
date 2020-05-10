@@ -1,6 +1,6 @@
 {
   "name": "nativescript-stripe",
-  "version": "6.6.0",
+  "version": "6.6.1",
   "description": "NativeScript Stripe sdk",
   "main": "stripe",
   "typings": "index.d.ts",

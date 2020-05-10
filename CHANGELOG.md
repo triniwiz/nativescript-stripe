@@ -1,5 +1,13 @@
 Changelog
 
+## 6.6.1 (2020, May 9)
+### Fixes
+- Crash on iOS in `createPaymentMethod` if the card has address fields. (#119)
+- Crash on iOS in `paymentContextDidUpdateShippingAddressCompletion` if no shipping methods provided.
+- Crash on Android in `StripeConfig` if `requiredShippingAddressFields` is null.
+- Improve handling of brands and images on Android. Latest SDK "brand" values changed.
+
+
 ## 6.6.0 (2020, May 5)
 ### Updates
 - [(# 115)](https://github.com/triniwiz/nativescript-stripe/issues/115) Make Stripe's credit card images visible to clients
