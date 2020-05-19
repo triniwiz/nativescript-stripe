@@ -13,7 +13,7 @@ export declare class Stripe {
   authenticatePaymentIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void;
 }
 export declare class CreditCardViewBase extends View { }
-export declare type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "Unknown";
+export declare type CardBrand = "Visa" | "Amex" | "MasterCard" | "Discover" | "JCB" | "DinersClub" | "UnionPay" | "Unknown";
 export declare interface CardCommon {
   readonly native: any;
   validateNumber(): boolean;

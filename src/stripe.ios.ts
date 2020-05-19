@@ -416,6 +416,8 @@ export class Card implements CardCommon {
         return 'JCB';
       case STPCardBrand.DinersClub:
         return 'DinersClub';
+      case STPCardBrand.UnionPay:
+        return 'UnionPay';
     }
     return 'Unknown';
   }
@@ -439,6 +441,9 @@ export class Card implements CardCommon {
       case 'diners_club':
       case 'diners club':
         return STPCardBrand.DinersClub;
+      case 'unionpay':
+      case 'union pay':
+        return STPCardBrand.UnionPay;
     }
     return STPCardBrand.Unknown;
   }

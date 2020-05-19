@@ -321,48 +321,56 @@ function createAdShippingMethod(method: StripeShippingMethod, currency: string):
 }
 
 function toCardBrand(brand: string): string {
-  switch (brand.toLowerCase()) {
-    case com.stripe.android.model.Card.CardBrand.VISA.toLowerCase():
+  if (brand) switch (brand.toLowerCase()) {
+    case 'visa':
       return 'Visa';
-    case com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS.toLowerCase():
     case 'amex':
+    case 'americanexpress':
     case 'american express':
       return 'Amex';
-    case com.stripe.android.model.Card.CardBrand.MASTERCARD.toLowerCase():
+    case 'mastercard':
       return 'MasterCard';
-    case com.stripe.android.model.Card.CardBrand.DISCOVER.toLowerCase():
+    case 'discover':
       return 'Discover';
-    case com.stripe.android.model.Card.CardBrand.JCB.toLowerCase():
+    case 'jcb':
       return 'JCB';
-    case com.stripe.android.model.Card.CardBrand.DINERS_CLUB.toLowerCase():
     case 'diners':
+    case 'dinersclub':
     case 'diners club':
       return 'DinersClub';
+    case 'unionpay':
+    case 'union pay':
+      return 'UnionPay';
   }
   return 'Unknown';
 }
 
 function fixupCardBrand(brand: string): string {
-  let result;
-  switch (brand.toLowerCase()) {
+  // On some environments, com.stripe.model.Card.CardBrand.VISA, etc.
+  // are undefined. So hard-code the values. I suspect this is a
+  // {NS} Kotlin integration bug.
+  if (brand) switch (brand.toLowerCase()) {
     case 'visa':
-      return com.stripe.android.model.Card.CardBrand.VISA;
+      return 'Visa';
     case 'amex':
     case 'americanexpress':
     case 'american_express':
     case 'american express':
-      return com.stripe.android.model.Card.CardBrand.AMERICAN_EXPRESS;
+      return 'American Express';
     case 'mastercard':
-      return com.stripe.android.model.Card.CardBrand.MASTERCARD;
+      return 'MasterCard';
     case 'discover':
-      return com.stripe.android.model.Card.CardBrand.DISCOVER;
+      return 'Discover';
     case 'jcb':
-      return com.stripe.android.model.Card.CardBrand.JCB;
+      return 'JCB';
     case 'diners':
     case 'dinersclub':
     case 'diners_club':
     case 'diners club':
-      return com.stripe.android.model.Card.CardBrand.DINERS_CLUB;
+      return 'Diners Club';
+    case 'unionpay':
+    case 'union pay':
+      return 'UnionPay';
   }
-  return com.stripe.android.model.Card.CardBrand.UNKNOWN;
+  return 'Unknown';
 }

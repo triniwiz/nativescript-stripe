@@ -9,6 +9,7 @@ export type CardBrand =
   | 'Discover'
   | 'JCB'
   | 'DinersClub'
+  | 'UnionPay'
   | 'Unknown';
 
 export interface CardCommon {

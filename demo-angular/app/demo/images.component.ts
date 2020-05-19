@@ -14,7 +14,7 @@ export class ImagesComponent {
   images: ImageTable = {};
 
   constructor() {
-    let brands: CardBrand[] = ["Visa", "Amex", "MasterCard", "Discover", "JCB", "DinersClub", "Unknown"];
+    let brands: CardBrand[] = ["Visa", "Amex", "MasterCard", "Discover", "JCB", "DinersClub", "UnionPay", "Unknown"];
     brands.forEach(b => this.images[b] = Card.cardImage(b));
   }
 
