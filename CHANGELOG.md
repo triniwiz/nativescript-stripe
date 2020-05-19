@@ -1,12 +1,16 @@
 Changelog
 
+## 6.6.2 (2020, May 19)
+### Fixes
+- [(# 121)](https://github.com/triniwiz/nativescript-stripe/issues/121) Crash on Android in some environments when computing brand.
+- Add UnionPay as a CardBrand. (It was successfully charging but returning 'Unknown' as the brand.)
+
 ## 6.6.1 (2020, May 9)
 ### Fixes
 - Crash on iOS in `createPaymentMethod` if the card has address fields. (#119)
 - Crash on iOS in `paymentContextDidUpdateShippingAddressCompletion` if no shipping methods provided.
 - Crash on Android in `StripeConfig` if `requiredShippingAddressFields` is null.
 - Improve handling of brands and images on Android. Latest SDK "brand" values changed.
-
 
 ## 6.6.0 (2020, May 5)
 ### Updates
