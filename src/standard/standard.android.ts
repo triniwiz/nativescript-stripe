@@ -168,20 +168,13 @@ export class StripePaymentSession {
     let activity = androidApp.foregroundActivity;
     let session = this;
 
-    // TODO: How do I call the callback? The code below doesn't work,
-    // it throws an "undefined" exception. Note JSON.stringify(oldResultCallback) returns "undefined".
-    let oldResultCallback = activity.onActivityResult;
-    console.log("oldResultCallback: " + JSON.stringify(oldResultCallback));
     activity.onActivityResult = function (requestCode, resultCode, data) {
-      // if (oldResultCallback) oldResultCallback(requestCode, resultCode, data);
       session.native.handlePaymentData(requestCode, resultCode, data);
     };
-    let oldDestroyCallback = activity.onDestroy;
-    console.log("oldDestroyCallback: " + JSON.stringify(oldDestroyCallback));
     activity.onDestroy = function () {
-      // if (oldDestroyCallback) oldDestroyCallback();
       session.native.onDestroy();
-      getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).unregisterReceiver(this.receiver);
+      getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).unregisterReceiver(session.receiver);
+      activity.super.onDestroy();
     };
     return activity;
   }
