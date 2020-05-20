@@ -82,8 +82,8 @@ export declare class StripePaymentSession {
   presentShipping(): void;
 
   // Can be used in Android apps to control ActivityResult register/unregister lifecycle.
-  static registerActivityResult(session: StripePaymentSession, activity: any): void;
-  static unregisterActivityResult(session: StripePaymentSession, activity: any): void;
+  registerActivityResult(): void;
+  unregisterActivityResult(): void;
 }
 export declare interface StripePaymentMethod {
   image: any; // a value that can be used as [src] in an Image tag

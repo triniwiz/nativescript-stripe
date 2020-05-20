@@ -92,6 +92,9 @@ export class StripePaymentSession {
   loading: boolean;
   paymentInProgress: boolean;
   private receiver: android.content.BroadcastReceiver;
+  private activity: any; // foreground activity when session is created
+  private oldOnActivityResult;
+  private oldOnDestroy;
 
   constructor(
     _page: Page,
@@ -117,9 +120,10 @@ export class StripePaymentSession {
       builder.setPrepopulatedShippingInfo(info);
     }
     let config = builder.build();
-    this.receiver = createShippingBroadcastReceiver(this, listener);
-    this.native = new com.stripe.android.PaymentSession(this.patchActivity());
 
+    this.receiver = createShippingBroadcastReceiver(this, listener);
+    this.activity = this.registerActivityResult();
+    this.native = new com.stripe.android.PaymentSession(this.activity);
     if (!this.native.init(createPaymentSessionListener(this, listener), config)) {
       throw new Error("CustomerSession not initialized");
     }
@@ -163,28 +167,29 @@ export class StripePaymentSession {
     this.native.presentShippingFlow();
   }
 
-  private patchActivity(): android.app.Activity {
-    let activity = androidApp.foregroundActivity;
-    let session = this;
+  registerActivityResult(): any {
+    const activity = androidApp.foregroundActivity;
+    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
 
-    StripePaymentSession.registerActivityResult(session, activity);
+    this.oldOnActivityResult = activity.onActivityResult;
+    this.oldOnDestroy = activity.onDestroy;
+
+    const session = this;
+    activity.onActivityResult = function (requestCode, resultCode, data) {
+      session.native.handlePaymentData(requestCode, resultCode, data);
+    };
     activity.onDestroy = function () {
-      StripePaymentSession.unregisterActivityResult(session, activity);
-      activity.super.onDestroy();
+      session.unregisterActivityResult();
+      session.activity.super.onDestroy();
     };
     return activity;
   }
 
-  static registerActivityResult(session: StripePaymentSession, activity: any): void {
-    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).registerReceiver(session.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
-    activity.onActivityResult = function (requestCode, resultCode, data) {
-      session.native.handlePaymentData(requestCode, resultCode, data);
-    };
-  }
-
-  static unregisterActivityResult(session: StripePaymentSession, activity: any): void {
-    session.native.onDestroy();
-    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).unregisterReceiver(session.receiver);
+  unregisterActivityResult(): void {
+    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(this.activity).unregisterReceiver(this.receiver);
+    this.native.onDestroy();
+    this.activity.onActivityResult = this.oldOnActivityResult;
+    this.activity.onDestroy = this.oldOnDestroy;
   }
 }
 

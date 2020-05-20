@@ -161,11 +161,8 @@ export class StripePaymentSession {
   }
 
   // No-ops to provide Android compatibility
-  static registerActivityResult(session: StripePaymentSession, activity: any): void {
-  }
-
-  static unregisterActivityResult(session: StripePaymentSession, activity: any): void {
-  }
+  registerActivityResult(): void {}
+  unregisterActivityResult(): void {}
 }
 
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
