@@ -117,14 +117,13 @@ export class StripePaymentSession {
       builder.setPrepopulatedShippingInfo(info);
     }
     let config = builder.build();
+    this.receiver = createShippingBroadcastReceiver(this, listener);
     this.native = new com.stripe.android.PaymentSession(this.patchActivity());
 
     if (!this.native.init(createPaymentSessionListener(this, listener), config)) {
       throw new Error("CustomerSession not initialized");
     }
     this.native.setCartTotal(amount);
-    this.receiver = createShippingBroadcastReceiver(this, listener);
-    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
   }
 
   get amount(): number {
@@ -168,15 +167,24 @@ export class StripePaymentSession {
     let activity = androidApp.foregroundActivity;
     let session = this;
 
-    activity.onActivityResult = function (requestCode, resultCode, data) {
-      session.native.handlePaymentData(requestCode, resultCode, data);
-    };
+    StripePaymentSession.registerActivityResult(session, activity);
     activity.onDestroy = function () {
-      session.native.onDestroy();
-      getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).unregisterReceiver(session.receiver);
+      StripePaymentSession.unregisterActivityResult(session, activity);
       activity.super.onDestroy();
     };
     return activity;
+  }
+
+  static registerActivityResult(session: StripePaymentSession, activity: any): void {
+    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).registerReceiver(session.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
+    activity.onActivityResult = function (requestCode, resultCode, data) {
+      session.native.handlePaymentData(requestCode, resultCode, data);
+    };
+  }
+
+  static unregisterActivityResult(session: StripePaymentSession, activity: any): void {
+    session.native.onDestroy();
+    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(activity).unregisterReceiver(session.receiver);
   }
 }
 

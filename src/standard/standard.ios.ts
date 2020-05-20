@@ -159,6 +159,13 @@ export class StripePaymentSession {
     this.ensureHostViewController();
     this.native.presentShippingViewController();
   }
+
+  // No-ops to provide Android compatibility
+  static registerActivityResult(session: StripePaymentSession, activity: any): void {
+  }
+
+  static unregisterActivityResult(session: StripePaymentSession, activity: any): void {
+  }
 }
 
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
