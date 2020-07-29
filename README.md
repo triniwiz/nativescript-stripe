@@ -6,6 +6,10 @@
 **Requires I0S 9.x +**
 
 
+#### NativeScript 7x
+
+* `nsc plugin add nativescript-stripe`
+
 #### NativeScript 4x
 
 * `tns plugin add nativescript-stripe`
