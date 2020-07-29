@@ -1,4 +1,4 @@
-import { Page } from "tns-core-modules/ui/page";
+import { Page } from "@nativescript/core";
 
 export declare class StripeConfigCommon {
   backendAPI: StripeBackendAPI;

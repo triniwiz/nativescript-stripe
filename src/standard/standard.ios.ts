@@ -1,4 +1,4 @@
-import { Page } from "tns-core-modules/ui/page";
+import { Page } from "@nativescript/core";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 export * from "./standard.common";
 
