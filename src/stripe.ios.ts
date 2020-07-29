@@ -1,6 +1,6 @@
-import { View } from 'tns-core-modules/ui/core/view';
-import { topmost } from "tns-core-modules/ui/frame";
-import { ios as iosUtils } from "tns-core-modules/utils/utils";
+import { View } from '@nativescript/core';
+import { topmost } from "@nativescript/core/ui/frame";
+import { iOSNativeHelper as iosUtils } from "@nativescript/core/utils";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 export * from "./stripe.common";
 

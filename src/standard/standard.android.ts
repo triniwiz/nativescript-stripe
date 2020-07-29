@@ -1,6 +1,6 @@
-import { android as androidApp } from "tns-core-modules/application";
-import { Page } from "tns-core-modules/ui/page";
-import * as utils from "tns-core-modules/utils/utils";
+import { android as androidApp } from "@nativescript/core/application";
+import { Page } from "@nativescript/core";
+import * as utils from "@nativescript/core/utils";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 export * from "./standard.common";
 
