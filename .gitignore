@@ -21,6 +21,7 @@ demo-angular/*.d.ts
 **/node_modules
 **/platforms
 **/hooks
+dist/
 publish/src
 publish/package
 *.metadata.json
