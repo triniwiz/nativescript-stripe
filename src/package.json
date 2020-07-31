@@ -10,14 +10,26 @@
       "ios": "6.0.1"
     }
   },
+  "ngPackage": {
+    "lib": {
+      "entryFile": "./angular/index.ts",
+      "umdModuleIds": {
+        "@nativescript/core": "ns-core",
+        "@nativescript/angular": "ns-angular"
+      }
+    },
+    "whitelistedNonPeerDependencies": [
+      "."
+    ]
+  },
   "scripts": {
     "setup": "../../setup-keys.sh",
     "ngc.clean": "find ./ angular/ standard/ -name '*.metadata.json' -delete && find ./ angular/ standard/ -name '*.ngsummary.json' -delete",
     "ngc": "npm run ngc.clean && ngc --project tsconfig.json",
     "ngcc": "ngcc --properties es2015 module main --first-only",
     "tsc": "tsc",
-    "build": "npm run tsc && npm run build.native",
-    "build.native": "node scripts/build-native.js",
+    "build": "ng-packagr -p package.json",
+    "build.pack": "npm run tsc && npm run build && cd dist && npm pack",
     "test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch && cd ../demo-angular && tns build android && tns test android --justlaunch",
     "test.ios": "npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch && cd ../demo-angular && tns build ios && tns test ios --justlaunch",
     "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|typings|platforms)/**\"",
@@ -75,6 +87,7 @@
     "@nativescript/core": "7.0.0-rc.34",
     "@nativescript/types": "7.0.0-rc.0",
     "@types/node": "^14.0.27",
+    "ng-packagr": "^10.0.1",
     "prompt": "^1.0.0",
     "rimraf": "^2.6.3",
     "rxjs": "^6.3.3",

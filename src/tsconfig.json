@@ -1,39 +1,37 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "declaration": true,
-        "removeComments": true,
-        "noLib": false,
-        "skipLibCheck": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "lib": [ "es2018", "es2017", "dom", "es6" ],
-        "preserveConstEnums": true,
-        "pretty": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        "noEmitHelpers": true,
-        "noEmitOnError": false,
-        "noImplicitAny": false,
-        "noImplicitReturns": true,
-        "noImplicitUseStrict": false,
-        "noFallthroughCasesInSwitch": true,
-        "baseUrl": ".",
-        "paths": {
-                "~/*": [
-                    "./*"
-                ],
-                "*": [
-                    "./node_modules/*"
-                ]
-            }
-    },
-    "exclude": [
-        "node_modules"
+  "compilerOptions"       : {
+    "target"                : "es2017",
+    "module"                : "esnext",
+    "moduleResolution"      : "node",
+    "sourceMap"             : true,
+    "emitDecoratorMetadata" : true,
+    "experimentalDecorators": true,
+    "noImplicitUseStrict"   : true,
+    "noEmitHelpers"         : true,
+    "declaration"           : true,
+    "removeComments"        : true,
+    "noEmitOnError"         : true,
+    "skipLibCheck"          : true,
+    "skipDefaultLibCheck"   : true,
+    "noImplicitAny"         : false,
+    "lib"                   : [
+      "es2017",
+      "dom",
+      "es6"
     ],
-    "compileOnSave": true,
-    "angularCompilerOptions": {
-        "skipTemplateCodegen": true
-    }
+    "baseUrl"               : "."
+  },
+  "angularCompilerOptions": {
+    "genDir"             : ".",
+    "skipMetadataEmit"   : false,
+    "skipTemplateCodegen": true,
+    "strictMetadataEmit" : true,
+    "enableIvy"          : true
+  },
+  "include"               : [
+    "**/*.ts"
+  ],
+  "exclude"               : [
+    "node_modules"
+  ]
 }
