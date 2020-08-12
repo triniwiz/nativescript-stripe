@@ -19,18 +19,11 @@
       "dom",
       "es6"
     ],
-    "baseUrl"               : "."
+    "baseUrl"               : ".",
+    "plugins": [
+      { "transform": "@nativescript/webpack/transformers/ns-transform-native-classes", "type": "raw" }
+    ]
   },
-  "angularCompilerOptions": {
-    "genDir"             : ".",
-    "skipMetadataEmit"   : false,
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit" : true,
-    "enableIvy"          : true
-  },
-  "include"               : [
-    "**/*.ts"
-  ],
   "exclude"               : [
     "node_modules"
   ]

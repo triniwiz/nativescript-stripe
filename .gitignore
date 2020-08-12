@@ -5,6 +5,7 @@
 **/*.js.map
 **/*.log
 **/*.d.ts
+src/angular
 !src/index.d.ts
 !src/standard/index.d.ts
 !src/references.d.ts
