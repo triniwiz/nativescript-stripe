@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef } from "@angular/core";
-import { ModalDialogParams } from "nativescript-angular/modal-dialog";
-import { alert } from "tns-core-modules/ui/dialogs";
+import { ModalDialogParams } from "@nativescript/angular";
+import { alert } from "@nativescript/core";
 import { CreditCardView, Stripe } from "nativescript-stripe";
 
 import { publishableKey, StripeService } from "./stripe.service";
