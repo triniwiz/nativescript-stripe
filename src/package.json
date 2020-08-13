@@ -85,5 +85,7 @@
     "typescript": "~3.9.0"
   },
   "bootstrapper": "nativescript-plugin-seed",
-  "dependencies": {}
+  "dependencies": {
+    "ts-node": "^8.10.2"
+  }
 }
