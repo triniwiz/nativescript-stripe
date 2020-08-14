@@ -1,4 +1,15 @@
 Changelog
+## 7.0.1 (2020, Aug 14)
+###
+- Demo projects aligned to v7.0.0 updates
+
+## 7.0.0 (2020, Aug 12)
+### Updates
+- Add support to new @nativescript (scoped) packages - Compatible with the upcoming {N}7 release
+- Add compatiblity with Angular 10 and Ivy compiler (thanks to Nathan Walker for the support!)
+- Webpack script updated
+- Built with Typescript ~3.9.0
+- Plugin builds successfully
 
 ## 6.6.2 (2020, May 19)
 ### Fixes

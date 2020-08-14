@@ -31,14 +31,14 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "~10.0.0",
-    "@ngtools/webpack": "~10.0.0",
-    "lazy": "1.0.11",
     "@nativescript/webpack": "^2.1.3",
+    "@ngtools/webpack": "~10.0.0",
+    "lazy": "^1.0.11",
     "tslint": "~5.4.3",
     "typescript": "~3.9.0"
   },
   "scripts": {
-    "build": "tsc",
+    "tsc": "tsc",
     "build.plugin": "cd ../src && npm run build",
     "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"
   }

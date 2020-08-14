@@ -2,7 +2,7 @@
 
 This Angular NativeScript app demos both [Standard and custom UI](https://stripe.com/docs/mobile/ios#standard-custom-components) Stripe components.  Current forms of supported card input are Apple Pay (iOS only) and manual number entry.
 
-**Note**: `nativescript-dev-webpack` version `~0.22.0-next-2019-04-12-181144-02` or later is required.
+**Note**: nativescript-stripe plugin currently is using the Stripe SDK v15 on iOS and 8.7 on Android. Current Stripe SDKs are iOS: v19.3 / Android: v15.1, the plugin will be updated soon to adopt these new versions with their features.
 
 ## Setup
 
