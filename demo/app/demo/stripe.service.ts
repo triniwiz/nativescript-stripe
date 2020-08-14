@@ -1,6 +1,6 @@
 import { StripeAddress, StripeBackendAPI, StripeConfig, StripeCustomerSession, StripePaymentListener, StripePaymentSession, StripeShippingAddressField, StripeShippingMethod } from "nativescript-stripe/standard";
-import { request as httpRequest } from "@nativescript/core/http/http-request"
-import { Page } from "tns-core-modules/ui/page";
+import { request as httpRequest } from "@nativescript/core/http/http-request";
+import { Page } from "@nativescript/core";
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
 // and copy your "Test Publishable Key" (it looks like pk_test_abcdef) into the line below.
