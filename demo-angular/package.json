@@ -6,10 +6,10 @@
   "nativescript": {
     "id": "org.nativescript.stripe.demoangular",
     "tns-ios": {
-      "version": "6.8.0"
+      "version": "6.2.0"
     },
     "tns-android": {
-      "version": "6.8.0"
+      "version": "6.2.0"
     }
   },
   "dependencies": {
@@ -23,8 +23,8 @@
     "@angular/router": "~10.0.0",
     "@nativescript/core": "rc",
     "@nativescript/angular": "~10.0.0",
+    "@nativescript/theme": "^2.3.3",
     "nativescript-stripe": "file:../src",
-    "nativescript-theme-core": "~2.0.24",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.3.3",
     "zone.js": "~0.10.3"
