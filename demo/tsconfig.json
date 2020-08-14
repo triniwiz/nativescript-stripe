@@ -6,10 +6,12 @@
         "emitDecoratorMetadata": true,
         "noEmitHelpers": true,
         "noEmitOnError": true,
+        "skipLibCheck": true,
         "lib": [
-            "es6",
+            "es2017",
+            
             "dom",
-            "es2015.iterable"
+            "es6"
         ],
         "baseUrl": ".",
         "paths": {
@@ -17,7 +19,6 @@
                 "app/*"
             ],
             "*": [
-                "./node_modules/tns-core-modules/*",
                 "./node_modules/*"
             ]
         }
