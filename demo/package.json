@@ -9,9 +9,9 @@
     }
   },
   "dependencies": {
-    "nativescript-stripe": "file:../src",
+    "@nativescript/core": "rc",
     "@nativescript/theme": "^2.3.3",
-    "@nativescript/core": "rc"
+    "nativescript-stripe": "file:../src"
   },
   "devDependencies": {
     "@nativescript/types": "^7.0.0-rc.0",
