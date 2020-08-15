@@ -6,10 +6,10 @@
   "nativescript": {
     "id": "org.nativescript.stripe.demoangular",
     "tns-ios": {
-      "version": "6.2.0"
+      "version": "6.5.2"
     },
     "tns-android": {
-      "version": "6.2.0"
+      "version": "6.5.3"
     }
   },
   "dependencies": {
@@ -39,6 +39,16 @@
   },
   "scripts": {
     "tsc": "tsc",
+    "clean": "npx rimraf hooks node_modules package-lock.json platforms && npm i",
+    "ngcc": "ngcc --properties es2015 module main --first-only",
+    "postinstall": "npm run ngcc",
+    "build.all": "npm run build.android && npm run build.ios",
+    "build.android": "nsc build android",
+    "build.ios": "nsc build ios",
+    "run.android": "nsc run android",
+    "run.ios": "nsc run ios",
+    "emulator.android": "nsc run android --emulator",
+    "emulator.ios": "nsc run ios --emulator",
     "build.plugin": "cd ../src && npm run build",
     "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"
   }
