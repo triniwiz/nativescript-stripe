@@ -21,7 +21,7 @@
     "@angular/platform-browser": "~10.0.0",
     "@angular/platform-browser-dynamic": "~10.0.0",
     "@angular/router": "~10.0.0",
-    "@nativescript/angular": "10.0.0-rc.5",
+    "@nativescript/angular": "10.0.0",
     "@nativescript/core": "rc",
     "@nativescript/theme": "^2.3.3",
     "nativescript-stripe": "file:../src",
@@ -41,7 +41,6 @@
     "tsc": "tsc",
     "clean": "npx rimraf hooks node_modules package-lock.json platforms && npm i",
     "ngcc": "ngcc --properties es2015 module main --first-only",
-    "postinstall": "npm run ngcc",
     "build.all": "npm run build.android && npm run build.ios",
     "build.android": "nsc build android",
     "build.ios": "nsc build ios",
@@ -49,6 +48,11 @@
     "run.ios": "nsc run ios",
     "emulator.android": "nsc run android --emulator",
     "emulator.ios": "nsc run ios --emulator",
+    "android": "tns run android --no-hmr",
+    "ios": "tns run ios --no-hmr",
+    "mobile": "tns run",
+    "preview": "tns preview",
+    "postinstall": "npm run ngcc",
     "build.plugin": "cd ../src && npm run build",
     "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"
   }
