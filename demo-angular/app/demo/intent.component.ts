@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ViewContainerRef } from "@angular/core";
-import { ModalDialogService } from "nativescript-angular/modal-dialog";
+import { ModalDialogService } from "@nativescript/angular";
 import { Card, CreditCardView, PaymentMethod, Stripe, StripePaymentIntentParams } from "nativescript-stripe";
-import { alert } from "tns-core-modules/ui/dialogs";
+import { alert } from "@nativescript/core";
 import { ItentModalComponent } from "./intent-modal.component";
 import { publishableKey, StripeService } from "./stripe.service";
 

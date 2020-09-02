@@ -1,9 +1,9 @@
 {
   "android": {
     "v8Flags": "--expose_gc",
-    "markingMode": "full"
+    "markingMode": "none"
   },
   "main": "main.js",
-  "name": "tns-template-hello-world-ng",
-  "version": "4.0.1"
+  "name": "nsc-template-stripe-ng",
+  "version": "5.0.0"
 }

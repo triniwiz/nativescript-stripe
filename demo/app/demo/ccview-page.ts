@@ -1,7 +1,7 @@
 import { CreditCardView, Source, Stripe, Token } from "nativescript-stripe";
-import { EventData, fromObject } from "tns-core-modules/data/observable";
-import { Button } from "tns-core-modules/ui/button";
-import { Page } from "tns-core-modules/ui/page";
+import { EventData, fromObject } from "@nativescript/core";
+import { Button } from "@nativescript/core";
+import { Page } from "@nativescript/core";
 import { publishableKey } from "./stripe.service";
 
 let stripe: Stripe;

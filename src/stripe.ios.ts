@@ -1,5 +1,4 @@
-import { Frame, View } from '@nativescript/core';
-import { iOSNativeHelper as iosUtils } from "@nativescript/core/utils";
+import { Frame, View, Utils } from '@nativescript/core';
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 export * from "./stripe.common";
 
@@ -163,7 +162,7 @@ export class Stripe {
     const authContext = STPPaymentContext.alloc();
     const rootVC = Frame.topmost().currentPage.ios;
 
-    authContext.hostViewController = iosUtils.getVisibleViewController(rootVC);
+    authContext.hostViewController = Utils.ios.getVisibleViewController(rootVC);
     authContext.authenticationPresentingViewController = () => {
       return authContext.hostViewController;
     };

@@ -34,18 +34,21 @@ pack() {
     node_modules/.bin/ncp "$ROOT_DIR"/README.md "$TO_SOURCE_DIR"/README.md
     node_modules/.bin/ncp "$ROOT_DIR"/CHANGELOG.md "$TO_SOURCE_DIR"/CHANGELOG.md
 
-    # compile package and copy files required by npm
-    echo 'Building /src...'
-    cd "$TO_SOURCE_DIR"
-    node_modules/.bin/ngc -skipLibCheck --project tsconfig.json
+    # REMOVED: build will be managed from src → "build" script ("clean" script is safer)  {
+    #   compile package and copy files required by npm
+    #   echo 'Building /src...'
+    #   cd "$TO_SOURCE_DIR"
+    #   node_modules/.bin/ngc -skipLibCheck --project tsconfig.json
+    # }
 
     # remove unwanted files
     echo 'Removing unwanted files from /src...'
+    cd   "$TO_SOURCE_DIR"
     node_modules/.bin/rimraf hooks typings references.d.ts .DS_Store **/.DS_Store
 
     cd ..
 
-    echo 'Creating package...'
+    echo  'Creating package...'
     # create package dir
     mkdir "$PACK_DIR"
 

@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { Routes } from "@angular/router";
-import { NativeScriptRouterModule } from "nativescript-angular/router";
+import { NativeScriptRouterModule } from "@nativescript/angular";
 import { CreditCardViewComponent } from "./demo/creditcardview.component";
 import { HomeComponent } from "./demo/home.component";
 import { ImagesComponent } from "./demo/images.component";
