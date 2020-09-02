@@ -1,4 +1,3 @@
-import { android as androidApp } from "@nativescript/core/application";
 import { Application, Utils } from "@nativescript/core";
 import { CardBrand, CardCommon, CreditCardViewBase, PaymentMethodCommon, Source, StripePaymentIntentCommon, StripePaymentIntentStatus, Token } from './stripe.common';
 export * from "./stripe.common";

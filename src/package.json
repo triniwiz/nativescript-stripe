@@ -72,7 +72,6 @@
   "homepage": "https://github.com/triniwiz/nativescript-stripe",
   "readmeFilename": "README.md",
   "devDependencies": {
-<<<<<<< HEAD
     "@angular/animations": "^10.0.0",
     "@angular/common": "^10.0.0",
     "@angular/compiler": "^10.0.0",
