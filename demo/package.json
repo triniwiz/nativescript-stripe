@@ -1,21 +1,24 @@
 {
+  "description": "NativeScript Stripe - (demo) Application",
+  "license": "MIT",
+  "readme": "README.md",
   "nativescript": {
     "id": "org.nativescript.stripe.demo",
-    "tns-ios": {
+    "nsc-ios": {
       "version": "6.5.2"
     },
-    "tns-android": {
-      "version": "6.5.3"
+    "nsc-android": {
+      "version": "7.0.0"
     }
   },
   "dependencies": {
-    "@nativescript/core": "rc",
+    "@nativescript/core": "~7.0.0",
     "@nativescript/theme": "^2.3.3",
     "nativescript-stripe": "file:../src"
   },
   "devDependencies": {
-    "@nativescript/types": "^7.0.0-rc.0",
-    "@nativescript/webpack": "^2.1.3",
+    "@nativescript/types": "~7.0.1",
+    "@nativescript/webpack": "~3.0.0",
     "lazy": "^1.0.11",
     "tslint": "~5.4.3",
     "typescript": "~3.9.0"

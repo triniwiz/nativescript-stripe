@@ -1,4 +1,4 @@
-var Stripe = require("nativescript-stripe").Stripe;
+import { Stripe } from "nativescript-stripe"
 var stripe = new Stripe();
 
 describe("greet function", function() {

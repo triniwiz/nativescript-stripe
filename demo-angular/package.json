@@ -1,15 +1,15 @@
 {
-  "description": "NativeScript Stripe Demo Application",
+  "description": "NativeScript Stripe - (demo) Angular Application",
   "license": "MIT",
-  "readme": "NativeScript Stripe Demo Application",
+  "readme": "README.md",
   "repository": "<fill-your-repository-here>",
   "nativescript": {
     "id": "org.nativescript.stripe.demoangular",
-    "tns-ios": {
+    "nsc-ios": {
       "version": "6.5.2"
     },
-    "tns-android": {
-      "version": "6.5.3"
+    "nsc-android": {
+      "version": "7.0.0"
     }
   },
   "dependencies": {
@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "~10.0.0",
     "@angular/router": "~10.0.0",
     "@nativescript/angular": "10.0.0",
-    "@nativescript/core": "rc",
+    "@nativescript/core": "~7.0.0",
     "@nativescript/theme": "^2.3.3",
     "nativescript-stripe": "file:../src",
     "reflect-metadata": "^0.1.13",
@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "~10.0.0",
-    "@nativescript/webpack": "^2.1.3",
-    "@ngtools/webpack": "~10.0.0",
+    "@nativescript/webpack": "~3.0.0",
+    "@ngtools/webpack": "~10.1.0",
     "lazy": "^1.0.11",
     "tslint": "~5.4.3",
     "typescript": "~3.9.0"
@@ -48,10 +48,10 @@
     "run.ios": "nsc run ios",
     "emulator.android": "nsc run android --emulator",
     "emulator.ios": "nsc run ios --emulator",
-    "android": "tns run android --no-hmr",
-    "ios": "tns run ios --no-hmr",
-    "mobile": "tns run",
-    "preview": "tns preview",
+    "android": "nsc run android --no-hmr",
+    "ios": "nsc run ios --no-hmr",
+    "mobile": "nsc run",
+    "preview": "nsc preview",
     "postinstall": "npm run ngcc",
     "build.plugin": "cd ../src && npm run build",
     "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"

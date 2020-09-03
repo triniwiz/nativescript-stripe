@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { StripeAddress, StripeBackendAPI, StripeConfig, StripeCustomerSession, StripePaymentListener, StripePaymentSession, StripeShippingAddressField, StripeShippingMethod } from "nativescript-stripe/standard";
-import { request as httpRequest } from "@nativescript/core/http/http-request";
-import { Page } from "@nativescript/core";
+import { Http, Page } from "@nativescript/core";
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
 // and copy your "Test Publishable Key" (it looks like pk_test_abcdef) into the line below.
@@ -88,7 +87,7 @@ export class StripeService implements StripeBackendAPI {
 
   private _postRequest(endpoint: string, content: string = ''): Promise<any> {
     let url = this._backendURL(endpoint);
-    return httpRequest({
+    return Http.request({
       url: url,
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded; charset=utf-8" },

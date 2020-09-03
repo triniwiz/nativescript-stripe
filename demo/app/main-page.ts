@@ -1,8 +1,6 @@
-import { EventData } from "tns-core-modules/data/observable";
-import { Frame } from "tns-core-modules/ui/frame";
+import { Frame, EventData } from "@nativescript/core";
 
-export function pageLoaded(args: EventData) {
-}
+export function pageLoaded(args: EventData) { }
 
 export function stdDemo(args: EventData) {
   const frame = Frame.topmost();

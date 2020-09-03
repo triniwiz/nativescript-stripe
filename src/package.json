@@ -1,6 +1,6 @@
 {
   "name": "nativescript-stripe",
-  "version": "7.0.1-rc.0",
+  "version": "7.0.2-rc.0",
   "description": "NativeScript Stripe sdk",
   "main": "stripe",
   "typings": "index.d.ts",
@@ -23,15 +23,17 @@
     ]
   },
   "scripts": {
-    "setup": "../../setup-keys.sh",
-    "tsc": "tsc",
-    "build": "npm i && ts-patch install && npm run tsc && npm run build.angular",
-    "build.native": "node scripts/build-native.js",
+    "postinstall": "npm i && ts-patch install",
+    "setup": "npm run clean",
+    "clean": "npm run demo.reset && npm run demo-angular.reset && cd ../src-angular && npx rimraf dist node_modules package-lock.json && cd ../src && npx rimraf -- *.js  \"!(index|references).d.ts\" angular node_modules package-lock.json && npm run build",
+    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|typings|platforms)/**\"",
+    "plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-stripe && tns plugin add ../src && cd ../demo-angular && tns plugin remove nativescript-stripe && tns plugin add ../src",
+    "plugin.tscwatch": "npm run tsc -- -w",
+    "build": "npm run tslint && npm run build.angular",
     "build.angular": "cd ../src-angular && npm run build",
     "test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch && cd ../demo-angular && tns build android && tns test android --justlaunch",
     "test.ios": "npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch && cd ../demo-angular && tns build ios && tns test ios --justlaunch",
-    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|typings|platforms)/**\"",
-    "plugin.tscwatch": "npm run tsc -- -w",
+    "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/+(node_modules|typings)/**'",
     "demo.ios": "npm run tsc && cd ../demo && tns run ios --emulator",
     "demo.ios.min": "npm run tsc && cd ../demo && tns run ios --env.uglify --emulator",
     "demo.ios.ci": "npm run tsc && cd ../demo && tns build ios --env.uglify",
@@ -44,10 +46,7 @@
     "debug.demo-angular.android": "npm run tsc && cd ../demo-angular && tns debug android --emulator",
     "demo-angular.android": "npm run tsc && cd ../demo-angular && tns run android --emulator",
     "demo-angular.reset": "cd ../demo-angular && npx rimraf -- hooks node_modules platforms package-lock.json",
-    "plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-stripe && tns plugin add ../src && cd ../demo-angular && tns plugin remove nativescript-stripe && tns plugin add ../src",
-    "clean": "npm run demo.reset && npm run demo-angular.reset && cd ../src-angular && npx rimraf node_modules package-lock.json && cd ../src && npx rimraf -- *.js  \"!(index|references).d.ts\" angular node_modules package-lock.json && npm run build",
-    "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/+(node_modules|typings)/**'",
-    "prepack": "npm run build.native"
+    "tsc": "tsc"
   },
   "keywords": [
     "NativeScript",

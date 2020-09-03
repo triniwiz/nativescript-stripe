@@ -1,9 +1,18 @@
 {
   "name": "nativescript-publish",
-  "version": "2.0.0",
-  "description": "Publish helper",
+  "version": "3.0.0",
+  "description": "{N} Plugin publisher",
+  "scripts": {
+    "prepare"   : "npm run clean && cd ../src && npm run setup && cd ../publish && npm run copy && npm run pack",
+    "clean"     : "npx rimraf src package",
+    "copy"      : "mkdir src &&  cpy '../src/**/*' 'src' --parents && npm run copy-docs",
+    "copy-docs" : "cpy '../*.md' '../LICENSE' 'src' ",
+    "prepack"   : "cd src && rimraf hooks typings references.d.ts .DS_Store **/.DS_Store",
+    "pack"      : "mkdir package && cd package && npm pack ../src",
+    "postpack"  : "npx rimraf src"
+  },
   "devDependencies": {
-    "ncp": "^2.0.0",
-    "rimraf": "^2.5.0"
+    "cpy-cli"   : "^3.0.0",
+    "rimraf"    : "^3.0.0"
   }
 }

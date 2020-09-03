@@ -1,7 +1,5 @@
+import { Page, EventData, Button, fromObject } from "@nativescript/core";
 import { CreditCardView, Source, Stripe, Token } from "nativescript-stripe";
-import { EventData, fromObject } from "@nativescript/core";
-import { Button } from "@nativescript/core";
-import { Page } from "@nativescript/core";
 import { publishableKey } from "./stripe.service";
 
 let stripe: Stripe;

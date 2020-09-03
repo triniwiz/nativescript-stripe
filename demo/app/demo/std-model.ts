@@ -1,4 +1,4 @@
-import { Observable } from 'tns-core-modules/data/observable';
+import { Observable } from '@nativescript/core';
 import { ObservableProperty } from './observable-decorator';
 
 export class StdDemoModel extends Observable {

@@ -14,7 +14,8 @@
 		]
 	},
 	"scripts": {
-		"build": "npm i && ng-packagr -p package.json && cd dist && cpy '**/*' '../../src/angular' --parents"
+		"build": "npm i && ng-packagr -p package.json && cd dist && cpy '**/*' '../../src/angular' --parents",
+		"clean": "npx rimraf node_modules dist package-lock.json -- *.js"
 	},
 	"devDependencies": {
 		"@angular/animations": "~10.0.0",
@@ -27,11 +28,12 @@
 		"@angular/platform-browser-dynamic": "~10.0.0",
 		"@angular/router": "~10.0.0",
 		"@nativescript/angular": "~10.0.0",
-		"@nativescript/core": "rc",
+		"@nativescript/core": "~7.0.0",
 		"cpy-cli": "~3.1.1",
 		"nativescript-stripe": "file:../src",
 		"ng-packagr": "~10.0.0",
 		"rxjs": "^6.6.0",
+		"tslint": "^5.14.0",
 		"typescript": "~3.9.0",
 		"zone.js": "^0.10.3"
 	}

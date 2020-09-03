@@ -1,9 +1,9 @@
 {
+  "main": "app.js",
+  "name": "nsc-template-stripe",
+  "version": "7.0.0",
   "android": {
     "v8Flags": "--expose_gc",
     "markingMode": "none"
-  },
-  "main": "app.js",
-  "name": "tns-template-hello-world-ts",
-  "version": "2.5.0"
+  }
 }

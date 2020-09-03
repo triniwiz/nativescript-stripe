@@ -18,11 +18,17 @@ git commit -a -m "chore(): ver bump"
 git push
 ```
 
-Build the release (consider first cleaning all build artifacts):
+Pack the release:
+this command will take care of installing the dependencies and will return
+the gzipped plugin.
 ```
-cd src
-npm run build
+./pack.sh
 ```
+You can test the plugin with this definition in package.json:
+```
+ "nativescript-stripe": "file:../<path-to-here>/nativescript-stripe/publish/package/nativescript-stripe-X.y.z.tgz",
+```
+
 
 Publish the release to `npm`:
 ```

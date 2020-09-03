@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es2017",
-        "module": "esNext",
+        "target": "ES2017",
+        "module": "esnext",
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,

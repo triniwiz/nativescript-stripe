@@ -1,9 +1,9 @@
 {
+  "main": "main.js",
+  "name": "nsc-template-stripe-ng",
+  "version": "7.0.0",
   "android": {
     "v8Flags": "--expose_gc",
     "markingMode": "none"
-  },
-  "main": "main.js",
-  "name": "nsc-template-stripe-ng",
-  "version": "5.0.0"
+  }
 }
