@@ -1,31 +1,24 @@
 {
-  "description": "NativeScript Stripe - (demo) Application",
-  "license": "MIT",
-  "readme": "README.md",
-  "nativescript": {
-    "id": "org.nativescript.stripe.demo",
-    "nsc-ios": {
-      "version": "6.5.2"
-    },
-    "nsc-android": {
-      "version": "7.0.0"
-    }
-  },
-  "dependencies": {
-    "@nativescript/core": "~7.0.0",
-    "@nativescript/theme": "^2.3.3",
-    "nativescript-stripe": "file:../src"
-  },
-  "devDependencies": {
-    "@nativescript/types": "~7.0.1",
-    "@nativescript/webpack": "~3.0.0",
-    "lazy": "^1.0.11",
-    "tslint": "~5.4.3",
-    "typescript": "~3.9.0"
-  },
-  "scripts": {
-    "tsc": "tsc",
-    "build.plugin": "cd ../src && npm run build",
-    "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"
-  }
+   "dependencies": {
+      "@nativescript/core": "~7.0.0",
+      "@nativescript/theme": "^2.3.3",
+      "nativescript-stripe": "file:../src"
+   },
+   "description": "NativeScript Stripe - (demo) Application",
+   "devDependencies": {
+      "@nativescript/android": "^7.0.0",
+      "@nativescript/ios": "^7.0.0",
+      "@nativescript/types": "~7.0.0",
+      "@nativescript/webpack": "~3.0.0",
+      "lazy": "^1.0.11",
+      "tslint": "~5.4.3",
+      "typescript": "~3.9.0"
+   },
+   "license": "MIT",
+   "readme": "README.md",
+   "scripts": {
+      "build.plugin": "cd ../src && npm run build",
+      "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'",
+      "tsc": "tsc"
+   }
 }

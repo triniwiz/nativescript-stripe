@@ -1,35 +1,35 @@
 {
-    "compilerOptions": {
-        "target": "ES2017",
-        "module": "esnext",
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "noEmitHelpers": true,
-        "noEmitOnError": true,
-        "lib": [
-            "es2017",
-            "dom",
-            "es6"
-        ],
-        "baseUrl": ".",
-        "paths": {
-            "~/*": [
-                "app/*"
-            ],
-            "*": [
-                "./node_modules/*"
-            ]
-        }
-    },
-    "include": [
-        "../src",
-        "**/*"
-    ],
-    "exclude": [
-        "../src/node_modules",
-        "node_modules",
-        "platforms"
-    ],
-    "compileOnSave": true
+   "compileOnSave": true,
+   "compilerOptions": {
+      "baseUrl": ".",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "lib": [
+         "dom",
+         "es2017",
+         "es6"
+      ],
+      "module": "esnext",
+      "moduleResolution": "node",
+      "noEmitHelpers": true,
+      "noEmitOnError": true,
+      "paths": {
+         "*": [
+            "./node_modules/*"
+         ],
+         "~/*": [
+            "app/*"
+         ]
+      },
+      "target": "ES2017"
+   },
+   "exclude": [
+      "../src/node_modules",
+      "node_modules",
+      "platforms"
+   ],
+   "include": [
+      "**/*",
+      "../src"
+   ]
 }

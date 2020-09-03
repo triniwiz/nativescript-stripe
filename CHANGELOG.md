@@ -3,9 +3,11 @@
 ## 7.0.2 (2020, Sep 3)
 
 ### Updates
+
+- Switched to single file configuration in demo applications:  `nativescript.config.ts` (removed unnecessary configurations)
+- Android & iOS runtimes updated to version 7.0.0
 - @nativescript packages updated to the latest stable version (plugin & demo projects)
-- Android runtime updated to 7.0.0 (iOS unchanged)
-- followed [the v7 migration advices](https://nativescript.org/blog/nativescript-7-for-plugin-authors/)
+- Followed [the v7 migration advices](https://nativescript.org/blog/nativescript-7-for-plugin-authors/) & [v7 announcement instructions](https://nativescript.org/blog/nativescript-7-announcement/)
 - Demo projects webpack configuration updated
 - Using NPM to pack the plugin in place of the bash script
 

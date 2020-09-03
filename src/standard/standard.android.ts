@@ -1,10 +1,9 @@
-import { android as androidApp } from "@nativescript/core/application";
-import { Page } from "@nativescript/core";
-import * as utils from "@nativescript/core/utils";
+import { Application, Page, Utils } from "@nativescript/core";
 import { StripeAddress, StripeConfigCommon, StripePaymentListener, StripePaymentMethod, StripeShippingAddressField, StripeShippingMethod } from "./standard.common";
 export * from "./standard.common";
 
 declare let global: any;
+
 function getLocalBroadcastManagerPackage() {
   return useAndroidX() ? global.androidx.localbroadcastmanager.content : global.android.support.v4.content;
 }
@@ -46,7 +45,7 @@ export class StripeConfig extends StripeConfigCommon {
   initPaymentConfiguration(): void {
     if (!this.publishableKey) throw new Error("publishableKey must be set");
     if (this._paymentConfigurationInitiated) return;
-    com.stripe.android.PaymentConfiguration.init(utils.ad.getApplicationContext(), this.publishableKey);
+    com.stripe.android.PaymentConfiguration.init(Utils.ad.getApplicationContext(), this.publishableKey);
     this._paymentConfigurationInitiated = true;
   }
 
@@ -67,7 +66,7 @@ export class StripeCustomerSession {
   }
 
   private get context(): android.content.Context {
-    return androidApp.context;
+    return Utils.android.getApplicationContext();
   }
 }
 
@@ -124,7 +123,7 @@ export class StripePaymentSession {
     }
     this.native.setCartTotal(amount);
     this.receiver = createShippingBroadcastReceiver(this, listener);
-    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(androidApp.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
+    getLocalBroadcastManagerPackage().LocalBroadcastManager.getInstance(Application.android.foregroundActivity).registerReceiver(this.receiver, new android.content.IntentFilter(com.stripe.android.view.PaymentFlowExtras.EVENT_SHIPPING_INFO_SUBMITTED));
   }
 
   get amount(): number {
@@ -165,7 +164,7 @@ export class StripePaymentSession {
   }
 
   private patchActivity(): android.app.Activity {
-    let activity = androidApp.foregroundActivity;
+    let activity = Application.android.foregroundActivity;
     let session = this;
 
     // TODO: How do I call the callback? The code below doesn't work,
@@ -221,6 +220,8 @@ function createPaymentSessionListener(parent: StripePaymentSession, listener: St
 }
 
 function createShippingBroadcastReceiver(parent: StripePaymentSession, listener: StripePaymentListener): android.content.BroadcastReceiver {
+
+  @NativeClass()
   class InternalReceiver extends android.content.BroadcastReceiver {
     constructor(private parent: StripePaymentSession, private listener: StripePaymentListener) {
       super();
@@ -271,7 +272,7 @@ function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMetho
 }
 
 function getBitmapFromResource(resID: number): android.graphics.Bitmap {
-  let image = androidApp.foregroundActivity.getResources().getDrawable(resID, null);
+  let image = Application.android.foregroundActivity.getResources().getDrawable(resID, null);
   if (image instanceof android.graphics.Bitmap) {
     return image;
   }

@@ -3,15 +3,6 @@
   "license": "MIT",
   "readme": "README.md",
   "repository": "<fill-your-repository-here>",
-  "nativescript": {
-    "id": "org.nativescript.stripe.demoangular",
-    "nsc-ios": {
-      "version": "6.5.2"
-    },
-    "nsc-android": {
-      "version": "7.0.0"
-    }
-  },
   "dependencies": {
     "@angular/animations": "~10.0.0",
     "@angular/common": "~10.0.0",
@@ -31,6 +22,9 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "~10.0.0",
+    "@nativescript/types": "~7.0.0",
+    "@nativescript/android": "^7.0.0",
+    "@nativescript/ios": "^7.0.0",
     "@nativescript/webpack": "~3.0.0",
     "@ngtools/webpack": "~10.1.0",
     "lazy": "^1.0.11",

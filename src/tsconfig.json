@@ -1,40 +1,43 @@
 {
-  "compilerOptions"       : {
-    "target"                : "es2017",
-    "module"                : "esnext",
-    "moduleResolution"      : "node",
-    "sourceMap"             : true,
-    "emitDecoratorMetadata" : true,
-    "experimentalDecorators": true,
-    "noImplicitUseStrict"   : true,
-    "noEmitHelpers"         : true,
-    "declaration"           : true,
-    "removeComments"        : true,
-    "noEmitOnError"         : true,
-    "skipLibCheck"          : true,
-    "skipDefaultLibCheck"   : true,
-    "noImplicitAny"         : false,
-    "lib"                   : [
-      "es2017",
-      "dom",
-      "es6"
-    ],
-    "baseUrl"               : "."
-  },
-  "angularCompilerOptions": {
-    "genDir"             : ".",
-    "skipMetadataEmit"   : false,
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit" : true,
-    "enableIvy"          : true
-  },
-  "include"               : [
-    "**/*.ts"
-  ],
-    "plugins": [
-      { "transform": "@nativescript/webpack/transformers/ns-transform-native-classes", "type": "raw" }
-    ],
-  "exclude"               : [
-    "node_modules"
-  ]
+   "angularCompilerOptions": {
+      "enableIvy": true,
+      "genDir": ".",
+      "skipMetadataEmit": false,
+      "skipTemplateCodegen": true,
+      "strictMetadataEmit": true
+   },
+   "compilerOptions": {
+      "baseUrl": ".",
+      "declaration": true,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "lib": [
+         "dom",
+         "es2017",
+         "es6"
+      ],
+      "module": "esnext",
+      "moduleResolution": "node",
+      "noEmitHelpers": true,
+      "noEmitOnError": true,
+      "noImplicitAny": false,
+      "noImplicitUseStrict": true,
+      "removeComments": true,
+      "skipDefaultLibCheck": true,
+      "skipLibCheck": true,
+      "sourceMap": true,
+      "target": "es2017"
+   },
+   "exclude": [
+      "node_modules"
+   ],
+   "include": [
+      "**/*.ts"
+   ],
+   "plugins": [
+      {
+         "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
+         "type": "raw"
+      }
+   ]
 }
