@@ -7,6 +7,12 @@
       "strictMetadataEmit": true
    },
    "compilerOptions": {
+      "plugins": [
+         {
+            "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
+            "type": "raw"
+         }
+      ],
       "baseUrl": ".",
       "declaration": true,
       "emitDecoratorMetadata": true,
@@ -28,16 +34,9 @@
       "sourceMap": true,
       "target": "es2017"
    },
-   "exclude": [
-      "node_modules"
-   ],
+   "exclude": [ "node_modules" ],
    "include": [
       "**/*.ts"
    ],
-   "plugins": [
-      {
-         "transform": "@nativescript/webpack/transformers/ns-transform-native-classes",
-         "type": "raw"
-      }
-   ]
+
 }
