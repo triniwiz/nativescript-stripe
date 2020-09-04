@@ -2,13 +2,14 @@
    "description": "NativeScript Stripe - (demo) Application",
    "license": "MIT",
    "readme": "README.md",
+   "main": "main.js",
    "dependencies": {
       "@nativescript/core": "~7.0.0",
       "@nativescript/theme": "^2.3.3",
       "nativescript-stripe": "file:../src"
    },
    "devDependencies": {
-      "@nativescript/android": "^7.0.0",
+      "@nativescript/android": "7.0.0",
       "@nativescript/ios": "7.0.0",
       "@nativescript/types": "7.0.0",
       "@nativescript/webpack": "~3.0.0",
@@ -18,7 +19,7 @@
    },
    "scripts": {
       "postinstall": "ns install",
-      "clean": "npx rimraf hooks node_modules package-lock.json platforms && npm i",
+      "clean": "ns clean && npx rimraf *.js 'src/**/*.js' && npm i",
       "build.plugin": "cd ../src && npm run build",
       "build.all": "npm run build.android && npm run build.ios",
       "build.android": "ns build android",

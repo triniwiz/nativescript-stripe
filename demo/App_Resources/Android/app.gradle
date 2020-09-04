@@ -9,7 +9,7 @@ android {
   defaultConfig {
     multiDexEnabled true
     generatedDensities = []
-    applicationId = "org.nativescript.stripe.demo"
+    applicationId = "com.nativescript.StripeDemoTS"
   }
   aaptOptions {
     additionalParameters "--no-version-vectors"

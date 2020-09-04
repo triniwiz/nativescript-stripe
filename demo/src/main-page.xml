@@ -1,5 +1,5 @@
-<Page loaded="pageLoaded" class="page">
-  <Page.actionBar><ActionBar title="Stripe Demo" class="action-bar"/></Page.actionBar>
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded">
+  <ActionBar title="Stripe Demo" class="action-bar" icon=""></ActionBar>
 
   <StackLayout class="p-10">
     <Label text="Standard Integration" class="h2"></Label>

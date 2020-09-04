@@ -1,4 +1,4 @@
-import { Frame, EventData } from "@nativescript/core";
+import { EventData, Frame } from '@nativescript/core';
 
 export function pageLoaded(args: EventData) { }
 
