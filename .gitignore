@@ -17,6 +17,7 @@ src/angular
 !demo/references.d.ts
 demo/*.d.ts
 demo-angular/*.d.ts
+!demo-angular/references.d.ts
 **/package-lock.json
 **/lib
 **/node_modules
@@ -26,5 +27,5 @@ dist/
 publish/src
 publish/package
 *.metadata.json
-
 !**/webpack.config.js
+template-hello-world-ng

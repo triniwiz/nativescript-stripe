@@ -27,7 +27,8 @@
    "exclude": [
       "../src/node_modules",
       "node_modules",
-      "platforms"
+      "platforms",
+      "e2e"
    ],
    "include": [
       "**/*",
