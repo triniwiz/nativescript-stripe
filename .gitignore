@@ -28,4 +28,3 @@ publish/src
 publish/package
 *.metadata.json
 !**/webpack.config.js
-template-hello-world-ng

@@ -1,9 +1,11 @@
 {
   "name": "nativescript-stripe-demo-ng",
+  "main": "main.js",
   "description": "NativeScript Stripe - (demo) Angular Application",
   "license": "MIT",
   "readme": "README.md",
   "repository": "<fill-your-repository-here>",
+  "id": "org.nativescript.stripe.demo-ng",
   "dependencies": {
     "@angular/animations": "~10.1.0",
     "@angular/common": "~10.1.0",
@@ -31,9 +33,10 @@
     "typescript": "~3.9.0"
   },
   "scripts": {
+    "tsc": "tsc",
     "postinstall": "npm run ngcc",
     "ngcc": "ngcc --properties es2015 module main --first-only",
-    "clean": "npx rimraf hooks node_modules package-lock.json platforms && npm i",
+    "clean": "ns clean && npm i",
     "build.all": "npm run build.android && npm run build.ios",
     "build.android": "ns build android",
     "build.ios": "ns build ios",
