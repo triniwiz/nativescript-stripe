@@ -3,6 +3,10 @@
   "license": "MIT",
   "readme": "README.md",
   "repository": "<fill-your-repository-here>",
+  "nativescript": {
+    "id": "com.stripe.Demoangular",
+     "main": "app/main.js"
+  },
   "dependencies": {
     "@angular/animations": "~10.0.0",
     "@angular/common": "~10.0.0",
@@ -22,11 +26,11 @@
   },
   "devDependencies": {
     "@angular/compiler-cli": "~10.0.0",
+    "@nativescript/android": "7.0.0",
+    "@nativescript/ios": "7.0.0",
     "@nativescript/types": "~7.0.0",
-    "@nativescript/android": "^7.0.0",
-    "@nativescript/ios": "^7.0.0",
     "@nativescript/webpack": "~3.0.0",
-    "@ngtools/webpack": "~10.1.0",
+    "@ngtools/webpack": "~10.0.0",
     "lazy": "^1.0.11",
     "tslint": "~5.4.3",
     "typescript": "~3.9.0"
@@ -36,17 +40,15 @@
     "clean": "npx rimraf hooks node_modules package-lock.json platforms && npm i",
     "ngcc": "ngcc --properties es2015 module main --first-only",
     "build.all": "npm run build.android && npm run build.ios",
-    "build.android": "nsc build android",
-    "build.ios": "nsc build ios",
-    "run.android": "nsc run android",
-    "run.ios": "nsc run ios",
-    "emulator.android": "nsc run android --emulator",
-    "emulator.ios": "nsc run ios --emulator",
-    "android": "nsc run android --no-hmr",
-    "ios": "nsc run ios --no-hmr",
-    "mobile": "nsc run",
-    "preview": "nsc preview",
-    "postinstall": "npm run ngcc",
+    "build.android": "ns build android",
+    "build.ios": "ns build ios",
+    "run.android": "ns run android --no-hmr",
+    "run.ios": "ns run ios --no-hmr",
+    "emulator.android": "ns run android --emulator",
+    "emulator.ios": "ns run ios --emulator",
+    "mobile": "ns run",
+    "preview": "ns preview",
+    "postinstall": "npm run ngcc && ns install",
     "build.plugin": "cd ../src && npm run build",
     "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'"
   }

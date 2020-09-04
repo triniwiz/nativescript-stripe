@@ -1,11 +1,10 @@
 {
+   "name": "nativescript-stripe",
+   "description": "NativeScript Stripe SDK",
+   "version": "7.0.2-rc.0",
    "author": {
       "email": "fortune.osei@yahoo.com",
       "name": "Osei Fortune"
-   },
-   "bootstrapper": "nativescript-plugin-seed",
-   "bugs": {
-      "url": "https://github.com/triniwiz/nativescript-stripe/issues"
    },
    "contributors": [
       {
@@ -13,10 +12,36 @@
          "name": "Federico Ricchiuto"
       }
    ],
+   "homepage": "https://github.com/triniwiz/nativescript-stripe",
+   "keywords": [
+      "Android",
+      "Angular",
+      "JavaScript",
+      "NativeScript",
+      "Stripe",
+      "iOS"
+   ],
+   "license": "Apache-2.0",
+   "readmeFilename": "README.md",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/triniwiz/nativescript-stripe"
+   },
+   "main": "stripe",
+   "typings": "index.d.ts",
+   "bootstrapper": "nativescript-plugin-seed",
+   "bugs": {
+      "url": "https://github.com/triniwiz/nativescript-stripe/issues"
+   },
+   "nativescript": {
+      "platforms": {
+         "android": "7.0.0",
+         "ios": "7.0.0"
+      }
+   },
    "dependencies": {
       "ts-node": "^8.10.2"
    },
-   "description": "NativeScript Stripe SDK",
    "devDependencies": {
       "@angular/animations": "^10.0.0",
       "@angular/common": "^10.0.0",
@@ -27,10 +52,10 @@
       "@angular/platform-browser": "^10.0.0",
       "@angular/platform-browser-dynamic": "^10.0.0",
       "@angular/router": "^10.0.0",
-      "@nativescript/android": "^7.0.0",
+      "@nativescript/android": "7.0.0",
       "@nativescript/angular": "^10.0.0",
       "@nativescript/core": "^7.0.0",
-      "@nativescript/ios": "^7.0.0",
+      "@nativescript/ios": "7.0.0",
       "@nativescript/types": "^7.0.0",
       "@nativescript/webpack": "^3.0.0",
       "@types/node": "^14.0.27",
@@ -44,67 +69,30 @@
       "typescript": "~3.9.0",
       "zone.js": "~0.10.3"
    },
-   "homepage": "https://github.com/triniwiz/nativescript-stripe",
-   "keywords": [
-      "Android",
-      "Angular",
-      "JavaScript",
-      "NativeScript",
-      "Stripe",
-      "iOS"
-   ],
-   "license": "Apache-2.0",
-   "main": "stripe",
-   "name": "nativescript-stripe",
-   "nativescript": {
-      "platforms": {
-         "android": "7.0.0",
-         "ios": "7.0.0"
-      }
-   },
-   "ngPackage": {
-      "lib": {
-         "entryFile": "./angular/index.ts",
-         "umdModuleIds": {
-            "@nativescript/angular": "ns-angular",
-            "@nativescript/core": "ns-core"
-         }
-      },
-      "whitelistedNonPeerDependencies": [
-         "."
-      ]
-   },
-   "readmeFilename": "README.md",
-   "repository": {
-      "type": "git",
-      "url": "https://github.com/triniwiz/nativescript-stripe"
-   },
    "scripts": {
-      "build": "npm run tslint && npm run build.angular",
+      "setup": "npm run clean && npm i && ts-patch install && npm run build",
+      "build": "npm run build.angular",
       "build.angular": "cd ../src-angular && npm run build",
       "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/+(node_modules|typings)/**'",
-      "clean": "npm run demo.reset && npm run demo-angular.reset && cd ../src-angular && npx rimraf dist node_modules package-lock.json && cd ../src && npx rimraf -- *.js  \"!(index|references).d.ts\" angular node_modules package-lock.json",
-      "debug.demo-angular.android": "npm run tsc && cd ../demo-angular && tns debug android --emulator",
-      "debug.demo-angular.ios": "npm run tsc && cd ../demo-angular && tns debug ios --emulator",
-      "demo-angular.android": "npm run tsc && cd ../demo-angular && tns run android --emulator",
-      "demo-angular.ios": "npm run tsc && cd ../demo-angular && tns run ios --emulator",
-      "demo-angular.ios.ci": "npm run tsc && cd ../demo-angular && tns build ios --env.uglify",
-      "demo-angular.ios.min": "npm run tsc && cd ../demo-angular && tns run ios --env.uglify --emulator",
+      "clean": "npm run demo.reset && npm run demo-angular.reset && cd ../src-angular && npm run clean && cd ../src && npx rimraf -- *.js  \"!(index|references).d.ts\" angular node_modules platforms package-lock.json",
+      "debug.demo-angular.android": "npm run tsc && cd ../demo-angular && ns debug android --emulator",
+      "debug.demo-angular.ios": "npm run tsc && cd ../demo-angular && ns debug ios --emulator",
+      "demo-angular.android": "npm run tsc && cd ../demo-angular && ns run android --emulator",
+      "demo-angular.ios": "npm run tsc && cd ../demo-angular && ns run ios --emulator",
+      "demo-angular.ios.ci": "npm run tsc && cd ../demo-angular && ns build ios --env.uglify",
+      "demo-angular.ios.min": "npm run tsc && cd ../demo-angular && ns run ios --env.uglify --emulator",
       "demo-angular.reset": "cd ../demo-angular && npx rimraf -- hooks node_modules platforms package-lock.json",
-      "demo.android": "npm run tsc && cd ../demo && tns run android --emulator",
-      "demo.ios": "npm run tsc && cd ../demo && tns run ios --emulator",
-      "demo.ios.ci": "npm run tsc && cd ../demo && tns build ios --env.uglify",
-      "demo.ios.min": "npm run tsc && cd ../demo && tns run ios --env.uglify --emulator",
+      "demo.android": "npm run tsc && cd ../demo && ns run android --emulator",
+      "demo.ios": "npm run tsc && cd ../demo && ns run ios --emulator",
+      "demo.ios.ci": "npm run tsc && cd ../demo && ns build ios --env.uglify",
+      "demo.ios.min": "npm run tsc && cd ../demo && ns run ios --env.uglify --emulator",
       "demo.reset": "cd ../demo && npx rimraf -- hooks node_modules platforms package-lock.json",
       "full-setup": "npm run setup && cd ../demo && npm i && cd ../demo-angular && npm i",
-      "plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-stripe && tns plugin add ../src && cd ../demo-angular && tns plugin remove nativescript-stripe && tns plugin add ../src",
+      "plugin.prepare": "npm run build && cd ../demo && ns plugin remove nativescript-stripe && ns install && ns plugin add ../src && cd ../demo-angular && ns plugin remove nativescript-stripe && ns install && ns plugin add ../src",
       "plugin.tscwatch": "npm run tsc -- -w",
-      "setup": "npm run clean && npm i && ts-patch install && npm run build",
-      "test.android": "npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch && cd ../demo-angular && tns build android && tns test android --justlaunch",
-      "test.ios": "npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch && cd ../demo-angular && tns build ios && tns test ios --justlaunch",
+      "test.android": "npm run tsc && npm run tslint && cd ../demo && ns build android && ns test android --justlaunch && cd ../demo-angular && ns build android && ns test android --justlaunch",
+      "test.ios": "npm run tsc && npm run tslint && cd ../demo && ns build ios && ns test ios --justlaunch && cd ../demo-angular && ns build ios && ns test ios --justlaunch",
       "tsc": "tsc",
       "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|typings|platforms)/**\""
-   },
-   "typings": "index.d.ts",
-   "version": "7.0.2-rc.0"
+   }
 }

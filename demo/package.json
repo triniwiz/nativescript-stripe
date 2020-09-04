@@ -1,23 +1,34 @@
 {
+   "description": "NativeScript Stripe - (demo) Application",
+   "license": "MIT",
+   "readme": "README.md",
    "dependencies": {
       "@nativescript/core": "~7.0.0",
       "@nativescript/theme": "^2.3.3",
       "nativescript-stripe": "file:../src"
    },
-   "description": "NativeScript Stripe - (demo) Application",
    "devDependencies": {
       "@nativescript/android": "^7.0.0",
-      "@nativescript/ios": "^7.0.0",
-      "@nativescript/types": "~7.0.0",
+      "@nativescript/ios": "7.0.0",
+      "@nativescript/types": "7.0.0",
       "@nativescript/webpack": "~3.0.0",
       "lazy": "^1.0.11",
       "tslint": "~5.4.3",
       "typescript": "~3.9.0"
    },
-   "license": "MIT",
-   "readme": "README.md",
    "scripts": {
+      "postinstall": "ns install",
+      "clean": "npx rimraf hooks node_modules package-lock.json platforms && npm i",
       "build.plugin": "cd ../src && npm run build",
+      "build.all": "npm run build.android && npm run build.ios",
+      "build.android": "ns build android",
+      "build.ios": "ns build ios",
+      "run.android": "ns run android --no-hmr",
+      "run.ios": "ns run ios --no-hmr",
+      "emulator.android": "ns run android --emulator",
+      "emulator.ios": "ns run ios --emulator",
+      "mobile": "ns run",
+      "preview": "ns preview",
       "ci.tslint": "npm i && tslint --config '../tslint.json' 'app/**/*.ts' --exclude '**/node_modules/**'",
       "tsc": "tsc"
    }

@@ -14,13 +14,14 @@
       "noEmitHelpers": true,
       "noEmitOnError": true,
       "paths": {
-         "*": [
-            "./node_modules/*"
-         ],
          "~/*": [
             "app/*"
+         ],
+         "*": [
+            "./node_modules/*"
          ]
       },
+      "skipLibCheck": true,
       "target": "ES2017"
    },
    "exclude": [

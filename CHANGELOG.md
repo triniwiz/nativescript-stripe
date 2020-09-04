@@ -1,9 +1,7 @@
 # Changelog
 
 ## 7.0.2 (2020, Sep 3)
-
 ### Updates
-
 - Switched to single file configuration in demo applications:  `nativescript.config.ts` (removed unnecessary configurations)
 - Android & iOS runtimes updated to version 7.0.0
 - @nativescript packages updated to the latest stable version (plugin & demo projects)
