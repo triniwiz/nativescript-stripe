@@ -66,7 +66,7 @@ export class StripeCustomerSession {
   }
 
   private get context(): android.content.Context {
-    return Utils.android.getApplicationContext();
+    return Application.android.context;
   }
 }
 
