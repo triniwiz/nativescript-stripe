@@ -50,6 +50,7 @@ export class StripeCustomerSession {
   }
 }
 
+@NativeClass()
 class StripeKeyProvider extends NSObject implements STPCustomerEphemeralKeyProvider {
   static ObjCProtocols = [STPCustomerEphemeralKeyProvider];
 
@@ -161,6 +162,7 @@ export class StripePaymentSession {
   }
 }
 
+@NativeClass()
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
   static ObjCProtocols = [STPPaymentContextDelegate];
 
