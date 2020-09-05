@@ -2,20 +2,18 @@
    "compileOnSave": true,
    "compilerOptions": {
       "module": "ESNext",
-      "target": "es2015",
+      "target": "ES2017",
       "moduleResolution": "node",
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
       "noEmitHelpers": true,
       "noEmitOnError": true,
       "skipLibCheck": true,
-      "lib": [
-        "es2018", "es2017", "dom", "es6"
-      ],
+      "lib": [ "es2018", "es2017", "dom", "es6" ],
       "baseUrl": ".",
       "paths": {
          "~/*": [
-            "app/*"
+            "src/app/*"
          ],
          "*": [
             "./node_modules/*"
@@ -30,12 +28,14 @@
       "src/tests/**/*.ts",
       "src/**/*.ios.ts",
       "src/**/*.android.ts",
+      "src/**/*.ts",
       "../src"
    ],
    "exclude": [
       "../src/node_modules",
       "node_modules",
       "platforms",
-      "e2e"
+      "e2e",
+      "nativescript.config.ts"
    ],
 }

@@ -1,5 +1,5 @@
-<Page xmlns:stripe="nativescript-stripe" navigatingTo="navigatingTo" class="page">
-  <Page.actionBar><ActionBar title="Details" class="action-bar"/></Page.actionBar>
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:stripe="nativescript-stripe" navigatingTo="navigatingTo" class="page">
+  <ActionBar title="Details" class="action-bar" icon=""></ActionBar>
   <StackLayout class="page p-10">
     <GridLayout rows="auto" columns="auto,*">
       <Label row="0" col="0" text="{{ item.name }}" class="h2"></Label>
