@@ -5,6 +5,8 @@
 
 **Requires I0S 9.x +**
 
+#### [NativeScript 7+](https://github.com/triniwiz/nativescript-plugins)
+* `npm i @triniwiz/nativescript-stripe`
 
 #### NativeScript 4x
 
