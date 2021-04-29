@@ -1,0 +1,32 @@
+{
+  "nativescript": {
+    "id": "org.nativescript.stripe.demo",
+    "tns-android": {
+      "version": "6.0.2"
+    },
+    "tns-ios": {
+      "version": "6.0.2"
+    }
+  },
+  "description": "NativeScript Application",
+  "license": "SEE LICENSE IN <your-license-filename>",
+  "repository": "<fill-your-repository-here>",
+  "dependencies": {
+    "nativescript-stripe": "^5.5.0",
+    "nativescript-theme-core": "~1.0.6",
+    "nativescript-vue": "~2.4.0",
+    "tns-core-modules": "~6.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "~7.1.0",
+    "@babel/preset-env": "~7.1.0",
+    "babel-loader": "~8.0.0",
+    "nativescript-dev-webpack": "~1.1.0",
+    "nativescript-vue-template-compiler": "~2.4.0",
+    "node-sass": "^4.7.1",
+    "vue-loader": "~15.4.0",
+    "typescript": "3.4.5"
+  },
+  "gitHead": "42f2a6a9c94eaf9c68d2a41e0daaa1a2544bc28f",
+  "readme": "NativeScript Application"
+}
